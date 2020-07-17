@@ -1,0 +1,6 @@
+{
+  "login information": {
+    "0": { "id": "0", "email": "johndoe@gmail.com", "password": "123456" },
+    "1": { "id": "1", "email": "elonmusk@gmail.com", "password": "123456" }
+  }
+}

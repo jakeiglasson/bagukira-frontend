@@ -1,0 +1,29 @@
+{
+  "projects": {
+    "0": {
+      "id": "0",
+      "project manager email": "johndoe@gmail.com",
+      "project name": "accounting app"
+    },
+    "1": {
+      "id": "1",
+      "project manager email": "johndoe@gmail.com",
+      "project name": "sports app"
+    },
+    "2": {
+      "id": "2",
+      "project manager email": "johndoe@gmail.com",
+      "project name": "stockmarket app"
+    },
+    "3": {
+      "id": "1",
+      "project manager email": "elonmusk@gmail.com",
+      "project name": "paypal app"
+    },
+    "4": {
+      "id": "2",
+      "project manager email": "johndoe@gmail.com",
+      "project name": "spaceX app"
+    }
+  }
+}
