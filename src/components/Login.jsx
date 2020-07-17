@@ -1,43 +1,47 @@
-import React, { useState } from "react";
-import { Button, FormGroup, FormControl, FormLabel } from "react-bootstrap";
+import React, { Component } from "react";
+import { Form, Button } from "react-bootstrap";
+import { Link } from "react-router-dom";
 import "./css/Login.css";
+import "./css/Global.css";
 
-export default function Login() {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+class Login extends Component {
+  handleSubmit = () => {};
 
-  function validateForm() {
-    return email.length > 0 && password.length > 0;
+  render() {
+    return (
+      <div className="small-centered-card">
+        <h3 className="text-center mb-3">LOGIN</h3>
+        <Form>
+          <Form.Group controlId="formBasicEmail">
+            <Form.Label>Email address</Form.Label>
+            <Form.Control type="email" placeholder="Enter email" />
+            <Form.Text className="text-muted">
+              We'll never share your email with anyone else.
+            </Form.Text>
+          </Form.Group>
+
+          <Form.Group controlId="formBasicPassword">
+            <Form.Label>Password</Form.Label>
+            <Form.Control type="password" placeholder="Password" />
+          </Form.Group>
+          {/* <Form.Group controlId="formBasicCheckbox">
+            <Form.Check type="checkbox" label="Check me out" />
+          </Form.Group> */}
+          <Link to="/projects" className="text-link">
+            <Button className="btn btn-block" data-testid="login">
+              LOGIN
+            </Button>
+          </Link>
+          <hr />
+          <Link to="/signup" className="text-link">
+            <Button className="btn btn-warning btn-block" data-testid="signup">
+              SIGNUP
+            </Button>
+          </Link>
+        </Form>
+      </div>
+    );
   }
-
-  function handleSubmit(event) {
-    event.preventDefault();
-  }
-
-  return (
-    <div className="Login">
-      <form onSubmit={handleSubmit}>
-        <FormGroup controlId="email" bsSize="large">
-          <FormLabel>Email</FormLabel>
-          <FormControl
-            autoFocus
-            type="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-          />
-        </FormGroup>
-        <FormGroup controlId="password" bsSize="large">
-          <FormLabel>Password</FormLabel>
-          <FormControl
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            type="password"
-          />
-        </FormGroup>
-        <Button block bsSize="large" disabled={!validateForm()} type="submit">
-          Login
-        </Button>
-      </form>
-    </div>
-  );
 }
+
+export default Login;

@@ -1,0 +1,14 @@
+.small-centered-card {
+  width: 300px;
+  margin: auto;
+}
+
+.text-link,
+.text-link:hover {
+  color: black;
+  text-decoration: none;
+}
+
+.max-height {
+  height: 100%;
+}
