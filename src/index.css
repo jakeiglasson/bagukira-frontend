@@ -1,8 +1,5 @@
 html,
 body,
-#root,
-#root > div,
-#app,
-#app > div {
+#root {
   height: 100%;
 }

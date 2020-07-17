@@ -5,9 +5,9 @@ import "./css/Global.css";
 class Projects extends Component {
   render() {
     return (
-      <div className="max-height">
+      <>
         <SideBar></SideBar>
-      </div>
+      </>
     );
   }
 }

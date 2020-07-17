@@ -1,3 +1,7 @@
+:root {
+  --banner-height: 150px; /* var(--banner-height) */
+}
+
 .small-centered-card {
   width: 300px;
   margin: auto;
@@ -9,6 +13,14 @@
   text-decoration: none;
 }
 
-.max-height {
+.banner-text {
+  height: var(--banner-height);
+}
+
+.fill-height {
   height: 100%;
+}
+
+.content-container {
+  height: calc(100% - var(--banner-height));
 }

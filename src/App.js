@@ -13,20 +13,21 @@ class App extends Component {
   render() {
     return (
       <BrowserRouter>
-        <div className="max-height">
-          <div className="text-center display-1 mb-5">
+        <>
+          <div className="text-center display-1 py-3 banner-text">
             <Link to="/" className="text-link">
               <FontAwesomeIcon icon={faBug} style={{ color: "orange" }} />{" "}
               Bagukira{" "}
               <FontAwesomeIcon icon={faBug} style={{ color: "orange" }} />
             </Link>
           </div>
-
-          <Route exact path="/" component={Home} />
-          <Route exact path="/login" component={Login} />
-          <Route exact path="/signup" component={Signup} />
-          <Route exact path="/projects" component={Projects} />
-        </div>
+          <div className="content-container">
+            <Route exact path="/" component={Home} />
+            <Route exact path="/login" component={Login} />
+            <Route exact path="/signup" component={Signup} />
+            <Route exact path="/projects" component={Projects} />
+          </div>
+        </>
       </BrowserRouter>
     );
   }
