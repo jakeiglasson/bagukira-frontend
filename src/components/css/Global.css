@@ -8,6 +8,11 @@
   margin: auto;
 }
 
+.medium-centered-card {
+  width: 600px;
+  margin: auto;
+}
+
 .text-link,
 .text-link:hover {
   color: black;
