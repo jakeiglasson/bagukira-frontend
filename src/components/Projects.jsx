@@ -4,11 +4,7 @@ import "./css/Global.css";
 
 class Projects extends Component {
   render() {
-    return (
-      <>
-        <SideBar></SideBar>
-      </>
-    );
+    return <></>;
   }
 }
 

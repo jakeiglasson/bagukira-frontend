@@ -11,9 +11,12 @@ class NavBar extends Component {
           <Navbar.Brand href="#home">Weclome, Johndoe@gmail.com</Navbar.Brand>
         </Nav>
         <Form inline>
-          <Button variant="outline-warning" className="mx-2">
-            ALL PROJECTS
-          </Button>
+          <Route path="/projects/:id">
+            <Button variant="outline-warning" className="mx-2" href="/projects">
+              ALL PROJECTS
+            </Button>
+          </Route>
+
           <Button variant="outline-warning" className="mx-2">
             SIGN OUT
           </Button>

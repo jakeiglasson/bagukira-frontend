@@ -10,10 +10,10 @@ class SideBar extends Component {
       <div className="side-bar-container">
         <Nav defaultActiveKey="/home" className="flex-column sidebar">
           <h3>Project Name</h3>
-          <Nav.Link href="/bug-list">BUG LIST</Nav.Link>
-          <Nav.Link href="/bug-list">NEW BUG</Nav.Link>
-          <Nav.Link href="/bug-list">ADD USER</Nav.Link>
-          <Nav.Link href="/bug-list">EDIT PROJECT</Nav.Link>
+          <Nav.Link href="/projects/1/bug-list">BUG LIST</Nav.Link>
+          <Nav.Link href="/projects/1/bug-list">NEW BUG</Nav.Link>
+          <Nav.Link href="/projects/1/bug-list">ADD USER</Nav.Link>
+          <Nav.Link href="/projects/1/bug-list">EDIT PROJECT</Nav.Link>
         </Nav>
       </div>
     );

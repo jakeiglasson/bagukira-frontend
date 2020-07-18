@@ -8,6 +8,7 @@ import Login from "./components/Login";
 import Signup from "./components/Signup";
 import Projects from "./components/Projects";
 import NavBar from "./components/shared/NavBar";
+import SideBar from "./components/shared/SideBar";
 import "./App.css";
 import { Nav } from "react-bootstrap";
 
@@ -29,6 +30,7 @@ class App extends Component {
             <Route exact path="/signup" component={Signup} />
             <Route path="/projects" component={NavBar} />
             <Route exact path="/projects" component={Projects} />
+            <Route path="/projects/:id" component={SideBar} />
           </div>
         </>
       </BrowserRouter>
