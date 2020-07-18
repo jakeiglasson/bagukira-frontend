@@ -25,7 +25,7 @@ class Projects extends Component {
             <div className="projects-item">NEW PROJECT</div>
           </Button>
           <Button
-            href="/projects/p/1"
+            href="/projects/p/1/bug-list"
             className="projects-item-container"
             variant="warning"
             size="lg"

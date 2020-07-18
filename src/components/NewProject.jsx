@@ -13,7 +13,7 @@ class NewProject extends Component {
               <Form.Label>PROJECT NAME</Form.Label>
               <Form.Control type="email" placeholder="PROJECT NAME" />
             </Form.Group>
-            <Link to="/projects/p/1" className="text-link">
+            <Link to="/projects/p/1/bug-list" className="text-link">
               <Button className="btn btn-block" data-testid="submit">
                 SUBMIT
               </Button>

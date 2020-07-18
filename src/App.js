@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { BrowserRouter, Route, Link } from "react-router-dom";
+import { BrowserRouter, Route, Link, useHistory } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faBug } from "@fortawesome/free-solid-svg-icons";
 
@@ -10,10 +10,23 @@ import Projects from "./components/Projects";
 import NewProject from "./components/NewProject";
 import NavBar from "./components/shared/NavBar";
 import SideBar from "./components/shared/SideBar";
+import BugList from "./components/BugList";
+import NewBug from "./components/NewBug";
+import AddUser from "./components/AddUser";
+import EditProject from "./components/EditProject";
 import "./App.css";
 import { Nav } from "react-bootstrap";
 
 class App extends Component {
+  state = {
+    sideBarActiveLink: "",
+  };
+
+  // handleHistory = (props) => {
+  //   let { history } = this.state;
+  //   this.setState({ history: history.push(props) });
+  // };
+
   render() {
     return (
       <BrowserRouter>
@@ -30,9 +43,26 @@ class App extends Component {
         <Route exact path="/login" component={Login} />
         <Route exact path="/signup" component={Signup} />
         <Route exact path="/projects/new" component={NewProject} />
-        <Route path="/projects/p/:id">
+        <Route path="/projects/p">
           <div className="content-container">
-            <SideBar />
+            <div className="single-project-grid-container">
+              <Route path="/projects/p/:id/bug-list">
+                <SideBar activeLink="bug-list" />
+                <BugList />
+              </Route>
+              <Route path="/projects/p/:id/new-bug">
+                <SideBar activeLink="new-bug" />
+                <NewBug />
+              </Route>
+              <Route path="/projects/p/:id/add-user">
+                <SideBar activeLink="add-user" />
+                <AddUser />
+              </Route>
+              <Route path="/projects/p/:id/edit-project">
+                <SideBar activeLink="edit-project" />
+                <EditProject />
+              </Route>
+            </div>
           </div>
         </Route>
       </BrowserRouter>
