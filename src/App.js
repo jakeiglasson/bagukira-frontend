@@ -16,23 +16,23 @@ class App extends Component {
   render() {
     return (
       <BrowserRouter>
-        <>
-          <div className="text-center display-1 py-3 banner-text">
-            <Link to="/" className="text-link">
-              <FontAwesomeIcon icon={faBug} style={{ color: "orange" }} />{" "}
-              Bagukira{" "}
-              <FontAwesomeIcon icon={faBug} style={{ color: "orange" }} />
-            </Link>
-          </div>
+        <div className="text-center display-1 py-3 banner-text">
+          <Link to="/" className="text-link">
+            <FontAwesomeIcon icon={faBug} style={{ color: "orange" }} />{" "}
+            Bagukira{" "}
+            <FontAwesomeIcon icon={faBug} style={{ color: "orange" }} />
+          </Link>
+        </div>
+        <Route path="/projects" component={NavBar} />
+        <Route exact path="/projects" component={Projects} />
+        <Route exact path="/" component={Home} />
+        <Route exact path="/login" component={Login} />
+        <Route exact path="/signup" component={Signup} />
+        <Route path="/projects/:id">
           <div className="content-container">
-            <Route exact path="/" component={Home} />
-            <Route exact path="/login" component={Login} />
-            <Route exact path="/signup" component={Signup} />
-            <Route path="/projects" component={NavBar} />
-            <Route exact path="/projects" component={Projects} />
-            <Route path="/projects/:id" component={SideBar} />
+            <SideBar />
           </div>
-        </>
+        </Route>
       </BrowserRouter>
     );
   }

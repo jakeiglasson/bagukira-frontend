@@ -1,0 +1,31 @@
+.projects-grid-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  /* grid-template-rows: minmax(250px, 250px); */
+  grid-auto-rows: minmax(250px, 250px);
+  gap: 20px 20px;
+  /* background-color: aqua; */
+  align-items: center;
+  justify-items: center;
+}
+
+.projects-item-container {
+  display: grid;
+  max-width: 250px;
+  max-height: 250px;
+  height: 100%;
+  width: 100%;
+}
+
+.new-project {
+  background-color: #2ed573;
+}
+
+.existing-project {
+  background-color: #eccc68;
+}
+
+.projects-item {
+  justify-self: center;
+  align-self: center;
+}
