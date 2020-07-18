@@ -1,9 +1,15 @@
 :root {
   --banner-height: 150px; /* var(--banner-height) */
+  --navbar-height: 56px; /* var(--navbar-height) */
 }
 
 .small-centered-card {
   width: 300px;
+  margin: auto;
+}
+
+.medium-centered-card {
+  width: 600px;
   margin: auto;
 }
 
@@ -22,5 +28,5 @@
 }
 
 .content-container {
-  height: calc(100% - var(--banner-height));
+  height: calc(100% - var(--banner-height) - var(--navbar-height));
 }
