@@ -7,7 +7,9 @@ import Home from "./components/Home";
 import Login from "./components/Login";
 import Signup from "./components/Signup";
 import Projects from "./components/Projects";
+import NavBar from "./components/shared/NavBar";
 import "./App.css";
+import { Nav } from "react-bootstrap";
 
 class App extends Component {
   render() {
@@ -25,6 +27,7 @@ class App extends Component {
             <Route exact path="/" component={Home} />
             <Route exact path="/login" component={Login} />
             <Route exact path="/signup" component={Signup} />
+            <Route path="/projects" component={NavBar} />
             <Route exact path="/projects" component={Projects} />
           </div>
         </>
