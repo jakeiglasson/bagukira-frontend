@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import SideBar from "./shared/SideBar";
+import { Button } from "react-bootstrap";
 import "./css/Global.css";
 import "./css/Projects.css";
 
@@ -12,93 +13,34 @@ class Projects extends Component {
   render() {
     return (
       <div className="projects-grid-container p-3">
-        <div className="new-project projects-item-container">
+        <Button
+          href="/projects/new"
+          className="projects-item-container"
+          variant="success"
+          size="lg"
+          block
+        >
           <div className="projects-item">NEW PROJECT</div>
-        </div>
-        <div className="existing-project projects-item-container">
+        </Button>
+        <Button
+          href="/projects/1"
+          className="projects-item-container"
+          variant="warning"
+          size="lg"
+          block
+        >
           <div className="projects-item">EXISTING PROJECT</div>
-        </div>
-        <>
-          <div className="existing-project projects-item-container">
-            <div className="projects-item">EXISTING PROJECT</div>
-          </div>
-          <div className="existing-project projects-item-container">
-            <div className="projects-item">EXISTING PROJECT</div>
-          </div>
-          <div className="existing-project projects-item-container">
-            <div className="projects-item">EXISTING PROJECT</div>
-          </div>
-          <div className="existing-project projects-item-container">
-            <div className="projects-item">EXISTING PROJECT</div>
-          </div>
-          <div className="existing-project projects-item-container">
-            <div className="projects-item">EXISTING PROJECT</div>
-          </div>
-          <div className="existing-project projects-item-container">
-            <div className="projects-item">EXISTING PROJECT</div>
-          </div>
-          <div className="existing-project projects-item-container">
-            <div className="projects-item">EXISTING PROJECT</div>
-          </div>
-          <div className="existing-project projects-item-container">
-            <div className="projects-item">EXISTING PROJECT</div>
-          </div>
-          <div className="existing-project projects-item-container">
-            <div className="projects-item">EXISTING PROJECT</div>
-          </div>
-          <div className="existing-project projects-item-container">
-            <div className="projects-item">EXISTING PROJECT</div>
-          </div>
-          <div className="existing-project projects-item-container">
-            <div className="projects-item">EXISTING PROJECT</div>
-          </div>
-          <div className="existing-project projects-item-container">
-            <div className="projects-item">EXISTING PROJECT</div>
-          </div>
-          <div className="existing-project projects-item-container">
-            <div className="projects-item">EXISTING PROJECT</div>
-          </div>
-          <div className="existing-project projects-item-container">
-            <div className="projects-item">EXISTING PROJECT</div>
-          </div>
-          <div className="existing-project projects-item-container">
-            <div className="projects-item">EXISTING PROJECT</div>
-          </div>
-          <div className="existing-project projects-item-container">
-            <div className="projects-item">EXISTING PROJECT</div>
-          </div>
-          <div className="existing-project projects-item-container">
-            <div className="projects-item">EXISTING PROJECT</div>
-          </div>
-          <div className="existing-project projects-item-container">
-            <div className="projects-item">EXISTING PROJECT</div>
-          </div>
-          <div className="existing-project projects-item-container">
-            <div className="projects-item">EXISTING PROJECT</div>
-          </div>
-          <div className="existing-project projects-item-container">
-            <div className="projects-item">EXISTING PROJECT</div>
-          </div>
-          <div className="existing-project projects-item-container">
-            <div className="projects-item">EXISTING PROJECT</div>
-          </div>
-          <div className="existing-project projects-item-container">
-            <div className="projects-item">EXISTING PROJECT</div>
-          </div>
-          <div className="existing-project projects-item-container">
-            <div className="projects-item">EXISTING PROJECT</div>
-          </div>
-          <div className="existing-project projects-item-container">
-            <div className="projects-item">EXISTING PROJECT</div>
-          </div>
-          <div className="existing-project projects-item-container">
-            <div className="projects-item">EXISTING PROJECT</div>
-          </div>
-          <div className="existing-project projects-item-container">
-            <div className="projects-item">EXISTING PROJECT</div>
-          </div>
-        </>
+        </Button>
       </div>
+      // // Old layout code, used as reference material
+      // <div className="projects-grid-container p-3">
+      //   <div className="new-project projects-item-container">
+      //     <div className="projects-item">NEW PROJECT</div>
+      //   </div>
+      //   <div className="existing-project projects-item-container">
+      //     <div className="projects-item">EXISTING PROJECT</div>
+      //   </div>
+      // </div>
     );
   }
 }
