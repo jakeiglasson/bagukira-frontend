@@ -23,7 +23,7 @@ class Projects extends Component {
           <div className="projects-item">NEW PROJECT</div>
         </Button>
         <Button
-          href="/projects/1"
+          href="/projects/p/1"
           className="projects-item-container"
           variant="warning"
           size="lg"

@@ -7,6 +7,7 @@ import Home from "./components/Home";
 import Login from "./components/Login";
 import Signup from "./components/Signup";
 import Projects from "./components/Projects";
+import NewProject from "./components/NewProject";
 import NavBar from "./components/shared/NavBar";
 import SideBar from "./components/shared/SideBar";
 import "./App.css";
@@ -28,7 +29,8 @@ class App extends Component {
         <Route exact path="/" component={Home} />
         <Route exact path="/login" component={Login} />
         <Route exact path="/signup" component={Signup} />
-        <Route path="/projects/:id">
+        <Route exact path="/projects/new" component={NewProject} />
+        <Route path="/projects/p/:id">
           <div className="content-container">
             <SideBar />
           </div>
