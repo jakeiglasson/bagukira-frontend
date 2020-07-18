@@ -12,26 +12,29 @@ class Projects extends Component {
 
   render() {
     return (
-      <div className="projects-grid-container p-3">
-        <Button
-          href="/projects/new"
-          className="projects-item-container"
-          variant="success"
-          size="lg"
-          block
-        >
-          <div className="projects-item">NEW PROJECT</div>
-        </Button>
-        <Button
-          href="/projects/p/1"
-          className="projects-item-container"
-          variant="warning"
-          size="lg"
-          block
-        >
-          <div className="projects-item">EXISTING PROJECT</div>
-        </Button>
-      </div>
+      <>
+        <h1 className="text-center m-3">ALL PROJECTS</h1>
+        <div className="projects-grid-container p-3">
+          <Button
+            href="/projects/new"
+            className="projects-item-container"
+            variant="success"
+            size="lg"
+            block
+          >
+            <div className="projects-item">NEW PROJECT</div>
+          </Button>
+          <Button
+            href="/projects/p/1"
+            className="projects-item-container"
+            variant="warning"
+            size="lg"
+            block
+          >
+            <div className="projects-item">EXISTING PROJECT</div>
+          </Button>
+        </div>
+      </>
       // // Old layout code, used as reference material
       // <div className="projects-grid-container p-3">
       //   <div className="new-project projects-item-container">
