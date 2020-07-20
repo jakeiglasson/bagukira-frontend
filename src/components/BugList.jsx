@@ -1,11 +1,11 @@
 import React, { Component } from "react";
 import { Table } from "react-bootstrap";
-import "./css/BugList.css";
+import "./css/Global.css";
 
 class BugList extends Component {
   render() {
     return (
-      <div className="bug-list-table p-4">
+      <div className="side-content-container p-4">
         <Table striped bordered hover>
           <thead>
             <tr>

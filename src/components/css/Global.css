@@ -30,3 +30,7 @@
 .content-container {
   height: calc(100% - var(--banner-height) - var(--navbar-height));
 }
+
+.side-content-container {
+  width: 100%;
+}

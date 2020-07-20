@@ -1,0 +1,63 @@
+/* GRID SETTINGS */
+
+.eb-grid-container {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: 1fr 1fr;
+  gap: 1px 1px;
+  grid-template-areas: "info eb-image" "description-entry description-entry";
+}
+
+.eb-info {
+  grid-area: eb-info;
+}
+
+.eb-image {
+  grid-area: eb-image;
+}
+
+.eb-description-entry {
+  grid-area: eb-description-entry;
+}
+
+/* DROP DOWN SETTINGS */
+
+.dropdown {
+  width: 150px;
+}
+
+#dropdown-custom-1,
+.dropdown-menu {
+  min-width: initial;
+  width: 100%;
+  text-align: left;
+}
+
+.dropdown-menu {
+  padding: 0;
+}
+
+.dropdown-item {
+  padding: 0.375rem 0.75rem;
+}
+
+.eb-open,
+.eb-open:hover {
+  color: red;
+}
+
+.eb-in-progress,
+.eb-in-progress:hover {
+  color: yellow;
+}
+
+.eb-closed,
+.eb-closed:hover {
+  color: green;
+}
+
+.eb-open:hover,
+.eb-in-progress:hover,
+.eb-closed:hover {
+  background-color: black;
+}
