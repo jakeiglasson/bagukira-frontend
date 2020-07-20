@@ -11,6 +11,7 @@ import NewProject from "./components/NewProject";
 import NavBar from "./components/shared/NavBar";
 import SideBar from "./components/shared/SideBar";
 import BugList from "./components/BugList";
+import EditBug from "./components/EditBug";
 import NewBug from "./components/NewBug";
 import AddUser from "./components/AddUser";
 import EditProject from "./components/EditProject";
@@ -51,9 +52,13 @@ class App extends Component {
         <Route path="/projects/p">
           <div className="content-container">
             <div className="single-project-grid-container">
-              <Route path="/projects/p/:id/bug-list">
+              <Route exact path="/projects/p/:id/bug-list">
                 <SideBar activeLink="bug-list" />
                 <BugList />
+              </Route>
+              <Route exact path="/projects/p/:id/bug-list/:id">
+                <SideBar activeLink="bug-list" />
+                <EditBug />
               </Route>
               <Route path="/projects/p/:id/new-bug">
                 <SideBar activeLink="new-bug" />
