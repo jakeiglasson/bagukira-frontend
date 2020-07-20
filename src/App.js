@@ -28,16 +28,21 @@ class App extends Component {
   //   this.setState({ history: history.push(props) });
   // };
 
+  bagukiraTitle = () => {
+    return (
+      <div className="text-center display-1 py-3 banner-text">
+        <Link to="/" className="text-link">
+          <FontAwesomeIcon icon={faBug} style={{ color: "orange" }} /> Bagukira{" "}
+          <FontAwesomeIcon icon={faBug} style={{ color: "orange" }} />
+        </Link>
+      </div>
+    );
+  };
+
   render() {
     return (
       <BrowserRouter>
-        <div className="text-center display-1 py-3 banner-text">
-          <Link to="/" className="text-link">
-            <FontAwesomeIcon icon={faBug} style={{ color: "orange" }} />{" "}
-            Bagukira{" "}
-            <FontAwesomeIcon icon={faBug} style={{ color: "orange" }} />
-          </Link>
-        </div>
+        {this.bagukiraTitle()}
         <Route path="/projects" component={NavBar} />
         <Route exact path="/projects" component={Projects} />
         <Route exact path="/" component={Home} />
