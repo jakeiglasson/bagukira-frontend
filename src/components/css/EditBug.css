@@ -5,7 +5,7 @@
   grid-template-columns: 1fr 1fr;
   grid-template-rows: 1fr 1fr;
   gap: 1px 1px;
-  grid-template-areas: "info eb-image" "description-entry description-entry";
+  grid-template-areas: "eb-info eb-image" "eb-description-entry eb-description-entry";
 }
 
 .eb-info {
@@ -14,6 +14,8 @@
 
 .eb-image {
   grid-area: eb-image;
+  justify-self: center;
+  align-self: center;
 }
 
 .eb-description-entry {

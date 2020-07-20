@@ -1,5 +1,7 @@
 import React, { Component } from "react";
-import { Dropdown, Button, ButtonGroup, Table } from "react-bootstrap";
+import { Dropdown, Button, ButtonGroup, Table, Form } from "react-bootstrap";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faBug } from "@fortawesome/free-solid-svg-icons";
 import "./css/BugList.css";
 import "./css/EditBug.css";
 
@@ -54,7 +56,7 @@ class BugList extends Component {
     return (
       <div className="side-content-container p-4">
         <h3>BUG LIST {">"} BUG #1</h3>
-        <div className="p-5">
+        <div className="p-4">
           <h3>SUBJECT TEXT GOES HERE AS BUG TITLE</h3>
           <div className="eb-grid-container">
             <div class="eb-info">
@@ -69,30 +71,38 @@ class BugList extends Component {
                 </thead>
                 <tbody>
                   <tr>
-                    <td>1</td>
-                    <td>Mark</td>
+                    <td>DATE OPENED</td>
+                    <td>1/1/2020</td>
                   </tr>
                   <tr>
-                    <td>1</td>
-                    <td>Mark</td>
+                    <td>DATE CLOSED</td>
+                    <td>-</td>
                   </tr>
                   <tr>
-                    <td>1</td>
-                    <td>Mark</td>
+                    <td>REPORTED BY</td>
+                    <td>JOHN DOE</td>
                   </tr>
                   <tr>
-                    <td>1</td>
-                    <td>Mark</td>
-                  </tr>
-                  <tr>
-                    <td>1</td>
-                    <td>Mark</td>
+                    <td>CLOSED BY</td>
+                    <td>-</td>
                   </tr>
                 </tbody>
               </Table>
             </div>
-            <div class="eb-image"></div>
-            <div class="eb-description-entry"></div>
+            <div class="eb-image display-1">
+              <FontAwesomeIcon icon={faBug} style={{ color: "orange" }} />
+            </div>
+            <div class="eb-description-entry">
+              <Form>
+                <Form.Group controlId="exampleForm.ControlTextarea1">
+                  <Form.Label>BUG DESCRIPTION</Form.Label>
+                  <Form.Control as="textarea" rows="3" />
+                </Form.Group>
+                <Button variant="primary" type="submit">
+                  Submit
+                </Button>
+              </Form>
+            </div>
           </div>
         </div>
       </div>
