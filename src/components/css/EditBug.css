@@ -63,3 +63,23 @@
 .eb-closed:hover {
   background-color: black;
 }
+
+/* POPUP SETTINGS */
+
+.side-content-container {
+  position: relative;
+}
+
+.popup-container {
+  background-color: rgba(0, 0, 0, 0.9);
+  color: white;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+}
+
+.popup-content {
+}
