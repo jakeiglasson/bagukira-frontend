@@ -12,11 +12,13 @@ class NewBug extends Component {
           <Form>
             <Form.Group controlId="exampleForm.ControlTextarea1">
               <Form.Label>REPORTER NAME</Form.Label>
-              <Form.Control as="textarea" rows="3" />
+
+              <Form.Control as="textarea" rows="1" />
             </Form.Group>{" "}
             <Form.Group controlId="exampleForm.ControlTextarea1">
               <Form.Label>BUG SUBJECT</Form.Label>
-              <Form.Control as="textarea" rows="3" />
+              <Form.Control as="textarea" rows="1" />
+
             </Form.Group>
             <Form.Group controlId="exampleForm.ControlTextarea1">
               <Form.Label>BUG DESCRIPTION</Form.Label>
