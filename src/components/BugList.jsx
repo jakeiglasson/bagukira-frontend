@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import { Link } from "react-router-dom";
 import { Table } from "react-bootstrap";
 import "./css/Global.css";
 
@@ -22,7 +23,10 @@ class BugList extends Component {
           <tbody>
             <tr>
               <td>1</td>
-              <td>Sidebar displaying on all pages</td>
+
+              <td>
+                <Link to="./bug-list/1">Sidebar displaying on all pages</Link>
+              </td>
               <td>OPEN</td>
               <td>LOW</td>
               <td>1/1/2020</td>
@@ -32,7 +36,10 @@ class BugList extends Component {
             </tr>
             <tr>
               <td>2</td>
-              <td>Can't login</td>
+              <td>
+                <Link to="./bug-list/1">Can't login</Link>
+              </td>
+
               <td>OPEN</td>
               <td>HIGH</td>
               <td>1/1/2020</td>
