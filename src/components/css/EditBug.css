@@ -3,7 +3,7 @@
 .eb-grid-container {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  grid-template-rows: 1fr 1fr;
+  grid-template-rows: 1fr auto;
   gap: 1px 1px;
   grid-template-areas: "eb-info eb-image" "eb-description-entry eb-description-entry";
 }

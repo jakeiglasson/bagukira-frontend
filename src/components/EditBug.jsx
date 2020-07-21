@@ -126,8 +126,10 @@ class BugList extends Component {
   render() {
     return (
       <div className="side-content-container p-4">
-        <h3>BUG LIST {">"} BUG #1</h3>
-        <div className="p-4">
+        <div className="">
+          <h6>
+            <Link to="../bug-list">BUG LIST</Link> {">"} BUG #1
+          </h6>
           <h3>SUBJECT TEXT GOES HERE AS BUG TITLE</h3>
           <div className="eb-grid-container">
             <div className="eb-info">
