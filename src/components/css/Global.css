@@ -34,3 +34,11 @@
 .side-content-container {
   width: 100%;
 }
+
+.global-form-container {
+  width: 100%;
+  height: 100%;
+  background-color: #f2f2f2;
+  border: 1px solid black;
+  color: black;
+}
