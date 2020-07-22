@@ -5,10 +5,12 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faBug } from "@fortawesome/free-solid-svg-icons";
 import "./css/BugList.css";
 import "./css/EditBug.css";
+import Axios from "axios";
 
 class BugList extends Component {
   state = {
     renderClosePopup: "",
+    bug: "",
   };
   constructor(props) {
     super(props);
@@ -16,6 +18,27 @@ class BugList extends Component {
     this.state = {
       renderClosePopup: false,
     };
+  }
+
+  componentDidMount() {
+    console.log(this.props.match.params);
+    let { hash, bug_id } = this.props.match.params;
+    let route =
+      this.props.serverRootUrl +
+      "/bugs" +
+      "?projectRefHash=" +
+      hash +
+      "&idInProject=" +
+      bug_id;
+    console.log("editBug Route:", route);
+    Axios.get(route).then((response) => {
+      const data = response.data;
+      this.setState({ bug: data });
+    });
+  }
+
+  componentDidUpdate() {
+    console.log(this.state);
   }
 
   dropDown = () => {
@@ -123,41 +146,45 @@ class BugList extends Component {
     return this.dropDownButton(status, style);
   };
 
-  render() {
-    return (
-      <div className="side-content-container p-4">
-        <div className="">
+  renderBug = () => {
+    let { bug } = this.state;
+
+    if (bug) {
+      bug = bug[0];
+      return (
+        <div>
           <h6>
-            <Link to="../bug-list">BUG LIST</Link> {">"} BUG #1
+            <Link to="../bug-list">BUG LIST</Link> {"> BUG #" + bug.idInProject}
           </h6>
-          <h3>SUBJECT TEXT GOES HERE AS BUG TITLE</h3>
+
+          <h3>{bug.subject}</h3>
           <div className="eb-grid-container">
             <div className="eb-info">
               <Table striped bordered>
                 <thead>
                   <tr>
-                    <th>BUG #1</th>
+                    <th>BUG #{bug.idInProject}</th>
                     <th>
-                      {this.status("CLOSED")} {this.dropDown()}
+                      {this.status(bug.status.toUpperCase())} {this.dropDown()}
                     </th>
                   </tr>
                 </thead>
                 <tbody>
                   <tr>
                     <td>DATE OPENED</td>
-                    <td>1/1/2020</td>
+                    <td>{bug.created_at}</td>
                   </tr>
                   <tr>
                     <td>DATE CLOSED</td>
-                    <td>-</td>
+                    <td>{bug.closed_at}</td>
                   </tr>
                   <tr>
                     <td>REPORTED BY</td>
-                    <td>JOHN DOE</td>
+                    <td>{bug.reported_by}</td>
                   </tr>
                   <tr>
                     <td>CLOSED BY</td>
-                    <td>-</td>
+                    <td>{bug.closed_by}</td>
                   </tr>
                 </tbody>
               </Table>
@@ -178,6 +205,14 @@ class BugList extends Component {
             </div>
           </div>
         </div>
+      );
+    }
+  };
+
+  render() {
+    return (
+      <div className="side-content-container p-4">
+        {this.renderBug()}
         {this.renderClosePopup()}
       </div>
     );

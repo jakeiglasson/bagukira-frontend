@@ -10,8 +10,11 @@ class BugList extends Component {
   };
 
   componentDidMount() {
-    console.log("componentDidMount");
-    axios.get(this.props.serverRootUrl + "/bugs").then((response) => {
+    console.log("componentDidMount", this.props);
+    let { hash } = this.props.match.params;
+    let route = this.props.serverRootUrl + "/bugs?projectRefHash=" + hash;
+
+    axios.get(route).then((response) => {
       const data = response.data;
       this.setState({ bugs: data });
     });
@@ -53,7 +56,7 @@ class BugList extends Component {
             <td>{index + 1}</td>
 
             <td>
-              <Link to={"./bug-list/" + index}>{bug.subject}</Link>
+              <Link to={"./bug-list/" + bug.idInProject}>{bug.subject}</Link>
             </td>
             <td>{bug.status}</td>
             <td>{bug.severity}</td>

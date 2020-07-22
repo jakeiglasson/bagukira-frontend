@@ -62,23 +62,36 @@ class App extends Component {
         <Route path="/projects/p">
           <div className="content-container">
             <div className="single-project-grid-container">
-              <Route exact path="/projects/p/:id/bug-list">
-                <SideBar activeLink="bug-list" />
-                <BugList serverRootUrl={this.serverRootUrl()} />
-              </Route>
-              <Route exact path="/projects/p/:id/bug-list/:id">
-                <SideBar activeLink="bug-list" />
-                <EditBug />
-              </Route>
-              <Route path="/projects/p/:id/new-bug">
+              <Route
+                exact
+                path="/projects/p/:hash/bug-list"
+                render={(props) => (
+                  <>
+                    <SideBar activeLink="bug-list" />
+                    <BugList serverRootUrl={this.serverRootUrl()} {...props} />
+                  </>
+                )}
+              />
+              <Route
+                exact
+                path="/projects/p/:hash/bug-list/:bug_id"
+                render={(props) => (
+                  <>
+                    <SideBar activeLink="bug-list" />
+                    <EditBug serverRootUrl={this.serverRootUrl()} {...props} />
+                  </>
+                )}
+              />
+
+              <Route path="/projects/p/:hash/new-bug">
                 <SideBar activeLink="new-bug" />
                 <NewBug />
               </Route>
-              <Route path="/projects/p/:id/add-user">
+              <Route path="/projects/p/:hash/add-user">
                 <SideBar activeLink="add-user" />
                 <AddUser />
               </Route>
-              <Route path="/projects/p/:id/edit-project">
+              <Route path="/projects/p/:hash/edit-project">
                 <SideBar activeLink="edit-project" />
                 <EditProject />
               </Route>
