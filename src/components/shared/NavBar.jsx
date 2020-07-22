@@ -17,9 +17,11 @@ class NavBar extends Component {
             </Button>
           </Route>
 
-          <Button variant="outline-warning" className="mx-2">
-            SIGN OUT
-          </Button>
+          <Link to="/">
+            <Button variant="outline-warning" className="mx-2">
+              SIGN OUT
+            </Button>
+          </Link>
         </Form>
       </Navbar>
     );
