@@ -23,6 +23,10 @@ class App extends Component {
     sideBarActiveLink: "",
   };
 
+  rootUrl() {
+    return "http://localhost:4000";
+  }
+
   // handleHistory = (props) => {
   //   let { history } = this.state;
   //   this.setState({ history: history.push(props) });
@@ -44,7 +48,11 @@ class App extends Component {
       <BrowserRouter>
         {this.bagukiraTitle()}
         <Route path="/projects" component={NavBar} />
-        <Route exact path="/projects" component={Projects} />
+        <Route
+          exact
+          path="/projects"
+          render={(props) => <Projects {...props} url={this.rootUrl()} />}
+        />
         <Route exact path="/" component={Home} />
         <Route exact path="/login" component={Login} />
         <Route exact path="/signup" component={Signup} />
