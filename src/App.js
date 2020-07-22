@@ -51,7 +51,7 @@ class App extends Component {
         <Route
           exact
           path="/projects"
-          render={(props) => <Projects {...props} url={this.rootUrl()} />}
+          render={(props) => <Projects {...props} rootUrl={this.rootUrl()} />}
         />
         <Route exact path="/" component={Home} />
         <Route exact path="/login" component={Login} />
