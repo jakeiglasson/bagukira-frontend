@@ -5,9 +5,29 @@ import "./css/Global.css";
 import "./css/Projects.css";
 
 class Projects extends Component {
+  componentDidMount() {
+    console.log("componentDidMount");
+  }
+
   randomColor = () => {
     console.log(Math.floor(Math.random() * 16777215).toString(16));
     return Math.floor(Math.random() * 16777215).toString(16);
+  };
+
+  getProjects = () => {};
+
+  existingProject = () => {
+    return (
+      <Button
+        href="/projects/p/1/bug-list"
+        className="projects-item-container"
+        variant="warning"
+        size="lg"
+        block
+      >
+        <div className="projects-item">EXISTING PROJECT</div>
+      </Button>
+    );
   };
 
   render() {
@@ -24,15 +44,7 @@ class Projects extends Component {
           >
             <div className="projects-item">NEW PROJECT</div>
           </Button>
-          <Button
-            href="/projects/p/1/bug-list"
-            className="projects-item-container"
-            variant="warning"
-            size="lg"
-            block
-          >
-            <div className="projects-item">EXISTING PROJECT</div>
-          </Button>
+          {this.existingProject()}
         </div>
       </>
       // // Old layout code, used as reference material
