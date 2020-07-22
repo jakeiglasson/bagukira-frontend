@@ -23,7 +23,7 @@ class App extends Component {
     sideBarActiveLink: "",
   };
 
-  rootUrl() {
+  serverRootUrl() {
     return "http://localhost:4000";
   }
 
@@ -51,7 +51,9 @@ class App extends Component {
         <Route
           exact
           path="/projects"
-          render={(props) => <Projects {...props} rootUrl={this.rootUrl()} />}
+          render={(props) => (
+            <Projects {...props} serverRootUrl={this.serverRootUrl()} />
+          )}
         />
         <Route exact path="/" component={Home} />
         <Route exact path="/login" component={Login} />
@@ -62,7 +64,7 @@ class App extends Component {
             <div className="single-project-grid-container">
               <Route exact path="/projects/p/:id/bug-list">
                 <SideBar activeLink="bug-list" />
-                <BugList />
+                <BugList serverRootUrl={this.serverRootUrl()} />
               </Route>
               <Route exact path="/projects/p/:id/bug-list/:id">
                 <SideBar activeLink="bug-list" />

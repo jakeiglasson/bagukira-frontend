@@ -10,7 +10,15 @@ class BugList extends Component {
   };
 
   componentDidMount() {
-    axios.get();
+    console.log("componentDidMount");
+    axios.get(this.props.serverRootUrl + "/bugs").then((response) => {
+      const data = response.data;
+      this.setState({ bugs: data });
+    });
+  }
+
+  componentDidUpdate() {
+    console.log(this.state.bugs);
   }
 
   tableHead = () => {
@@ -31,37 +39,64 @@ class BugList extends Component {
   };
 
   tableBody = () => {
-    return (
-      <tbody>
-        <tr>
-          <td>1</td>
-
-          <td>
-            <Link to="./bug-list/1">Sidebar displaying on all pages</Link>
-          </td>
-          <td>OPEN</td>
-          <td>LOW</td>
-          <td>1/1/2020</td>
-          <td>-</td>
-          <td>JAKE GLASSON</td>
-          <td>-</td>
-        </tr>
-        <tr>
-          <td>2</td>
-          <td>
-            <Link to="./bug-list/1">Can't login</Link>
-          </td>
-
-          <td>OPEN</td>
-          <td>HIGH</td>
-          <td>1/1/2020</td>
-          <td>-</td>
-          <td>JOSHUA GILMORE</td>
-          <td>-</td>
-        </tr>
-      </tbody>
-    );
+    return <tbody>{this.generateBugList()}</tbody>;
   };
+
+  generateBugList = () => {
+    let { bugs } = this.state;
+    let collection;
+
+    if (bugs) {
+      collection = bugs.map((bug, index) => {
+        return (
+          <tr>
+            <td>{index + 1}</td>
+
+            <td>
+              <Link to={"./bug-list/" + index}>{bug.subject}</Link>
+            </td>
+            <td>{bug.status}</td>
+            <td>{bug.severity}</td>
+            <td>{bug.created_at}</td>
+            <td>{bug.closed_at}</td>
+            <td>{bug.reported_by}</td>
+            <td>{bug.closed_by}</td>
+          </tr>
+        );
+      });
+    }
+
+    return <>{collection}</>;
+  };
+
+  // generateBugList = () => {
+  //   let { bugs } = this.state;
+  //   console.log("bug array:", bugs);
+  //   let collection;
+
+  //   if (bugs) {
+  //     bugs.map((bug, index) => {
+  //       return (
+  // <tr>
+  //   <td>{index}</td>
+
+  //   <td>
+  //     <Link to={"./bug-list/" + index}>
+  //       Sidebar displaying on all pages
+  //     </Link>
+  //   </td>
+  //   <td>OPEN</td>
+  //   <td>LOW</td>
+  //   <td>1/1/2020</td>
+  //   <td>-</td>
+  //   <td>JAKE GLASSON</td>
+  //   <td>-</td>
+  // </tr>
+  //       );
+  //     });
+  //   }
+  // };
+
   render() {
     return (
       <div className="side-content-container p-4">

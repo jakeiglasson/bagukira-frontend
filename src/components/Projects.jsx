@@ -9,9 +9,9 @@ class Projects extends Component {
   state = {
     projects: [],
   };
-  componentDidMount(props) {
+  componentDidMount() {
     console.log("componentDidMount");
-    axios.get(this.props.rootUrl + "/projects").then((response) => {
+    axios.get(this.props.serverRootUrl + "/projects").then((response) => {
       const data = response.data;
       this.setState({ projects: data });
     });
