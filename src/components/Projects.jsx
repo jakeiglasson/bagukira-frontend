@@ -11,8 +11,7 @@ class Projects extends Component {
   };
   componentDidMount() {
     console.log("componentDidMount");
-    const url = "http://localhost:4000/projects";
-    axios.get(url).then((response) => {
+    axios.get(this.props.serverRootUrl + "/projects").then((response) => {
       const data = response.data;
       this.setState({ projects: data });
     });
@@ -51,7 +50,7 @@ class Projects extends Component {
         return (
           <Button
             key={index}
-            href="/projects/p/1/bug-list"
+            href={"/projects/p/" + project.hashId + "/bug-list"}
             className="projects-item-container"
             variant="warning"
             size="lg"
