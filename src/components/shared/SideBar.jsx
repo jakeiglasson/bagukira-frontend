@@ -51,13 +51,15 @@ class SideBar extends Component {
       <div className="side-bar-container">
         <Nav defaultActiveKey="/home" className="flex-column sidebar">
           <h3>Project Name</h3>
-          {this.renderLink("bug-list", "BUG LIST")}
 
-          {this.renderLink("new-bug", "NEW BUG")}
+          {this.renderLink("bugs", "BUG LIST")}
 
-          {this.renderLink("add-user", "ADD USER")}
+          {this.renderLink("bugs/new", "NEW BUG")}
 
-          {this.renderLink("edit-project", "EDIT PROJECT")}
+          {this.renderLink("user/add", "ADD USER")}
+
+          {this.renderLink("edit", "EDIT PROJECT")}
+
         </Nav>
       </div>
     );

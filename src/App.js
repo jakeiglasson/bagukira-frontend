@@ -25,11 +25,32 @@ class App extends Component {
 
   components = {
     // key name: component, route, acceptable queries
-    BugList: [BugList, "bug-list", ""],
-    NewBug: [NewBug, "new-bug", ""],
-    EditBug: [EditBug, "bug-list", "/:bug_id"],
-    AddUser: [AddUser, "add-user", ""],
-    EditProject: [EditProject, "edit-project", ""],
+    BugList: {
+      component: BugList,
+      route: "bugs",
+      accepted_queries: "",
+    },
+    NewBug: {
+      component: NewBug,
+      route: "bugs/new",
+      accepted_queries: "",
+    },
+    EditBug: {
+      component: EditBug,
+      route: "bugs/b",
+      accepted_queries: "/:bug_id",
+    },
+    AddUser: {
+      component: AddUser,
+      route: "user/add",
+      accepted_queries: "",
+    },
+    EditProject: {
+      component: EditProject,
+      route: "edit",
+      accepted_queries: "",
+    },
+
   };
 
   serverRootUrl() {
@@ -67,13 +88,14 @@ class App extends Component {
 
   constructComponent = (componentName) => {
     let route = "/projects/p/:hash/";
-    let endPoint = this.components[componentName][1];
-    let queries = this.components[componentName][2];
+
+    let endPoint = this.components[componentName].route;
+    let queries = this.components[componentName].accepted_queries;
 
     let path = route + endPoint + queries;
     let activeLink = endPoint;
 
-    const Component = this.components[componentName][0];
+    const Component = this.components[componentName].component;
 
     return this.packageComponentInRoute(path, activeLink, Component);
   };

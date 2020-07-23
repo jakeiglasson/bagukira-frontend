@@ -50,7 +50,7 @@ class Projects extends Component {
         return (
           <Button
             key={index}
-            href={"/projects/p/" + project.hashId + "/bug-list"}
+            href={"/projects/p/" + project.hashId + "/bugs"}
             className="projects-item-container"
             variant="warning"
             size="lg"
