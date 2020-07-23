@@ -50,6 +50,7 @@ class App extends Component {
       route: "edit",
       accepted_queries: "",
     },
+
   };
 
   serverRootUrl() {
@@ -87,6 +88,7 @@ class App extends Component {
 
   constructComponent = (componentName) => {
     let route = "/projects/p/:hash/";
+
     let endPoint = this.components[componentName].route;
     let queries = this.components[componentName].accepted_queries;
 
