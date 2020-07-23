@@ -115,6 +115,10 @@ class App extends Component {
     );
   };
 
+  setActiveLink = (text) => {
+    this.setState({ activeLink: text });
+  };
+
   render() {
     return (
       <BrowserRouter>
@@ -128,9 +132,10 @@ class App extends Component {
             <div className="content-container">
               <div className="single-project-grid-container">
                 <SideBar
-                  activeLink="{activeLink}"
+                  // activeLink="{activeLink}"
                   serverRootUrl={this.serverRootUrl()}
                   className="spgc-side-nav"
+                  setActiveLink={this.setActiveLink.bind(this)}
                   {...props}
                 />
                 {this.constructComponent("BugList")}

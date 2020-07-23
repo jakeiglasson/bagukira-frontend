@@ -12,7 +12,6 @@ class SideBar extends Component {
     // console.log("|-> props:", this.props);
     this.state = {
       root: "",
-      projectName: "",
     };
     // console.log("|-> state:", this.state);
   }
@@ -40,25 +39,17 @@ class SideBar extends Component {
     });
   };
 
-  checkLinkIsActive = (route) => {
-    if (route == this.props.activeLink) {
-      return "selected";
-    }
-  };
-
   renderLink = (endPoint, linkName) => {
     let { root } = this.state;
     return (
-      <Link to={root + endPoint}>
-        <div className={this.checkLinkIsActive(endPoint) + " sideBarLink"}>
-          {linkName}
-        </div>
-      </Link>
+      <NavLink exact to={root + endPoint} activeClassName="selected">
+        <div className={"sideBarLink"}>{linkName}</div>
+      </NavLink>
     );
   };
 
   render() {
-    // console.log("SideBar > render");
+    console.log("SideBar > render");
     // console.log("|-> state:", this.state);
     let { projectName } = this.state;
 

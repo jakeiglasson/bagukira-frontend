@@ -43,6 +43,7 @@
   /* text-decoration: none; */
 }
 
-.selected {
-  background-color: brown;
+.selected,
+.selected .sideBarLink:hover {
+  background-color: brown !important;
 }
