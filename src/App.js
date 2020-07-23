@@ -43,11 +43,9 @@ class App extends Component {
     );
   };
 
-  render() {
+  exactPathRoutes = () => {
     return (
-      <BrowserRouter>
-        {this.bagukiraTitle()}
-        <Route path="/projects" component={NavBar} />
+      <>
         <Route
           exact
           path="/projects"
@@ -59,42 +57,86 @@ class App extends Component {
         <Route exact path="/login" component={Login} />
         <Route exact path="/signup" component={Signup} />
         <Route exact path="/projects/new" component={NewProject} />
+      </>
+    );
+  };
+
+  bugListRoute = () => {
+    return (
+      <Route
+        exact
+        path="/projects/p/:hash/bug-list"
+        render={(props) => (
+          <>
+            <SideBar activeLink="bug-list" />
+            <BugList serverRootUrl={this.serverRootUrl()} {...props} />
+          </>
+        )}
+      />
+    );
+  };
+
+  bugEditRoute = () => {
+    return (
+      <Route
+        exact
+        path="/projects/p/:hash/bug-list/:bug_id"
+        render={(props) => (
+          <>
+            <SideBar activeLink="bug-list" />
+            <EditBug serverRootUrl={this.serverRootUrl()} {...props} />
+          </>
+        )}
+      />
+    );
+  };
+
+  newBugRoute = () => {
+    return (
+      <Route path="/projects/p/:hash/new-bug">
+        <SideBar activeLink="new-bug" />
+        <NewBug />
+      </Route>
+    );
+  };
+
+  addUserRoute = () => {
+    return (
+      <Route path="/projects/p/:hash/add-user">
+        <SideBar activeLink="add-user" />
+        <AddUser />
+      </Route>
+    );
+  };
+
+  editProjectRoute = () => {
+    return (
+      <Route path="/projects/p/:hash/edit-project">
+        <SideBar activeLink="edit-project" />
+        <EditProject />
+      </Route>
+    );
+  };
+
+  render() {
+    return (
+      <BrowserRouter>
+        {this.bagukiraTitle()}
+        <Route path="/projects" component={NavBar} />
+        {this.exactPathRoutes()}
+
         <Route path="/projects/p">
           <div className="content-container">
             <div className="single-project-grid-container">
-              <Route
-                exact
-                path="/projects/p/:hash/bug-list"
-                render={(props) => (
-                  <>
-                    <SideBar activeLink="bug-list" />
-                    <BugList serverRootUrl={this.serverRootUrl()} {...props} />
-                  </>
-                )}
-              />
-              <Route
-                exact
-                path="/projects/p/:hash/bug-list/:bug_id"
-                render={(props) => (
-                  <>
-                    <SideBar activeLink="bug-list" />
-                    <EditBug serverRootUrl={this.serverRootUrl()} {...props} />
-                  </>
-                )}
-              />
+              {this.bugListRoute()}
 
-              <Route path="/projects/p/:hash/new-bug">
-                <SideBar activeLink="new-bug" />
-                <NewBug />
-              </Route>
-              <Route path="/projects/p/:hash/add-user">
-                <SideBar activeLink="add-user" />
-                <AddUser />
-              </Route>
-              <Route path="/projects/p/:hash/edit-project">
-                <SideBar activeLink="edit-project" />
-                <EditProject />
-              </Route>
+              {this.bugEditRoute()}
+
+              {this.newBugRoute()}
+
+              {this.addUserRoute()}
+
+              {this.editProjectRoute()}
             </div>
           </div>
         </Route>
