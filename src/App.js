@@ -23,14 +23,18 @@ class App extends Component {
     sideBarActiveLink: "",
   };
 
+  components = {
+    // key name: component, route, acceptable queries
+    BugList: [BugList, "bug-list", ""],
+    NewBug: [NewBug, "new-bug", ""],
+    EditBug: [EditBug, "bug-list", "/:bug_id"],
+    AddUser: [AddUser, "add-user", ""],
+    EditProject: [EditProject, "edit-project", ""],
+  };
+
   serverRootUrl() {
     return "http://localhost:4000";
   }
-
-  // handleHistory = (props) => {
-  //   let { history } = this.state;
-  //   this.setState({ history: history.push(props) });
-  // };
 
   bagukiraTitle = () => {
     return (
@@ -61,21 +65,6 @@ class App extends Component {
     );
   };
 
-  bugListRoute = () => {
-    return (
-      <Route
-        exact
-        path="/projects/p/:hash/bug-list"
-        render={(props) => (
-          <>
-            <SideBar activeLink="bug-list" />
-            <BugList serverRootUrl={this.serverRootUrl()} {...props} />
-          </>
-        )}
-      />
-    );
-  };
-
   bugEditRoute = () => {
     return (
       <Route
@@ -91,52 +80,20 @@ class App extends Component {
     );
   };
 
-  newBugRoute = () => {
-    return (
-      <Route path="/projects/p/:hash/new-bug">
-        <SideBar activeLink="new-bug" />
-        <NewBug />
-      </Route>
-    );
+  constructComponent = (componentName) => {
+    let route = "/projects/p/:hash/";
+    let endPoint = this.components[componentName][1];
+    let queries = this.components[componentName][2];
+
+    let path = route + endPoint + queries;
+    let activeLink = endPoint;
+
+    const Component = this.components[componentName][0];
+
+    return this.packageComponentInRoute(path, activeLink, Component);
   };
 
-  // addUserRoute = () => {
-  //   return (
-  //     <Route path="/projects/p/:hash/add-user">
-  //       <SideBar activeLink="add-user" />
-  //       <AddUser />
-  //     </Route>
-  //   );
-  // };
-
-  addUserRoute = () => {
-    const path = "/projects/p/:hash/add-user";
-    const activeLink = "add-user";
-    const Component = () => {
-      return <AddUser />;
-    };
-    return this.packageRoute(path, activeLink, Component);
-  };
-
-  // editProjectRoute = () => {
-  //   return (
-  //     <Route path="/projects/p/:hash/edit-project">
-  //       {this.sideBar("edit-project")}
-  //       <EditProject />
-  //     </Route>
-  //   );
-  // };
-
-  editProjectRoute = () => {
-    const path = "/projects/p/:hash/edit-project";
-    const activeLink = "edit-project";
-    const Component = () => {
-      return <EditProject />;
-    };
-    return this.packageRoute(path, activeLink, Component);
-  };
-
-  packageRoute = (path, activeLink, Component) => {
+  packageComponentInRoute = (path, activeLink, Component) => {
     return (
       <Route
         exact
@@ -165,15 +122,17 @@ class App extends Component {
         <Route path="/projects/p">
           <div className="content-container">
             <div className="single-project-grid-container">
-              {this.bugListRoute()}
+              {/* {this.constructComponent("BugList")} */}
 
-              {this.bugEditRoute()}
+              {this.constructComponent("BugList")}
 
-              {this.newBugRoute()}
+              {this.constructComponent("NewBug")}
 
-              {this.addUserRoute()}
+              {this.constructComponent("EditBug")}
 
-              {this.editProjectRoute()}
+              {this.constructComponent("AddUser")}
+
+              {this.constructComponent("EditProject")}
             </div>
           </div>
         </Route>
