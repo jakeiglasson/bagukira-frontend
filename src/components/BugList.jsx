@@ -102,7 +102,7 @@ class BugList extends Component {
 
   render() {
     return (
-      <div className="side-content-container p-4">
+      <div className={"side-content-container p-4 " + this.props.className}>
         <Table striped bordered hover>
           {this.tableHead()}
           {this.tableBody()}

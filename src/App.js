@@ -50,7 +50,6 @@ class App extends Component {
       route: "edit",
       accepted_queries: "",
     },
-
   };
 
   serverRootUrl() {
@@ -110,9 +109,14 @@ class App extends Component {
             <SideBar
               activeLink={activeLink}
               serverRootUrl={this.serverRootUrl()}
+              className="spgc-side-nav"
               {...props}
             />
-            <Component serverRootUrl={this.serverRootUrl()} {...props} />
+            <Component
+              serverRootUrl={this.serverRootUrl()}
+              className="spgc-main-content"
+              {...props}
+            />
           </>
         )}
       />

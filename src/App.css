@@ -3,4 +3,13 @@
   grid-template-columns: auto 1fr;
   height: 100%;
   width: 100%;
+  grid-template-areas: "side-nav main-content";
+}
+
+.spgc-side-nav {
+  grid-area: side-nav;
+}
+
+.spgc-main-content {
+  grid-area: main-content;
 }

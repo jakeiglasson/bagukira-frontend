@@ -16,16 +16,18 @@ class SideBar extends Component {
     let { hash } = this.props.match.params;
     let endPoint = "/projects";
     let queries = "?hashId=" + hash;
+    let root = "/projects/p/" + hash + "/";
 
-    this.setState({
-      root: "/projects/p/" + hash + "/",
-    });
+    // check to see if root has changed, if so get new data
+    if (this.state.root != root) {
+      this.setState({
+        root: "/projects/p/" + hash + "/",
+      });
 
-    axios.get(serverRootUrl + endPoint + queries).then((response) => {
-      this.setState({ projectName: response.data[0].name });
-      // console.log(response);
-      // console.log(response.data[0].name);
-    });
+      axios.get(serverRootUrl + endPoint + queries).then((response) => {
+        this.setState({ projectName: response.data[0].name });
+      });
+    }
   };
 
   checkLinkIsActive = (route) => {
@@ -47,14 +49,13 @@ class SideBar extends Component {
     }
   };
 
-
   // projectName = this.state.projectName;
 
   render() {
     let { projectName } = this.state;
     if (projectName) {
       return (
-        <div className="side-bar-container">
+        <div className={"side-bar-container " + this.props.className}>
           <Nav defaultActiveKey="/home" className="flex-column sidebar">
             <h3>{projectName}</h3>
             {this.renderLink("bugs", "BUG LIST")}
@@ -68,9 +69,13 @@ class SideBar extends Component {
         </div>
       );
     } else {
-      return null;
+      // return null;
+      return (
+        <div className={"side-bar-container " + this.props.className}>
+          <h1>LOADING</h1>
+        </div>
+      );
     }
-
   }
 }
 
