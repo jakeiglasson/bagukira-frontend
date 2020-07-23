@@ -1,3 +1,5 @@
+/* KEEP BELOW COMMENTED OUT SETTINGS UNTIL APP IS CONSIDERED FULLY TESTED, UNKNOWN STYLING ISSUES MAY POP UP, ONE OF THESE COMMENTED OUT SETTINGS SHOULD FIX ANY ISSUES THAT POP UP */
+
 .side-bar-container {
   width: 300px;
   height: 100%;
@@ -18,8 +20,27 @@
   text-decoration: none;
 }
 
-.sidebar a:hover {
+/* .sidebar a:hover {
   background-color: darkslategrey;
+} */
+
+.sideBarLink:hover {
+  background-color: darkslategrey;
+}
+
+.sideBarLink {
+  /* font-size: 1rem;
+  font-weight: 400;
+  line-height: 1.5;
+  text-align: left;
+  list-style: none; */
+  /* box-sizing: border-box; */
+  /* cursor: pointer; */
+  display: block;
+  padding: 0.5rem 1rem;
+  /* background-color: brown; */
+  /* color: white; */
+  /* text-decoration: none; */
 }
 
 .selected {

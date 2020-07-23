@@ -100,21 +100,58 @@ class App extends Component {
     );
   };
 
+  // addUserRoute = () => {
+  //   return (
+  //     <Route path="/projects/p/:hash/add-user">
+  //       <SideBar activeLink="add-user" />
+  //       <AddUser />
+  //     </Route>
+  //   );
+  // };
+
   addUserRoute = () => {
-    return (
-      <Route path="/projects/p/:hash/add-user">
-        <SideBar activeLink="add-user" />
-        <AddUser />
-      </Route>
-    );
+    const path = "/projects/p/:hash/add-user";
+    const activeLink = "add-user";
+    const Component = () => {
+      return <AddUser />;
+    };
+    return this.packageRoute(path, activeLink, Component);
   };
 
+  // editProjectRoute = () => {
+  //   return (
+  //     <Route path="/projects/p/:hash/edit-project">
+  //       {this.sideBar("edit-project")}
+  //       <EditProject />
+  //     </Route>
+  //   );
+  // };
+
   editProjectRoute = () => {
+    const path = "/projects/p/:hash/edit-project";
+    const activeLink = "edit-project";
+    const Component = () => {
+      return <EditProject />;
+    };
+    return this.packageRoute(path, activeLink, Component);
+  };
+
+  packageRoute = (path, activeLink, Component) => {
     return (
-      <Route path="/projects/p/:hash/edit-project">
-        <SideBar activeLink="edit-project" />
-        <EditProject />
-      </Route>
+      <Route
+        exact
+        path={path}
+        render={(props) => (
+          <>
+            <SideBar
+              activeLink={activeLink}
+              serverRootUrl={this.serverRootUrl()}
+              {...props}
+            />
+            <Component serverRootUrl={this.serverRootUrl()} {...props} />
+          </>
+        )}
+      />
     );
   };
 
