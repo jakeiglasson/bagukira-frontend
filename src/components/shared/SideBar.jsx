@@ -6,28 +6,46 @@ import "../css/SideBar.css";
 import { Button, Nav } from "react-bootstrap";
 
 class SideBar extends Component {
-  state = {
-    root: null,
-  };
-  componentDidMount = () => {
-    console.log(this.props);
-
-    let { serverRootUrl } = this.props;
+  constructor(props) {
+    super(props);
+    // console.log("SideBar > constructor");
+    // console.log("|-> props:", this.props);
+    this.state = {
+      root: "",
+      projectName: "",
+    };
+    // console.log("|-> state:", this.state);
+  }
+  componentWillMount = () => {
+    // console.log("SideBar > componentWillMount");
     let { hash } = this.props.match.params;
+    this.setState({ root: "/projects/p/" + hash + "/" });
+    // let root = "/projects/p/" + hash + "/";
+    this.getProjectName(hash);
+  };
+
+  // shouldComponentUpdate = (nextProps, nextState) => {
+  //   console.log("SideBar > shouldComponentUpdate");
+  //   console.log("|-> props:", this.props);
+  //   console.log("|-> state:", this.state);
+  // };
+
+  getProjectName = (hash) => {
+    // console.log("SideBar > getProjectName");
+    let { serverRootUrl } = this.props;
     let endPoint = "/projects";
     let queries = "?hashId=" + hash;
-    let root = "/projects/p/" + hash + "/";
 
-    // check to see if root has changed, if so get new data
-    if (this.state.root != root) {
-      this.setState({
-        root: "/projects/p/" + hash + "/",
-      });
+    // check to see if root has changed, if so get new data. Probably redundant, needs to be tested for removal.
+    // if (this.state.root != root) {
+    //   this.setState({
+    //     root: "/projects/p/" + hash + "/",
+    //   });
 
-      axios.get(serverRootUrl + endPoint + queries).then((response) => {
-        this.setState({ projectName: response.data[0].name });
-      });
-    }
+    axios.get(serverRootUrl + endPoint + queries).then((response) => {
+      this.setState({ projectName: response.data[0].name });
+    });
+    // }
   };
 
   checkLinkIsActive = (route) => {
@@ -38,21 +56,37 @@ class SideBar extends Component {
 
   renderLink = (endPoint, linkName) => {
     let { root } = this.state;
-    if (root) {
-      return (
-        <Link to={root + endPoint}>
-          <div className={this.checkLinkIsActive(endPoint) + " sideBarLink"}>
-            {linkName}
-          </div>
-        </Link>
-      );
-    }
+    return (
+      <Link to={root + endPoint}>
+        <div className={this.checkLinkIsActive(endPoint) + " sideBarLink"}>
+          {linkName}
+        </div>
+      </Link>
+    );
   };
 
   // projectName = this.state.projectName;
 
   render() {
+    // console.log("SideBar > render");
+    // console.log("|-> state:", this.state);
     let { projectName } = this.state;
+
+    // return (
+    //   <div className={"side-bar-container " + this.props.className}>
+    //     <Nav defaultActiveKey="/home" className="flex-column sidebar">
+    //       <h3>projectName</h3>
+    //       {this.renderLink("bugs", "BUG LIST")}
+
+    //       {this.renderLink("bugs/new", "NEW BUG")}
+
+    //       {this.renderLink("user/add", "ADD USER")}
+
+    //       {this.renderLink("edit", "EDIT PROJECT")}
+    //     </Nav>
+    //   </div>
+    // );
+
     if (projectName) {
       return (
         <div className={"side-bar-container " + this.props.className}>
@@ -71,9 +105,7 @@ class SideBar extends Component {
     } else {
       // return null;
       return (
-        <div className={"side-bar-container " + this.props.className}>
-          <h1>LOADING</h1>
-        </div>
+        <div className={"side-bar-container " + this.props.className}></div>
       );
     }
   }

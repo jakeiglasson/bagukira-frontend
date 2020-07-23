@@ -10,7 +10,7 @@ class BugList extends Component {
   };
 
   componentDidMount() {
-    console.log("componentDidMount", this.props);
+    // console.log("componentDidMount", this.props);
     let { hash } = this.props.match.params;
     let route = this.props.serverRootUrl + "/bugs?projectRefHash=" + hash;
 
@@ -21,7 +21,7 @@ class BugList extends Component {
   }
 
   componentDidUpdate() {
-    console.log(this.state.bugs);
+    // console.log(this.state.bugs);
   }
 
   tableHead = () => {
