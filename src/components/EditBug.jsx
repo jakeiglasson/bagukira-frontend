@@ -11,6 +11,7 @@ class BugList extends Component {
   state = {
     renderClosePopup: "",
     bug: "",
+    root: "null",
   };
   constructor(props) {
     super(props);
@@ -34,6 +35,10 @@ class BugList extends Component {
     Axios.get(route).then((response) => {
       const data = response.data;
       this.setState({ bug: data });
+    });
+
+    this.setState({
+      root: "/projects/p/" + hash + "/bugs",
     });
   }
 
@@ -108,7 +113,7 @@ class BugList extends Component {
                 <Form.Label>PLEASE ENTER YOUR NAME</Form.Label>
                 <Form.Control as="textarea" rows="3" />
               </Form.Group>
-              <Link to="../bug-list">
+              <Link to={this.state.root}>
                 <Button variant="primary" type="submit">
                   CLOSE BUG
                 </Button>{" "}
@@ -151,10 +156,12 @@ class BugList extends Component {
 
     if (bug) {
       bug = bug[0];
+      console.log(bug);
       return (
         <div>
           <h6>
-            <Link to="../bug-list">BUG LIST</Link> {"> BUG #" + bug.idInProject}
+            <Link to={this.state.root}>BUG LIST</Link>{" "}
+            {"> BUG #" + bug.idInProject}
           </h6>
 
           <h3>{bug.subject}</h3>
