@@ -6,55 +6,56 @@ import "../css/SideBar.css";
 import { Button, Nav } from "react-bootstrap";
 
 class SideBar extends Component {
-  state = {
-    root: null,
-  };
-  componentDidMount = () => {
-    console.log(this.props);
-
-    let { serverRootUrl } = this.props;
+  constructor(props) {
+    super(props);
+    // console.log("SideBar > constructor");
+    // console.log("|-> props:", this.props);
+    this.state = {
+      root: "",
+    };
+    // console.log("|-> state:", this.state);
+  }
+  componentWillMount = () => {
+    // console.log("SideBar > componentWillMount");
     let { hash } = this.props.match.params;
+    this.setState({ root: "/projects/p/" + hash + "/" });
+    this.getProjectName(hash);
+  };
+
+  // shouldComponentUpdate = (nextProps, nextState) => {
+  //   console.log("SideBar > shouldComponentUpdate");
+  //   console.log("|-> props:", this.props);
+  //   console.log("|-> state:", this.state);
+  // };
+
+  getProjectName = (hash) => {
+    // console.log("SideBar > getProjectName");
+    let { serverRootUrl } = this.props;
     let endPoint = "/projects";
     let queries = "?hashId=" + hash;
 
-    this.setState({
-      root: "/projects/p/" + hash + "/",
-    });
-
     axios.get(serverRootUrl + endPoint + queries).then((response) => {
       this.setState({ projectName: response.data[0].name });
-      // console.log(response);
-      // console.log(response.data[0].name);
     });
-  };
-
-  checkLinkIsActive = (route) => {
-    if (route == this.props.activeLink) {
-      return "selected";
-    }
   };
 
   renderLink = (endPoint, linkName) => {
     let { root } = this.state;
-    if (root) {
-      return (
-        <Link to={root + endPoint}>
-          <div className={this.checkLinkIsActive(endPoint) + " sideBarLink"}>
-            {linkName}
-          </div>
-        </Link>
-      );
-    }
+    return (
+      <NavLink exact to={root + endPoint} activeClassName="selected">
+        <div className={"sideBarLink"}>{linkName}</div>
+      </NavLink>
+    );
   };
 
-
-  // projectName = this.state.projectName;
-
   render() {
+    console.log("SideBar > render");
+    // console.log("|-> state:", this.state);
     let { projectName } = this.state;
+
     if (projectName) {
       return (
-        <div className="side-bar-container">
+        <div className={"side-bar-container " + this.props.className}>
           <Nav defaultActiveKey="/home" className="flex-column sidebar">
             <h3>{projectName}</h3>
             {this.renderLink("bugs", "BUG LIST")}
@@ -68,9 +69,10 @@ class SideBar extends Component {
         </div>
       );
     } else {
-      return null;
+      return (
+        <div className={"side-bar-container " + this.props.className}></div>
+      );
     }
-
   }
 }
 

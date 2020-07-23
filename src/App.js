@@ -50,7 +50,6 @@ class App extends Component {
       route: "edit",
       accepted_queries: "",
     },
-
   };
 
   serverRootUrl() {
@@ -106,17 +105,18 @@ class App extends Component {
         exact
         path={path}
         render={(props) => (
-          <>
-            <SideBar
-              activeLink={activeLink}
-              serverRootUrl={this.serverRootUrl()}
-              {...props}
-            />
-            <Component serverRootUrl={this.serverRootUrl()} {...props} />
-          </>
+          <Component
+            serverRootUrl={this.serverRootUrl()}
+            className="spgc-main-content"
+            {...props}
+          />
         )}
       />
     );
+  };
+
+  setActiveLink = (text) => {
+    this.setState({ activeLink: text });
   };
 
   render() {
@@ -126,21 +126,31 @@ class App extends Component {
         <Route path="/projects" component={NavBar} />
         {this.exactPathRoutes()}
 
-        <Route path="/projects/p">
-          <div className="content-container">
-            <div className="single-project-grid-container">
-              {this.constructComponent("BugList")}
+        <Route
+          path="/projects/p/:hash"
+          render={(props) => (
+            <div className="content-container">
+              <div className="single-project-grid-container">
+                <SideBar
+                  // activeLink="{activeLink}"
+                  serverRootUrl={this.serverRootUrl()}
+                  className="spgc-side-nav"
+                  setActiveLink={this.setActiveLink.bind(this)}
+                  {...props}
+                />
+                {this.constructComponent("BugList")}
 
-              {this.constructComponent("NewBug")}
+                {this.constructComponent("NewBug")}
 
-              {this.constructComponent("EditBug")}
+                {this.constructComponent("EditBug")}
 
-              {this.constructComponent("AddUser")}
+                {this.constructComponent("AddUser")}
 
-              {this.constructComponent("EditProject")}
+                {this.constructComponent("EditProject")}
+              </div>
             </div>
-          </div>
-        </Route>
+          )}
+        />
       </BrowserRouter>
     );
   }
