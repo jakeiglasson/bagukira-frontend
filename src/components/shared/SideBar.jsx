@@ -22,8 +22,9 @@ class SideBar extends Component {
     });
 
     axios.get(serverRootUrl + endPoint + queries).then((response) => {
-      console.log(response);
-      console.log(response.data);
+      this.setState({ projectName: response.data[0].name });
+      // console.log(response);
+      // console.log(response.data[0].name);
     });
   };
 
@@ -46,23 +47,30 @@ class SideBar extends Component {
     }
   };
 
+
+  // projectName = this.state.projectName;
+
   render() {
-    return (
-      <div className="side-bar-container">
-        <Nav defaultActiveKey="/home" className="flex-column sidebar">
-          <h3>Project Name</h3>
+    let { projectName } = this.state;
+    if (projectName) {
+      return (
+        <div className="side-bar-container">
+          <Nav defaultActiveKey="/home" className="flex-column sidebar">
+            <h3>{projectName}</h3>
+            {this.renderLink("bugs", "BUG LIST")}
 
-          {this.renderLink("bugs", "BUG LIST")}
+            {this.renderLink("bugs/new", "NEW BUG")}
 
-          {this.renderLink("bugs/new", "NEW BUG")}
+            {this.renderLink("user/add", "ADD USER")}
 
-          {this.renderLink("user/add", "ADD USER")}
+            {this.renderLink("edit", "EDIT PROJECT")}
+          </Nav>
+        </div>
+      );
+    } else {
+      return null;
+    }
 
-          {this.renderLink("edit", "EDIT PROJECT")}
-
-        </Nav>
-      </div>
-    );
   }
 }
 
