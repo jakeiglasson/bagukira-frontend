@@ -65,21 +65,6 @@ class App extends Component {
     );
   };
 
-  bugEditRoute = () => {
-    return (
-      <Route
-        exact
-        path="/projects/p/:hash/bug-list/:bug_id"
-        render={(props) => (
-          <>
-            <SideBar activeLink="bug-list" />
-            <EditBug serverRootUrl={this.serverRootUrl()} {...props} />
-          </>
-        )}
-      />
-    );
-  };
-
   constructComponent = (componentName) => {
     let route = "/projects/p/:hash/";
     let endPoint = this.components[componentName][1];
@@ -122,8 +107,6 @@ class App extends Component {
         <Route path="/projects/p">
           <div className="content-container">
             <div className="single-project-grid-container">
-              {/* {this.constructComponent("BugList")} */}
-
               {this.constructComponent("BugList")}
 
               {this.constructComponent("NewBug")}

@@ -27,7 +27,7 @@ class SideBar extends Component {
     });
   };
 
-  checkLink = (route) => {
+  checkLinkIsActive = (route) => {
     if (route == this.props.activeLink) {
       return "selected";
     }
@@ -38,7 +38,7 @@ class SideBar extends Component {
     if (root) {
       return (
         <Link to={root + endPoint}>
-          <div className={this.checkLink(endPoint) + " sideBarLink"}>
+          <div className={this.checkLinkIsActive(endPoint) + " sideBarLink"}>
             {linkName}
           </div>
         </Link>
@@ -47,40 +47,16 @@ class SideBar extends Component {
   };
 
   render() {
-    console.log(this.props);
-    let { serverRootUrl } = this.props;
-    let { hash } = this.props.match.params;
     return (
       <div className="side-bar-container">
         <Nav defaultActiveKey="/home" className="flex-column sidebar">
           <h3>Project Name</h3>
           {this.renderLink("bug-list", "BUG LIST")}
-          {/* <Nav.Link
-            href="/projects/p/1/bug-list"
-            className={this.checkLink("bug-list")}
-          >
-            BUG LIST
-          </Nav.Link> */}
+
           {this.renderLink("new-bug", "NEW BUG")}
-          {/* <Nav.Link
-            href="/projects/p/1/new-bug"
-            className={this.checkLink("new-bug")}
-          >
-            NEW BUG
-          </Nav.Link> */}
+
           {this.renderLink("add-user", "ADD USER")}
-          {/* <Nav.Link
-            href="/projects/p/1/add-user"
-            className={this.checkLink("add-user")}
-          >
-            ADD USER
-          </Nav.Link> */}
-          {/* <Link to={serverRootUrl + "/projects/p/" + hash + "/edit-project"}> */}
-          {/* <Link to={"/projects/p/" + hash + "/edit-project"}>
-            <div className={this.checkLink("edit-project") + " sideBarLink"}>
-              EDIT PROJECT
-            </div>
-          </Link> */}
+
           {this.renderLink("edit-project", "EDIT PROJECT")}
         </Nav>
       </div>
