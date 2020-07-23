@@ -47,6 +47,7 @@ class SideBar extends Component {
     }
   };
 
+
   // projectName = this.state.projectName;
 
   render() {
@@ -56,16 +57,20 @@ class SideBar extends Component {
         <div className="side-bar-container">
           <Nav defaultActiveKey="/home" className="flex-column sidebar">
             <h3>{projectName}</h3>
-            {this.renderLink("bug-list", "BUG LIST")}
-            {this.renderLink("new-bug", "NEW BUG")}
-            {this.renderLink("add-user", "ADD USER")}
-            {this.renderLink("edit-project", "EDIT PROJECT")}
+            {this.renderLink("bugs", "BUG LIST")}
+
+            {this.renderLink("bugs/new", "NEW BUG")}
+
+            {this.renderLink("user/add", "ADD USER")}
+
+            {this.renderLink("edit", "EDIT PROJECT")}
           </Nav>
         </div>
       );
     } else {
       return null;
     }
+
   }
 }
 

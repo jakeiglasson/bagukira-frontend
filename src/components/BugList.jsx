@@ -52,11 +52,11 @@ class BugList extends Component {
     if (bugs) {
       collection = bugs.map((bug, index) => {
         return (
-          <tr>
+          <tr key={index}>
             <td>{index + 1}</td>
 
             <td>
-              <Link to={"./bug-list/" + bug.idInProject}>{bug.subject}</Link>
+              <Link to={"bugs/b/" + bug.idInProject}>{bug.subject}</Link>
             </td>
             <td>{bug.status}</td>
             <td>{bug.severity}</td>
