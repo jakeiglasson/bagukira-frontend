@@ -16,6 +16,7 @@ class BugList extends Component {
     this.state = {
       renderClosePopup: false,
       status: "",
+      closed_by: "",
       bug: "",
       root: "null",
       redirect: false,
@@ -55,6 +56,7 @@ class BugList extends Component {
       this.setState({
         bug: data,
         status: data[0].status.toUpperCase(),
+        closed_by: data[0].closed_by,
       });
       console.log("|-> state:", this.state);
     });
@@ -137,10 +139,11 @@ class BugList extends Component {
     axios
       .patch(this.props.serverRootUrl + "/bugs/" + bug_id, {
         status: status,
+        closed_by: "-",
       })
-      .then(function (response) {
+      .then((response) => {
         console.log(response);
-        currentComponent.setState({ status: status });
+        this.setState({ status: status, closed_by: "-" });
       })
       .catch(function (error) {
         console.log(error);
@@ -319,7 +322,7 @@ class BugList extends Component {
                   </tr>
                   <tr>
                     <td>CLOSED BY</td>
-                    <td>{bug.closed_by}</td>
+                    <td>{this.state.closed_by}</td>
                   </tr>
                 </tbody>
               </Table>
