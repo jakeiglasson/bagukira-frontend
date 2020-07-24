@@ -32,7 +32,7 @@ class App extends Component {
     },
     NewBug: {
       component: NewBug,
-      route: "bugs/new",
+      route: "bug/new",
       accepted_queries: "",
     },
     EditBug: {
