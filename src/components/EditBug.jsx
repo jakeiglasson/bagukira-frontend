@@ -1,28 +1,35 @@
 import React, { Component } from "react";
-import { BrowserRouter, Route, Link } from "react-router-dom";
+import { BrowserRouter, Route, Link, Redirect } from "react-router-dom";
 import { Dropdown, Button, ButtonGroup, Table, Form } from "react-bootstrap";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faBug } from "@fortawesome/free-solid-svg-icons";
+
+import { GetTime } from "./shared/Helpers.jsx";
+
 import "./css/BugList.css";
 import "./css/EditBug.css";
-import Axios from "axios";
+
+import axios from "axios";
 
 class BugList extends Component {
-  state = {
-    renderClosePopup: "",
-    bug: "",
-    root: "null",
-  };
   constructor(props) {
     super(props);
     // console.log("constructor");
     this.state = {
       renderClosePopup: false,
+      status: "",
+      description: "",
+      closed_by: "",
+      closed_at: "",
+      bug: "",
+      root: "null",
+      redirect: false,
+      closeNameValue: "",
     };
   }
 
-  componentDidMount() {
-    console.log(this.props.match.params);
+  routeConstructor = () => {
+    console.log("EditBug > routeConstructor");
     let { hash, bug_id } = this.props.match.params;
     let route =
       this.props.serverRootUrl +
@@ -31,30 +38,57 @@ class BugList extends Component {
       hash +
       "&idInProject=" +
       bug_id;
-    console.log("editBug Route:", route);
-    Axios.get(route).then((response) => {
+
+    return { route, hash };
+  };
+
+  componentWillMount() {
+    console.log("BugEdit > componentWillMount");
+    console.log("|-> this.props.match.params:", this.props.match.params);
+    this.getBug();
+  }
+
+  getBug = () => {
+    console.log("EditBug > GetBug");
+    // this.setState({ updateComponent: false });
+
+    let { route, hash } = this.routeConstructor();
+    console.log("|-> route:", route);
+
+    axios.get(route).then((response) => {
       const data = response.data;
-      this.setState({ bug: data });
+      this.setState({
+        bug: data,
+        status: data[0].status.toUpperCase(),
+        closed_by: data[0].closed_by,
+        closed_at: data[0].closed_at,
+        description: data[0].description,
+      });
+      console.log("|-> state:", this.state);
     });
 
     this.setState({
       root: "/projects/p/" + hash + "/bugs",
     });
-  }
-
-  componentDidUpdate() {
-    console.log(this.state);
-  }
+  };
 
   dropDown = () => {
     return (
       <Dropdown as={ButtonGroup}>
         <Dropdown.Toggle id="dropdown-custom-1">SET STATUS</Dropdown.Toggle>
         <Dropdown.Menu className="bg-dark">
-          <Dropdown.Item eventKey="1" className="eb-open">
+          <Dropdown.Item
+            eventKey="3"
+            className="eb-open"
+            onClick={this.handleStatusChange.bind(this, "OPEN")}
+          >
             OPEN
           </Dropdown.Item>
-          <Dropdown.Item eventKey="2" className="eb-in-progress">
+          <Dropdown.Item
+            eventKey="3"
+            className="eb-in-progress"
+            onClick={this.handleStatusChange.bind(this, "IN PROGRESS")}
+          >
             IN PROGRESS
           </Dropdown.Item>
           <Dropdown.Item
@@ -70,33 +104,131 @@ class BugList extends Component {
   };
 
   handleStatusChange = (status) => {
-    // console.log("executing: ", "handleStatusChange", "- status: ", status);
+    console.log("EditBug > handleStatusChange");
+    console.log("|-> currentStatus:", this.state.currentStatus);
+    console.log("|-> received status:", status);
 
-    switch (status) {
-      case "OPEN":
-        break;
+    if (status == this.state.currentStatus) {
+      console.log("theyre the same!");
+    }
 
-      case "IN PROGRESS":
-        break;
+    if (status != this.state.currentStatus) {
+      console.log("|-> STATUS CHANGE DETECTED");
+      switch (status) {
+        case "OPEN":
+          console.log("|-> |-> clicked on open");
+          this.setStatus(status);
+          break;
 
-      case "CLOSED":
-        // console.log("switch case: CLOSED");
-        this.setState({ renderClosePopup: true });
-        break;
+        case "IN PROGRESS":
+          console.log("|-> |-> clicked on in progress");
+          this.setStatus(status);
+          break;
+
+        case "CLOSED":
+          console.log("|-> |-> clicked on closed");
+          this.setState({ renderClosePopup: true });
+          break;
+      }
     }
   };
+
+  setStatus = (status) => {
+    console.log("EditBug > setStatus");
+    console.log("|-> status to set:", status);
+    console.log("|-> state:", this.state);
+
+    let currentComponent = this;
+
+    let bug_id = this.state.bug[0].id;
+
+    axios
+      .patch(this.props.serverRootUrl + "/bugs/" + bug_id, {
+        status: status,
+        closed_by: "-",
+        closed_at: "-",
+      })
+      .then((response) => {
+        console.log(response);
+        this.setState({ status: status, closed_by: "-", closed_at: "-" });
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
+  };
+
+  // closeBug = (closerName) => {
+  //   console.log("EditBug > closeBug");
+  //   console.log("|-> props:", this.props);
+
+  //   let bug_id = this.state.bug[0].id;
+
+  //   axios
+  //     .patch(this.props.serverRootUrl + "/bugs/" + bug_id, {
+  //       status: "CLOSED",
+  //       closed_by: closerName,
+  //     })
+  //     .then(function (response) {
+  //       console.log(response);
+  //     })
+  //     .catch(function (error) {
+  //       console.log(error);
+  //     });
+  // };
 
   handleCancelClose = () => {
     // console.log("executing:", "handleCancelClose");
     this.setState({ renderClosePopup: false });
   };
 
-  dropDownButton = (status, style) => {
+  displayCurrentStatus = (status, style) => {
     return (
       <Button variant={style} disabled>
         {status}
       </Button>
     );
+  };
+
+  handleCloseSubmit = (event) => {
+    // alert("Bug closed by: " + this.state.closeNameValue);
+    console.log("EditBug > handleCloseSubmit");
+    console.log("|-> state:", this.state);
+    event.preventDefault();
+
+    let bug_id = this.state.bug[0].id;
+    let dateTime = GetTime();
+
+    axios
+      .patch(this.props.serverRootUrl + "/bugs/" + bug_id, {
+        status: "CLOSED",
+        closed_by: this.state.closeNameValue,
+        closed_at: dateTime,
+      })
+      .then((response) => {
+        console.log(response);
+        this.setState({ redirect: true });
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
+  };
+
+  executeRedirect = () => {
+    console.log("BugEdit > executeRedirect");
+    console.log("|-> state:", this.state);
+    if (this.state.redirect) {
+      return (
+        <Redirect
+          to={"/projects/p/" + this.props.match.params.hash + "/bugs"}
+        />
+      );
+    }
+  };
+
+  // closeNameValue = () => {};
+
+  handleCloseNameChange = (event) => {
+    this.setState({ closeNameValue: event.target.value });
   };
 
   renderClosePopup = () => {
@@ -108,17 +240,22 @@ class BugList extends Component {
           <div className="popup-content p-4">
             <h1 className="text-center">CLOSING BUG #1</h1>
             <h1 className="text-center">BUG SUBJECT TEXT GOES HERE</h1>
-            <Form>
-              <Form.Group controlId="exampleForm.ControlTextarea1">
+            <Form onSubmit={this.handleCloseSubmit}>
+              <Form.Group controlId="closeBugForm.ControlTextarea1">
                 <Form.Label>PLEASE ENTER YOUR NAME</Form.Label>
-                <Form.Control as="textarea" rows="3" />
+                <Form.Control
+                  type="text"
+                  placeholder="YOUR NAME HERE"
+                  value={this.state.closeNameValue}
+                  onChange={this.handleCloseNameChange}
+                />
               </Form.Group>
-              <Link to={this.state.root}>
-                <Button variant="primary" type="submit">
-                  CLOSE BUG
-                </Button>{" "}
-              </Link>
-
+              <input
+                type="submit"
+                value="CLOSE BUG"
+                className="btn btn-primary"
+              />
+              <> </>
               <Button
                 variant="danger"
                 onClick={this.handleCancelClose.bind(this, "CLOSED")}
@@ -136,27 +273,40 @@ class BugList extends Component {
     let style;
     switch (status) {
       case "OPEN":
-        style = "outline-danger";
+        style = "outline-danger uniform-status";
         break;
 
       case "IN PROGRESS":
-        style = "outline-warning";
+        style = "outline-warning uniform-status";
         break;
 
       case "CLOSED":
-        style = "outline-success";
+        style = "outline-success uniform-status";
         break;
     }
 
-    return this.dropDownButton(status, style);
+    return this.displayCurrentStatus(status, style);
+  };
+
+  renderDescription = () => {
+    return (
+      <div className="eb-description-container display-1 ml-2">
+        <FontAwesomeIcon icon={faBug} className="eb-image" />
+        <div className="eb-description-text p-4 text-justify overflow-auto">
+          {this.state.description}
+        </div>
+      </div>
+    );
   };
 
   renderBug = () => {
+    console.log("EditBug > renderBug");
     let { bug } = this.state;
+    console.log("|-> bug:", bug);
 
     if (bug) {
       bug = bug[0];
-      console.log(bug);
+      console.log("|->", bug);
       return (
         <div>
           <h6>
@@ -164,7 +314,7 @@ class BugList extends Component {
             {"> BUG #" + bug.idInProject}
           </h6>
 
-          <h3>{bug.subject}</h3>
+          <h3>SUBJECT: {bug.subject}</h3>
           <div className="eb-grid-container">
             <div className="eb-info">
               <Table striped bordered>
@@ -172,7 +322,8 @@ class BugList extends Component {
                   <tr>
                     <th>BUG #{bug.idInProject}</th>
                     <th>
-                      {this.status(bug.status.toUpperCase())} {this.dropDown()}
+                      {this.status(this.state.status.toUpperCase())}{" "}
+                      {this.dropDown()}
                     </th>
                   </tr>
                 </thead>
@@ -183,7 +334,7 @@ class BugList extends Component {
                   </tr>
                   <tr>
                     <td>DATE CLOSED</td>
-                    <td>{bug.closed_at}</td>
+                    <td>{this.state.closed_at}</td>
                   </tr>
                   <tr>
                     <td>REPORTED BY</td>
@@ -191,22 +342,21 @@ class BugList extends Component {
                   </tr>
                   <tr>
                     <td>CLOSED BY</td>
-                    <td>{bug.closed_by}</td>
+                    <td>{this.state.closed_by}</td>
                   </tr>
                 </tbody>
               </Table>
             </div>
-            <div className="eb-image display-1">
-              <FontAwesomeIcon icon={faBug} style={{ color: "orange" }} />
-            </div>
-            <div className="eb-description-entry">
+            {this.renderDescription()}
+
+            <div className="eb-note-entry">
               <Form>
                 <Form.Group controlId="exampleForm.ControlTextarea1">
-                  <Form.Label>BUG DESCRIPTION</Form.Label>
+                  <Form.Label>NOTE</Form.Label>
                   <Form.Control as="textarea" rows="3" />
                 </Form.Group>
                 <Button variant="primary" type="submit">
-                  Submit
+                  ADD NOTE
                 </Button>
               </Form>
             </div>
@@ -217,8 +367,10 @@ class BugList extends Component {
   };
 
   render() {
+    console.log("EditBug > render");
     return (
       <div className="side-content-container p-4">
+        {this.executeRedirect()}
         {this.renderBug()}
         {this.renderClosePopup()}
       </div>

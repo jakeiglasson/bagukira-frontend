@@ -5,24 +5,54 @@
   grid-template-columns: 1fr 1fr;
   grid-template-rows: 1fr auto;
   gap: 1px 1px;
-  grid-template-areas: "eb-info eb-image" "eb-description-entry eb-description-entry";
+  grid-template-areas: "eb-info eb-description" "eb-description-entry eb-description-entry";
 }
 
 .eb-info {
   grid-area: eb-info;
 }
 
+.eb-description-container {
+  position: relative;
+  grid-area: eb-description;
+  display: grid;
+
+  min-width: 100%;
+  min-height: 100%;
+
+  background-color: #f2f2f2;
+
+  /* justify-self: center;
+  align-self: center; */
+}
+
+.eb-description-text {
+  font-size: initial;
+  position: absolute;
+  top: 0;
+  left: 0;
+
+  max-height: 100%;
+
+  overflow-y: auto;
+}
+
 .eb-image {
-  grid-area: eb-image;
+  color: orange;
+  opacity: 50%;
   justify-self: center;
   align-self: center;
 }
 
-.eb-description-entry {
+.eb-note-entry {
   grid-area: eb-description-entry;
 }
 
-/* DROP DOWN SETTINGS */
+/* DROP DOWN & STATUS SETTINGS */
+
+.uniform-status {
+  width: 140px;
+}
 
 .dropdown {
   width: 150px;
@@ -79,7 +109,4 @@
   width: 100%;
   height: 100%;
   z-index: 1;
-}
-
-.popup-content {
 }
