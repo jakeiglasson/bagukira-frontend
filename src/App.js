@@ -83,7 +83,13 @@ class App extends Component {
         <Route exact path="/" component={Home} />
         <Route exact path="/login" component={Login} />
         <Route exact path="/signup" component={Signup} />
-        <Route exact path="/projects/new" component={NewProject} />
+        <Route
+          exact
+          path="/projects/new"
+          render={(props) => (
+            <NewProject serverRootUrl={this.serverRootUrl()} {...props} />
+          )}
+        />
       </>
     );
   };
