@@ -1,1 +1,25 @@
 /*  */
+/* .dropdown {
+  border: none;
+}
+
+.dropdown a:hover {
+  background-color: #f2f2f2;
+}
+
+.dropDownTextContainer {
+  background-color: rgba(1, 123, 253, 0.8) !important;
+  border: none;
+} */
+
+/* .dropDownText {
+  width: 81px;
+} */
+
+/* .dropdown-toggle::after {
+  margin: 0;
+} */
+
+#dropdown-basic::after {
+  display: none;
+}
