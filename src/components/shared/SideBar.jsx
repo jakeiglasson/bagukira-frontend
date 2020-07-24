@@ -49,7 +49,7 @@ class SideBar extends Component {
   };
 
   render() {
-    console.log("SideBar > render");
+    // console.log("SideBar > render");
     // console.log("|-> state:", this.state);
     let { projectName } = this.state;
 

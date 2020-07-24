@@ -5,13 +5,13 @@ import { Button, Navbar, Nav, Form, FormControl } from "react-bootstrap";
 
 class NavBar extends Component {
   purgeLocalStorage = () => {
-    console.log(localStorage);
+    // console.log(localStorage);
     localStorage.removeItem("userId");
-    console.log(localStorage);
+    // console.log(localStorage);
   };
 
   renderWelcomeMessage = () => {
-    console.log(localStorage);
+    // console.log(localStorage);
     let welcomeMessage;
     if (localStorage.getItem("userId") === null) {
       welcomeMessage = "Welcome, to Bagukira!";
@@ -27,7 +27,7 @@ class NavBar extends Component {
   };
 
   render() {
-    console.log(localStorage);
+    // console.log(localStorage);
     return (
       <Navbar bg="dark" variant="dark" className="">
         {this.renderWelcomeMessage()}

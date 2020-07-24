@@ -22,7 +22,11 @@
   grid-area: eb-description-entry;
 }
 
-/* DROP DOWN SETTINGS */
+/* DROP DOWN & STATUS SETTINGS */
+
+.uniform-status {
+  width: 140px;
+}
 
 .dropdown {
   width: 150px;
@@ -79,7 +83,4 @@
   width: 100%;
   height: 100%;
   z-index: 1;
-}
-
-.popup-content {
 }
