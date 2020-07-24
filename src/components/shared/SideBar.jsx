@@ -42,7 +42,7 @@ class SideBar extends Component {
   renderLink = (endPoint, linkName) => {
     let { root } = this.state;
     return (
-      <NavLink exact to={root + endPoint} activeClassName="selected">
+      <NavLink to={root + endPoint} activeClassName="selected">
         <div className={"sideBarLink"}>{linkName}</div>
       </NavLink>
     );
@@ -60,7 +60,7 @@ class SideBar extends Component {
             <h3>{projectName}</h3>
             {this.renderLink("bugs", "BUG LIST")}
 
-            {this.renderLink("bugs/new", "NEW BUG")}
+            {this.renderLink("bug/new", "NEW BUG")}
 
             {this.renderLink("user/add", "ADD USER")}
 
