@@ -3,6 +3,8 @@ import axios from "axios";
 import { Form, Button } from "react-bootstrap";
 import { Link, Redirect } from "react-router-dom";
 
+import { GetTime } from "./shared/Helpers.jsx";
+
 class NewProject extends Component {
   constructor(props) {
     super(props);
@@ -27,16 +29,7 @@ class NewProject extends Component {
 
     // A lot of this code is unneeded, when the backend is working only project name and user id will need to be sent through. Also we will not need to get the amount of projects in the db, so we can remove the first request.
 
-    let today = new Date();
-    let date =
-      today.getFullYear() +
-      "-" +
-      (today.getMonth() + 1) +
-      "-" +
-      today.getDate();
-    let time =
-      today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
-    let dateTime = date + " " + time;
+    let dateTime = GetTime();
 
     // Get amount of projects in JSON db
     let id, hash, userId, name, created_at;

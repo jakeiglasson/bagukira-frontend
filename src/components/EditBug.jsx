@@ -4,6 +4,8 @@ import { Dropdown, Button, ButtonGroup, Table, Form } from "react-bootstrap";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faBug } from "@fortawesome/free-solid-svg-icons";
 
+import { GetTime } from "./shared/Helpers.jsx";
+
 import "./css/BugList.css";
 import "./css/EditBug.css";
 
@@ -16,7 +18,9 @@ class BugList extends Component {
     this.state = {
       renderClosePopup: false,
       status: "",
+      description: "",
       closed_by: "",
+      closed_at: "",
       bug: "",
       root: "null",
       redirect: false,
@@ -57,6 +61,8 @@ class BugList extends Component {
         bug: data,
         status: data[0].status.toUpperCase(),
         closed_by: data[0].closed_by,
+        closed_at: data[0].closed_at,
+        description: data[0].description,
       });
       console.log("|-> state:", this.state);
     });
@@ -140,10 +146,11 @@ class BugList extends Component {
       .patch(this.props.serverRootUrl + "/bugs/" + bug_id, {
         status: status,
         closed_by: "-",
+        closed_at: "-",
       })
       .then((response) => {
         console.log(response);
-        this.setState({ status: status, closed_by: "-" });
+        this.setState({ status: status, closed_by: "-", closed_at: "-" });
       })
       .catch(function (error) {
         console.log(error);
@@ -189,11 +196,13 @@ class BugList extends Component {
     event.preventDefault();
 
     let bug_id = this.state.bug[0].id;
+    let dateTime = GetTime();
 
     axios
       .patch(this.props.serverRootUrl + "/bugs/" + bug_id, {
         status: "CLOSED",
         closed_by: this.state.closeNameValue,
+        closed_at: dateTime,
       })
       .then((response) => {
         console.log(response);
@@ -279,6 +288,17 @@ class BugList extends Component {
     return this.displayCurrentStatus(status, style);
   };
 
+  renderDescription = () => {
+    return (
+      <div className="eb-description-container display-1 ml-2">
+        <FontAwesomeIcon icon={faBug} className="eb-image" />
+        <div className="eb-description-text p-4 text-justify overflow-auto">
+          {this.state.description}
+        </div>
+      </div>
+    );
+  };
+
   renderBug = () => {
     console.log("EditBug > renderBug");
     let { bug } = this.state;
@@ -294,7 +314,7 @@ class BugList extends Component {
             {"> BUG #" + bug.idInProject}
           </h6>
 
-          <h3>{bug.subject}</h3>
+          <h3>SUBJECT: {bug.subject}</h3>
           <div className="eb-grid-container">
             <div className="eb-info">
               <Table striped bordered>
@@ -314,7 +334,7 @@ class BugList extends Component {
                   </tr>
                   <tr>
                     <td>DATE CLOSED</td>
-                    <td>{bug.closed_at}</td>
+                    <td>{this.state.closed_at}</td>
                   </tr>
                   <tr>
                     <td>REPORTED BY</td>
@@ -327,17 +347,16 @@ class BugList extends Component {
                 </tbody>
               </Table>
             </div>
-            <div className="eb-image display-1">
-              <FontAwesomeIcon icon={faBug} style={{ color: "orange" }} />
-            </div>
-            <div className="eb-description-entry">
+            {this.renderDescription()}
+
+            <div className="eb-note-entry">
               <Form>
                 <Form.Group controlId="exampleForm.ControlTextarea1">
-                  <Form.Label>BUG DESCRIPTION</Form.Label>
+                  <Form.Label>NOTE</Form.Label>
                   <Form.Control as="textarea" rows="3" />
                 </Form.Group>
                 <Button variant="primary" type="submit">
-                  Submit
+                  ADD NOTE
                 </Button>
               </Form>
             </div>
