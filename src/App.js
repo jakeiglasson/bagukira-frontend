@@ -2,6 +2,9 @@ import React, { Component } from "react";
 import { BrowserRouter, Route, Link, useHistory } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faBug } from "@fortawesome/free-solid-svg-icons";
+import { Alert } from "react-bootstrap";
+
+import "./App.css";
 
 import Home from "./components/Home";
 import Login from "./components/Login";
@@ -15,13 +18,14 @@ import EditBug from "./components/EditBug";
 import NewBug from "./components/NewBug";
 import AddUser from "./components/AddUser";
 import EditProject from "./components/EditProject";
-import "./App.css";
-import { Nav } from "react-bootstrap";
 
 class App extends Component {
-  state = {
-    sideBarActiveLink: "",
-  };
+  constructor(props) {
+    super(props);
+    this.state = {
+      sideBarActiveLink: "",
+    };
+  }
 
   components = {
     // key name: component, route, acceptable queries
@@ -80,7 +84,13 @@ class App extends Component {
         <Route exact path="/" component={Home} />
         <Route exact path="/login" component={Login} />
         <Route exact path="/signup" component={Signup} />
-        <Route exact path="/projects/new" component={NewProject} />
+        <Route
+          exact
+          path="/projects/new"
+          render={(props) => (
+            <NewProject serverRootUrl={this.serverRootUrl()} {...props} />
+          )}
+        />
       </>
     );
   };

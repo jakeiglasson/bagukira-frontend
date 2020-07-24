@@ -50,3 +50,11 @@
   background-color: rgb(255, 255, 255);
   z-index: 1000;
 } */
+
+.alert {
+  position: fixed;
+  top: 0;
+  width: 100%;
+  text-align: center;
+  opacity: 70%;
+}

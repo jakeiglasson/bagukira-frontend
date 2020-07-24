@@ -1,20 +1,31 @@
 import React, { Component } from "react";
 import axios from "axios";
+import { Redirect } from "react-router-dom";
 import SideBar from "./shared/SideBar";
 import { Button } from "react-bootstrap";
 import "./css/Global.css";
 import "./css/Projects.css";
 
 class Projects extends Component {
-  state = {
-    projects: [],
-  };
+  constructor(props) {
+    super(props);
+    console.log("Projects > constructor");
+    console.log("|-> props:", this.props);
+    this.state = {
+      projects: [],
+      userId: localStorage.getItem("userId"),
+    };
+  }
+
   componentDidMount() {
     console.log("componentDidMount");
-    axios.get(this.props.serverRootUrl + "/projects").then((response) => {
-      const data = response.data;
-      this.setState({ projects: data });
-    });
+    // needs to be reworked for when backend is ready, packaging and sending correct headers etc.
+    axios
+      .get(this.props.serverRootUrl + "/projects?userId=" + this.state.userId)
+      .then((response) => {
+        const data = response.data;
+        this.setState({ projects: data });
+      });
   }
 
   // componentDidUpdate() {
@@ -68,10 +79,19 @@ class Projects extends Component {
     return <>{collection}</>;
   };
 
+  executeRedirect = () => {
+    if (localStorage.getItem("userId") === null) {
+      return (
+        <Redirect to={{ pathname: "/", state: { alertNotLoggedIn: "true" } }} />
+      );
+    }
+  };
+
   render() {
     let { projects } = this.state;
     return (
       <>
+        {this.executeRedirect()}
         <h1 className="text-center m-3">ALL PROJECTS</h1>
         <div className="projects-grid-container p-3">
           {this.newProject()}
