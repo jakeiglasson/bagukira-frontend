@@ -5,7 +5,10 @@ import "./css/Login.css";
 import "./css/Global.css";
 
 class Login extends Component {
-  handleSubmit = () => {};
+  handleSubmit = () => {
+    // UserId needs to be dynamically set when user login functionality is working. Setting as a placeholder for now
+    localStorage.setItem("userId", 1);
+  };
 
   render() {
     return (
@@ -27,7 +30,11 @@ class Login extends Component {
           {/* <Form.Group controlId="formBasicCheckbox">
             <Form.Check type="checkbox" label="Check me out" />
           </Form.Group> */}
-          <Link to="/projects" className="text-link">
+          <Link
+            to="/projects"
+            className="text-link"
+            onClick={this.handleSubmit.bind(this)}
+          >
             <Button className="btn btn-block" data-testid="login">
               LOGIN
             </Button>

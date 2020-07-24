@@ -6,15 +6,25 @@ import "./css/Global.css";
 import "./css/Projects.css";
 
 class Projects extends Component {
-  state = {
-    projects: [],
-  };
+  constructor(props) {
+    super(props);
+    console.log("Projects > constructor");
+    console.log("|-> props:", this.props);
+    this.state = {
+      projects: [],
+      userId: localStorage.getItem("userId"),
+    };
+  }
+
   componentDidMount() {
     console.log("componentDidMount");
-    axios.get(this.props.serverRootUrl + "/projects").then((response) => {
-      const data = response.data;
-      this.setState({ projects: data });
-    });
+    // needs to be reworked for when backend is ready, packaging and sending correct headers etc.
+    axios
+      .get(this.props.serverRootUrl + "/projects?userId=" + this.state.userId)
+      .then((response) => {
+        const data = response.data;
+        this.setState({ projects: data });
+      });
   }
 
   // componentDidUpdate() {

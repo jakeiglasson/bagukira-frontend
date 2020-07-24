@@ -19,9 +19,12 @@ import "./App.css";
 import { Nav } from "react-bootstrap";
 
 class App extends Component {
-  state = {
-    sideBarActiveLink: "",
-  };
+  constructor(props) {
+    super(props);
+    this.state = {
+      sideBarActiveLink: "",
+    };
+  }
 
   components = {
     // key name: component, route, acceptable queries

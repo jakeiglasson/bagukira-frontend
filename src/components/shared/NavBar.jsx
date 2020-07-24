@@ -4,6 +4,12 @@ import "../css/Global.css";
 import { Button, Navbar, Nav, Form, FormControl } from "react-bootstrap";
 
 class NavBar extends Component {
+  purgeLocalStorage = () => {
+    console.log(localStorage);
+    localStorage.removeItem("userId");
+    console.log(localStorage);
+  };
+
   render() {
     return (
       <Navbar bg="dark" variant="dark" className="">
@@ -17,7 +23,7 @@ class NavBar extends Component {
             </Button>
           </Route>
 
-          <Link to="/">
+          <Link to="/" onClick={this.purgeLocalStorage.bind(this)}>
             <Button variant="outline-warning" className="mx-2">
               SIGN OUT
             </Button>
