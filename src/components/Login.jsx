@@ -8,6 +8,7 @@ class Login extends Component {
   handleSubmit = () => {
     // UserId needs to be dynamically set when user login functionality is working. Setting as a placeholder for now
     localStorage.setItem("userId", 1);
+    localStorage.setItem("userEmail", "jake@gmail.com");
   };
 
   render() {
