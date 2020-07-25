@@ -1,6 +1,9 @@
 import React, { Component } from "react";
 import axios from "axios";
 import { BrowserRouter, Route, Link, NavLink } from "react-router-dom";
+
+import { checkForCorrectLoggedInUser } from "./Helpers.jsx";
+
 import "../css/Global.css";
 import "../css/SideBar.css";
 import { Button, Nav } from "react-bootstrap";
@@ -24,7 +27,10 @@ class SideBar extends Component {
     this.setState({ root: "/projects/p/" + hash + "/" });
     this.getProjectName(hash);
 
-    this.checkForCorrectLoggedInUser();
+    let component = this;
+    let setPermission = true;
+    let redirect = false;
+    checkForCorrectLoggedInUser(component, setPermission, redirect);
   };
 
   componentWillUpdate = () => {
@@ -32,34 +38,34 @@ class SideBar extends Component {
     console.log(this.state);
   };
 
-  checkForCorrectLoggedInUser = () => {
-    let match = false;
-    if (localStorage.userEmail) {
-      axios
-        .get(
-          // get all projects that belong to the logged in user
-          this.props.serverRootUrl + "/projects?userId=" + localStorage.userId
-        )
-        .then((response) => {
-          // iterate though each of those projects, checking if the current hash matches one of the users projects hash
-          response.data.forEach((project) => {
-            if (project.hashId == this.state.hash) {
-              console.log("match!");
-              match = true;
-            } else {
-              return false;
-            }
-          });
-        })
-        .then(() => {
-          if (match) {
-            this.setState({ permission: true }, () => {
-              console.log(this.state);
-            });
-          }
-        });
-    }
-  };
+  // checkForCorrectLoggedInUser = () => {
+  //   let match = false;
+  //   if (localStorage.userEmail) {
+  //     axios
+  //       .get(
+  //         // get all projects that belong to the logged in user
+  //         this.props.serverRootUrl + "/projects?userId=" + localStorage.userId
+  //       )
+  //       .then((response) => {
+  //         // iterate though each of those projects, checking if the current hash matches one of the users projects hash
+  //         response.data.forEach((project) => {
+  //           if (project.hashId == this.state.hash) {
+  //             console.log("match!");
+  //             match = true;
+  //           } else {
+  //             return false;
+  //           }
+  //         });
+  //       })
+  //       .then(() => {
+  //         if (match) {
+  //           this.setState({ permission: true }, () => {
+  //             console.log(this.state);
+  //           });
+  //         }
+  //       });
+  //   }
+  // };
 
   // shouldComponentUpdate = (nextProps, nextState) => {
   //   console.log("SideBar > shouldComponentUpdate");
