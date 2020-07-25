@@ -181,14 +181,6 @@ class BugList extends Component {
     this.setState({ renderClosePopup: false });
   };
 
-  displayCurrentStatus = (status, style) => {
-    return (
-      <Button variant={style} disabled>
-        {status}
-      </Button>
-    );
-  };
-
   handleCloseSubmit = (event) => {
     // alert("Bug closed by: " + this.state.closeNameValue);
     console.log("EditBug > handleCloseSubmit");
@@ -286,6 +278,14 @@ class BugList extends Component {
     }
 
     return this.displayCurrentStatus(status, style);
+  };
+
+  displayCurrentStatus = (status, style) => {
+    return (
+      <Button variant={style} disabled>
+        {status}
+      </Button>
+    );
   };
 
   renderDescription = () => {

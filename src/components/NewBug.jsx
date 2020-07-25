@@ -1,5 +1,12 @@
 import React, { Component } from "react";
-import { Form, Button, Dropdown, DropdownButton } from "react-bootstrap";
+import {
+  Form,
+  Button,
+  Dropdown,
+  DropdownButton,
+  ButtonGroup,
+} from "react-bootstrap";
+
 import axios from "axios";
 
 import { GetTime } from "./shared/Helpers.jsx";
@@ -10,75 +17,139 @@ import "./css/Global.css";
 class NewBug extends Component {
   constructor(props) {
     super(props);
+    console.log(this.props.match.params);
     this.state = {
+      id: "",
+      idInProject: "",
       reporterNameValue: "",
-      bugSubjectValue: "",
-      bugDescriptionValue: "",
+      subjectValue: "",
+      descriptionValue: "",
+      severityValue: "",
+      hash: this.props.match.params.hash,
     };
   }
 
+  componentWillMount = () => {
+    this.bugAmount();
+    this.bugAmountInProject();
+  };
+
+  // Get amount of bugs in JSON db to set new bug {id} to amount of bugs + 1
+  bugAmount = () => {
+    axios.get(this.props.serverRootUrl + "/bugs").then((response) => {
+      this.setState({ id: response.data.length + 1 }, function () {
+        console.log("setState completed", this.state);
+      }); // response.data.length + 1
+    });
+  };
+
+  // Get amount of bugs in current project in JSON db to set new bug {idInProject} to amount of bugs + 1
+  bugAmountInProject = () => {
+    axios
+      .get(this.props.serverRootUrl + "/bugs?projectRefHash=" + this.state.hash)
+      .then((response) => {
+        console.log(response);
+        this.setState({ idInProject: response.data.length + 1 }, function () {
+          console.log("setState completed", this.state);
+        }); // response.data.length + 1;
+      });
+  };
+
   handleSubmit = (event) => {
-    alert("A new project was submitted: " + this.state.value);
-    // console.log("New Project > handleSubmit");
-    // console.log("|-> state:", this.state);
+    // alert("A new bug was submitted: " + this.state.subjectValue);
+    console.log("New Project > handleSubmit");
+    console.log("|-> state:", this.state);
     event.preventDefault();
 
-    // A lot of this code is unneeded, when the backend is working only project name and user id will need to be sent through. Also we will not need to get the amount of projects in the db, so we can remove the first request.
+    const dateTime = GetTime();
 
-    let dateTime = GetTime();
-
-    // Get amount of projects in JSON db
-    let id, hash, userId, name, created_at;
     axios
-      .get(this.props.serverRootUrl + "/projects")
-      .then((response) => {
-        id = hash = response.data.length + 1;
-        userId = localStorage.getItem("userId");
-        name = this.state.value;
-        created_at = dateTime;
+      .post(this.props.serverRootUrl + "/bugs", {
+        id: this.state.id,
+        idInProject: this.state.idInProject,
+        projectRefHash: this.state.hash,
+        subject: this.state.subjectValue,
+        status: "OPEN",
+        severity: this.state.severityValue,
+        description: this.state.descriptionValue,
+        created_at: dateTime,
+        closed_at: "-",
+        reported_by: this.state.reporterNameValue,
+        closed_by: "-",
       })
-      .then(() => {
-        axios
-          .post(this.props.serverRootUrl + "/projects", {
-            id: id,
-            hashId: hash,
-            userId: userId,
-            name: name,
-            created_at: created_at,
-          })
-          .then(function (response) {
-            console.log(response);
-          })
-          .catch(function (error) {
-            console.log(error);
-          });
+      .then(function (response) {
+        console.log(response);
       })
-      .then(() => {
-        this.setState({ hash: hash });
-        this.setState({ redirect: true });
+      .catch(function (error) {
+        console.log(error);
       });
   };
 
   handleChange = (event, inputField) => {
-    this.setState({ value: event.target.value });
+    switch (inputField) {
+      case "REPORTER NAME":
+        this.setState({ reporterNameValue: event.target.value });
+        break;
+
+      case "BUG SUBJECT":
+        this.setState({ subjectValue: event.target.value });
+        break;
+
+      case "BUG DESCRIPTION":
+        this.setState({ descriptionValue: event.target.value });
+        break;
+    }
   };
 
-  handleSelect = (event) => {
-    console.log(event);
+  handleSelect = (severity) => {
+    console.log(severity);
+
+    this.setState({ severityValue: severity }, () => {
+      console.log(this.state);
+    });
+  };
+
+  setSeverityStatusStyle = (status) => {
+    let style;
+    switch (status) {
+      case "OPEN":
+        style = "outline-danger uniform-status";
+        break;
+
+      case "IN PROGRESS":
+        style = "outline-warning uniform-status";
+        break;
+
+      case "CLOSED":
+        style = "outline-success uniform-status";
+        break;
+    }
+
+    return style;
+  };
+
+  setSeverityStatusText = (severityValue) => {
+    // let style = this.setSeverityStatusStyle(severityValue);
+    if (this.state.severityValue) {
+      return (
+        // <Button variant={style} disabled>
+        //   {this.state.severityValue}
+        // </Button>
+        this.state.severityValue
+      );
+    } else {
+      return (
+        // <Button variant={style} disabled>
+        //   NOT SET
+        // </Button>
+        "NOT SET"
+      );
+    }
   };
 
   renderNewBugForm = () => {
     return (
       <Form onSubmit={this.handleSubmit}>
-        {/* <Form.Group controlId="newBugForm.ControlTextarea1">
-          <Form.Label>NEW BUG FORM</Form.Label>
-          <Form.Control
-            type="text"
-            placeholder="PROJECT NAME"
-            value={this.state.value}
-            onChange={this.handleChange}
-          />
-        </Form.Group> */}
         <Form.Group controlId="exampleForm.ControlTextarea1">
           <Form.Label>REPORTER NAME</Form.Label>
           <Form.Control
@@ -95,36 +166,48 @@ class NewBug extends Component {
           <Form.Control
             type="text"
             placeholder="ENTER BUG SUBJECT"
-            value={this.state.bugSubjectValue}
+            value={this.state.subjectValue}
             onChange={(event) => {
               this.handleChange(event, "BUG SUBJECT");
             }}
           />
         </Form.Group>
+
+        <Form.Label>BUG SEVERITY</Form.Label>
         <Form.Group controlId="exampleForm.ControlTextarea1">
-          <DropdownButton id="dropdown-basic-button" title="SEVERITY">
-            <Dropdown.Item href="#/action-1">HIGH</Dropdown.Item>
-            <Dropdown.Item href="#/action-2">MEDIUM</Dropdown.Item>
-            <Dropdown.Item href="#/action-3">LOW</Dropdown.Item>
-          </DropdownButton>
-        </Form.Group>
-
-        {/* <Form.Group as={Col} controlId="formGridState">
-          <Form.Label>State</Form.Label>
-          <Form.Control
-            as="select"
-            defaultValue="Choose..."
-            onSelect={this.handleSelect()}
+          {/* {this.renderSeverityStatus(this.state.severityValue.toUpperCase())}{" "} */}
+          <Dropdown
+            as={ButtonGroup}
+            onSelect={(severity) => {
+              this.handleSelect(severity);
+            }}
           >
-            <option>Choose...</option>
-            <option>...</option>
-          </Form.Control>
-        </Form.Group> */}
+            {/* <Button variant="primary dropDownTextContainer">
+              <div className="dropDownText">
+                {this.setSeverityStatusText(
+                  this.state.severityValue.toUpperCase()
+                )}
+              </div>
+            </Button>
 
-        {/* <Form.Group controlId="exampleForm.ControlTextarea1">
-          <Form.Label>BUG DESCRIPTION</Form.Label>
-          <Form.Control as="textarea" rows="3" />
-        </Form.Group> */}
+            <Dropdown.Toggle
+              split
+              variant="primary"
+              id="dropdown-split-basic"
+            /> */}
+            <Dropdown.Toggle id="dropdown-basic" variant="primary">
+              {this.setSeverityStatusText(
+                this.state.severityValue.toUpperCase()
+              )}
+            </Dropdown.Toggle>
+
+            <Dropdown.Menu className="">
+              <Dropdown.Item eventKey="HIGH">HIGH</Dropdown.Item>
+              <Dropdown.Item eventKey="MEDIUM">MEDIUM</Dropdown.Item>
+              <Dropdown.Item eventKey="LOW">LOW</Dropdown.Item>
+            </Dropdown.Menu>
+          </Dropdown>{" "}
+        </Form.Group>
 
         <Form.Group controlId="exampleForm.ControlTextarea1">
           <Form.Label>BUG DESCRIPTION</Form.Label>
@@ -132,7 +215,7 @@ class NewBug extends Component {
             as="textarea"
             rows="3"
             placeholder="ENTER BRIEF BUG DESCRIPTION"
-            value={this.state.bugDescriptionValue}
+            value={this.state.descriptionValue}
             onChange={(event) => {
               this.handleChange(event, "BUG DESCRIPTION");
             }}
