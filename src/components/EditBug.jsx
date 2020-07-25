@@ -17,6 +17,7 @@ class BugList extends Component {
     // console.log("constructor");
     this.state = {
       renderClosePopup: false,
+      renderEditDescriptionPopup: false,
       status: "",
       description: "",
       closed_by: "",
@@ -25,6 +26,7 @@ class BugList extends Component {
       root: "null",
       redirect: false,
       closeNameValue: "",
+      descriptionValue: "",
     };
   }
 
@@ -63,6 +65,7 @@ class BugList extends Component {
         closed_by: data[0].closed_by,
         closed_at: data[0].closed_at,
         description: data[0].description,
+        descriptionValue: data[0].description,
       });
       console.log("|-> state:", this.state);
     });
@@ -157,28 +160,15 @@ class BugList extends Component {
       });
   };
 
-  // closeBug = (closerName) => {
-  //   console.log("EditBug > closeBug");
-  //   console.log("|-> props:", this.props);
-
-  //   let bug_id = this.state.bug[0].id;
-
-  //   axios
-  //     .patch(this.props.serverRootUrl + "/bugs/" + bug_id, {
-  //       status: "CLOSED",
-  //       closed_by: closerName,
-  //     })
-  //     .then(function (response) {
-  //       console.log(response);
-  //     })
-  //     .catch(function (error) {
-  //       console.log(error);
-  //     });
-  // };
-
   handleCancelClose = () => {
-    // console.log("executing:", "handleCancelClose");
     this.setState({ renderClosePopup: false });
+  };
+
+  handleEditDescriptionClose = () => {
+    this.setState({
+      renderEditDescriptionPopup: false,
+      descriptionValue: this.state.description,
+    });
   };
 
   handleCloseSubmit = (event) => {
@@ -205,6 +195,35 @@ class BugList extends Component {
       });
   };
 
+  handleEditDescription = () => {
+    this.setState({ renderEditDescriptionPopup: true });
+  };
+
+  handleEditDescriptionSubmit = (event) => {
+    // alert("Bug closed by: " + this.state.closeNameValue);
+    console.log("EditBug > handleEditDescriptionSubmit");
+    console.log("|-> state:", this.state);
+    event.preventDefault();
+
+    let bug_id = this.state.bug[0].id;
+    // let dateTime = GetTime();
+
+    axios
+      .patch(this.props.serverRootUrl + "/bugs/" + bug_id, {
+        description: this.state.descriptionValue,
+      })
+      .then((response) => {
+        console.log(response);
+        this.setState({
+          description: this.state.descriptionValue,
+          renderEditDescriptionPopup: false,
+        });
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
+  };
+
   executeRedirect = () => {
     console.log("BugEdit > executeRedirect");
     console.log("|-> state:", this.state);
@@ -217,10 +236,12 @@ class BugList extends Component {
     }
   };
 
-  // closeNameValue = () => {};
-
   handleCloseNameChange = (event) => {
     this.setState({ closeNameValue: event.target.value });
+  };
+
+  handleDescriptionValueChange = (event) => {
+    this.setState({ descriptionValue: event.target.value });
   };
 
   renderClosePopup = () => {
@@ -236,8 +257,9 @@ class BugList extends Component {
               <Form.Group controlId="closeBugForm.ControlTextarea1">
                 <Form.Label>PLEASE ENTER YOUR NAME</Form.Label>
                 <Form.Control
-                  type="text"
-                  placeholder="YOUR NAME HERE"
+                  as="textarea"
+                  rows="6"
+                  // placeholder="YOUR NAME HERE"
                   value={this.state.closeNameValue}
                   onChange={this.handleCloseNameChange}
                 />
@@ -250,7 +272,43 @@ class BugList extends Component {
               <> </>
               <Button
                 variant="danger"
-                onClick={this.handleCancelClose.bind(this, "CLOSED")}
+                onClick={this.handleCancelClose.bind(this)}
+              >
+                CANCEL
+              </Button>
+            </Form>
+          </div>
+        </div>
+      );
+    }
+  };
+
+  renderEditDescriptionPopup = () => {
+    const { renderEditDescriptionPopup } = this.state;
+
+    if (renderEditDescriptionPopup) {
+      return (
+        <div className="popup-container p-4">
+          <div className="popup-content p-4">
+            <h1 className="text-center">EDIT BUG DESCRIPTION</h1>
+            {/*  */}
+            <Form onSubmit={this.handleEditDescriptionSubmit}>
+              {/*  */}
+              <Form.Group controlId="editDescriptionForm.ControlTextarea1">
+                {/*  */}
+                <Form.Control
+                  as="textarea"
+                  rows="6"
+                  value={this.state.descriptionValue}
+                  onChange={this.handleDescriptionValueChange}
+                />
+              </Form.Group>
+              {/*  */}
+              <input type="submit" value="SAVE" className="btn btn-primary" />
+              <> </>
+              <Button
+                variant="danger"
+                onClick={this.handleEditDescriptionClose.bind(this)}
               >
                 CANCEL
               </Button>
@@ -292,8 +350,19 @@ class BugList extends Component {
     return (
       <div className="eb-description-container display-1 ml-2">
         <FontAwesomeIcon icon={faBug} className="eb-image" />
-        <div className="eb-description-text p-4 text-justify overflow-auto">
-          {this.state.description}
+        <div className="eb-description-text-container">
+          <div className="eb-description-text px-4 pt-3 text-justify overflow-auto">
+            {this.state.description}
+          </div>
+        </div>
+        <div className="eb-description-button-container">
+          <Button
+            variant="primary"
+            type="submit"
+            onClick={this.handleEditDescription.bind(this)}
+          >
+            EDIT DESCRIPTION
+          </Button>
         </div>
       </div>
     );
@@ -349,7 +418,7 @@ class BugList extends Component {
             </div>
             {this.renderDescription()}
 
-            <div className="eb-note-entry">
+            {/* <div className="eb-note-entry">
               <Form>
                 <Form.Group controlId="exampleForm.ControlTextarea1">
                   <Form.Label>NOTE</Form.Label>
@@ -359,7 +428,7 @@ class BugList extends Component {
                   ADD NOTE
                 </Button>
               </Form>
-            </div>
+            </div> */}
           </div>
         </div>
       );
@@ -373,6 +442,7 @@ class BugList extends Component {
         {this.executeRedirect()}
         {this.renderBug()}
         {this.renderClosePopup()}
+        {this.renderEditDescriptionPopup()}
       </div>
     );
   }
