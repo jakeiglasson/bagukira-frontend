@@ -29,90 +29,60 @@ class NewBug extends Component {
     };
   }
 
+  componentWillMount = () => {
+    this.bugAmount();
+    this.bugAmountInProject();
+  };
+
+  // Get amount of bugs in JSON db to set new bug {id} to amount of bugs + 1
+  bugAmount = () => {
+    axios.get(this.props.serverRootUrl + "/bugs").then((response) => {
+      this.setState({ id: response.data.length + 1 }, function () {
+        console.log("setState completed", this.state);
+      }); // response.data.length + 1
+    });
+  };
+
+  // Get amount of bugs in current project in JSON db to set new bug {idInProject} to amount of bugs + 1
+  bugAmountInProject = () => {
+    axios
+      .get(this.props.serverRootUrl + "/bugs?projectRefHash=" + this.state.hash)
+      .then((response) => {
+        console.log(response);
+        this.setState({ idInProject: response.data.length + 1 }, function () {
+          console.log("setState completed", this.state);
+        }); // response.data.length + 1;
+      });
+  };
+
   handleSubmit = (event) => {
-    alert("A new bug was submitted: " + this.state.subjectValue);
+    // alert("A new bug was submitted: " + this.state.subjectValue);
     console.log("New Project > handleSubmit");
     console.log("|-> state:", this.state);
     event.preventDefault();
 
-    // A lot of this code is unneeded, when the backend is working only project name and user id will need to be sent through. Also we will not need to get the amount of projects in the db, so we can remove the first request.
+    const dateTime = GetTime();
 
-    let dateTime = GetTime();
-
-    //  xxx // "id": 1,
-    //  xxx // "idInProject": 1,
-    //  xxx // "projectRefHash": "a1b2c3",
-
-    // "subject": this.state.subjectValue,
-    // "status": "OPEN",
-    // "severity": this.state.severityValue,
-    // "created_at": dateTime,
-    // "closed_at": "-",
-    // "reported_by": this.state.reporterNameValue,
-    // "closed_by": "-"
-
-    // let projectRefHash = this.props.match.params.hash;
-    let hash = this.state.hash;
-    const self = this;
-
-    // Get amount of bugs in JSON db to set new bug {id} to amount of bugs + 1
-    let bugAmount = () => {
-      axios
-        .get(this.props.serverRootUrl + "/bugs")
-        .then((response) => {
-          self.setState({ id: response.data.length + 1 });
-        })
-        .then(console.log(this.state));
-    };
-
-    // Get amount of bugs in current project in JSON db to set new bug {idInProject} to amount of bugs + 1
-    let bugAmountInProject = () => {
-      axios
-        .get(this.props.serverRootUrl + "/bugs?projectRefHash=" + hash)
-        .then((response) => {
-          console.log("idInProject length:", response.data.length);
-
-          self.setState({ idInProject: response.data.length + 1 });
-        })
-        .then(console.log(this.state));
-    };
-
-    // let setVariables = () => {
-    //   userId = localStorage.getItem("userId");
-    //   name = this.state.value;
-    //   created_at = dateTime;
-    // };
-
-    let postNewBug = () => {
-      bugAmount();
-      bugAmountInProject();
-      axios
-        .post(this.props.serverRootUrl + "/bugs", {
-          id: this.state.id,
-          idInProject: this.state.idInProject,
-          projectRefHash: this.state.hash,
-          subject: this.state.subjectValue,
-          status: "OPEN",
-          severity: this.state.severityValue,
-          description: this.state.descriptionValue,
-          created_at: dateTime,
-          closed_at: "-",
-          reported_by: this.state.reporterNameValue,
-          closed_by: "-",
-        })
-        .then(function (response) {
-          console.log(response);
-        })
-        .catch(function (error) {
-          console.log(error);
-        });
-    };
-
-    // () => {
-    //   bugAmount();
-    // }
-
-    postNewBug();
+    axios
+      .post(this.props.serverRootUrl + "/bugs", {
+        id: this.state.id,
+        idInProject: this.state.idInProject,
+        projectRefHash: this.state.hash,
+        subject: this.state.subjectValue,
+        status: "OPEN",
+        severity: this.state.severityValue,
+        description: this.state.descriptionValue,
+        created_at: dateTime,
+        closed_at: "-",
+        reported_by: this.state.reporterNameValue,
+        closed_by: "-",
+      })
+      .then(function (response) {
+        console.log(response);
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
   };
 
   handleChange = (event, inputField) => {
