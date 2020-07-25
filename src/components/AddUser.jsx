@@ -1,6 +1,9 @@
 import React, { Component } from "react";
+import { Redirect } from "react-router-dom";
 import { Form, Button } from "react-bootstrap";
 import axios from "axios";
+
+import { checkForCorrectLoggedInUser } from "./shared/Helpers.jsx";
 
 import "./css/AddUser.css";
 import "./css/Global.css";
@@ -11,9 +14,19 @@ class AddUser extends Component {
     this.state = {
       emailsValue: "",
       emailsAreValid: false,
+      redirect: false,
+      render: false,
+      hash: this.props.match.params.hash,
     };
     console.log(this.props);
   }
+
+  componentWillMount = () => {
+    let component = this;
+    let setPermission = false;
+    let redirect = true;
+    checkForCorrectLoggedInUser(component, setPermission, redirect);
+  };
 
   handleSubmit = (event) => {
     event.preventDefault();
@@ -92,13 +105,28 @@ class AddUser extends Component {
     );
   };
 
-  render() {
-    return (
-      <div className="side-content-container p-4">
+  handleRedirect = () => {
+    if (this.state.redirect) {
+      return <Redirect to="/" />;
+    }
+  };
+
+  renderContent = () => {
+    if (this.state.render) {
+      return (
         <div className="p-4 global-form-container">
           <h2 className="text-center">ADD USER</h2>
           {this.renderAddUserForm()}
         </div>
+      );
+    }
+  };
+
+  render() {
+    return (
+      <div className="side-content-container p-4">
+        {this.handleRedirect()}
+        {this.renderContent()}
       </div>
     );
   }
