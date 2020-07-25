@@ -8,18 +8,57 @@ import { Button, Nav } from "react-bootstrap";
 class SideBar extends Component {
   constructor(props) {
     super(props);
-    // console.log("SideBar > constructor");
-    // console.log("|-> props:", this.props);
+    console.log("SideBar > constructor");
+    console.log("|-> props:", this.props);
+    console.log("|-> local storage:", localStorage);
     this.state = {
       root: "",
+      hash: this.props.match.params.hash,
+      permission: false,
     };
-    // console.log("|-> state:", this.state);
+    console.log("|-> state:", this.state);
   }
   componentWillMount = () => {
     // console.log("SideBar > componentWillMount");
     let { hash } = this.props.match.params;
     this.setState({ root: "/projects/p/" + hash + "/" });
     this.getProjectName(hash);
+
+    this.checkForCorrectLoggedInUser();
+  };
+
+  componentWillUpdate = () => {
+    console.log("componentWillUpdate");
+    console.log(this.state);
+  };
+
+  checkForCorrectLoggedInUser = () => {
+    let match = false;
+    if (localStorage.userEmail) {
+      axios
+        .get(
+          // get all projects that belong to the logged in user
+          this.props.serverRootUrl + "/projects?userId=" + localStorage.userId
+        )
+        .then((response) => {
+          // iterate though each of those projects, checking if the current hash matches one of the users projects hash
+          response.data.forEach((project) => {
+            if (project.hashId == this.state.hash) {
+              console.log("match!");
+              match = true;
+            } else {
+              return false;
+            }
+          });
+        })
+        .then(() => {
+          if (match) {
+            this.setState({ permission: true }, () => {
+              console.log(this.state);
+            });
+          }
+        });
+    }
   };
 
   // shouldComponentUpdate = (nextProps, nextState) => {
@@ -48,6 +87,17 @@ class SideBar extends Component {
     );
   };
 
+  renderAdminLinks = () => {
+    if (this.state.permission) {
+      return (
+        <>
+          {this.renderLink("user/add", "ADD USER")}
+          {this.renderLink("edit", "EDIT PROJECT")}
+        </>
+      );
+    }
+  };
+
   render() {
     // console.log("SideBar > render");
     // console.log("|-> state:", this.state);
@@ -62,9 +112,7 @@ class SideBar extends Component {
 
             {this.renderLink("bug/new", "NEW BUG")}
 
-            {this.renderLink("user/add", "ADD USER")}
-
-            {this.renderLink("edit", "EDIT PROJECT")}
+            {this.renderAdminLinks()}
           </Nav>
         </div>
       );

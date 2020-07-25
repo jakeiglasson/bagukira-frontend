@@ -26,13 +26,10 @@ class NavBar extends Component {
     );
   };
 
-  render() {
-    // console.log(localStorage);
-    return (
-      <Navbar bg="dark" variant="dark" className="">
-        {this.renderWelcomeMessage()}
-
-        <Form inline>
+  navButtons = () => {
+    if (localStorage.userId) {
+      return (
+        <>
           <Route path="/projects/:id">
             <Button variant="outline-warning" className="mx-2" href="/projects">
               ALL PROJECTS
@@ -44,7 +41,33 @@ class NavBar extends Component {
               SIGN OUT
             </Button>
           </Link>
-        </Form>
+        </>
+      );
+    } else {
+      return (
+        <>
+          <Link to="/login" onClick={this.purgeLocalStorage.bind(this)}>
+            <Button variant="outline-warning" className="mx-2">
+              LOG IN
+            </Button>
+          </Link>
+          <Link to="/login" onClick={this.purgeLocalStorage.bind(this)}>
+            <Button variant="outline-warning" className="mx-2">
+              SIGN UP
+            </Button>
+          </Link>
+        </>
+      );
+    }
+  };
+
+  render() {
+    // console.log(localStorage);
+    return (
+      <Navbar bg="dark" variant="dark" className="">
+        {this.renderWelcomeMessage()}
+
+        {this.navButtons()}
       </Navbar>
     );
   }
