@@ -234,6 +234,7 @@ class NewBug extends Component {
             onChange={(event) => {
               this.handleChange(event, "BUG DESCRIPTION");
             }}
+            className="bug-description-text"
           />
         </Form.Group>
         <input

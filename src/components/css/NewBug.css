@@ -23,3 +23,11 @@
 #dropdown-basic::after {
   display: none;
 }
+
+.bug-description-text {
+  /* padding is manually set so entry matches display on bug edit. This way users can see how their text will be displayed. */
+  width: 545px;
+  padding-left: 0.75rem;
+  /* manual calculations to match bug edit description */
+  padding-right: calc(1.5rem * 2 - 0.75rem - 2px);
+}
