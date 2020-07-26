@@ -36,6 +36,7 @@ tr {
 
 .statusButton {
   cursor: default !important;
+  pointer-events: none;
 }
 
 .statusButton:focus {
