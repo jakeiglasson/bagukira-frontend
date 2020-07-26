@@ -250,16 +250,16 @@ class BugList extends Component {
     if (renderClosePopup) {
       return (
         <div className="popup-container p-4">
-          <div className="popup-content p-4">
-            <h1 className="text-center">CLOSING BUG #1</h1>
-            <h1 className="text-center">BUG SUBJECT TEXT GOES HERE</h1>
+          <div className=" p-4">
+            <h1 className="text-center">CLOSING BUG</h1>
+            {/* <h1 className="text-center">BUG SUBJECT TEXT GOES HERE</h1> */}
             <Form onSubmit={this.handleCloseSubmit}>
               <Form.Group controlId="closeBugForm.ControlTextarea1">
                 <Form.Label>PLEASE ENTER YOUR NAME</Form.Label>
                 <Form.Control
-                  as="textarea"
-                  rows="6"
-                  // placeholder="YOUR NAME HERE"
+                  type="text"
+                  // rows="6"
+                  placeholder="YOUR NAME HERE"
                   value={this.state.closeNameValue}
                   onChange={this.handleCloseNameChange}
                 />
