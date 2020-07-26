@@ -292,7 +292,10 @@ class BugList extends Component {
           <div className="popup-content p-4">
             <h1 className="text-center">EDIT BUG DESCRIPTION</h1>
             {/*  */}
-            <Form onSubmit={this.handleEditDescriptionSubmit}>
+            <Form
+              onSubmit={this.handleEditDescriptionSubmit}
+              className="eb-description-width"
+            >
               {/*  */}
               <Form.Group controlId="editDescriptionForm.ControlTextarea1">
                 {/*  */}
@@ -301,6 +304,7 @@ class BugList extends Component {
                   rows="6"
                   value={this.state.descriptionValue}
                   onChange={this.handleDescriptionValueChange}
+                  className="px-4 eb-edit-description-text"
                 />
               </Form.Group>
               {/*  */}
@@ -351,7 +355,7 @@ class BugList extends Component {
       <div className="eb-description-container eb-bug-section display-1 ml-2">
         <FontAwesomeIcon icon={faBug} className="eb-image" />
         <div className="eb-description-text-container">
-          <div className="eb-description-text px-4 pt-3 text-justify overflow-auto">
+          <div className="eb-description-text px-4 pt-3 overflow-auto eb-description-width">
             {this.state.description}
           </div>
         </div>
