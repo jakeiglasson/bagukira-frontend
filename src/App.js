@@ -1,5 +1,11 @@
 import React, { Component } from "react";
-import { BrowserRouter, Route, Link, useHistory } from "react-router-dom";
+import {
+  BrowserRouter,
+  Route,
+  Link,
+  useHistor,
+  Redirect,
+} from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faBug } from "@fortawesome/free-solid-svg-icons";
 import { Alert } from "react-bootstrap";
@@ -89,6 +95,13 @@ class App extends Component {
           path="/projects/new"
           render={(props) => (
             <NewProject serverRootUrl={this.serverRootUrl()} {...props} />
+          )}
+        />
+        <Route
+          exact
+          path="/projects/p/:hash"
+          render={(props) => (
+            <Redirect to={"/projects/p/" + props.match.params.hash + "/bugs"} />
           )}
         />
       </>
