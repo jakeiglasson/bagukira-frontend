@@ -63,6 +63,19 @@ class NewBug extends Component {
 
     const dateTime = GetTime();
 
+    // check:
+    let reported_by = this.state.reporterNameValue;
+    let description = this.state.descriptionValue;
+    let severity = this.state.severityValue;
+    let subject = this.state.subjectValue;
+
+    if (!reported_by || !description || !severity || !subject) {
+      alert(
+        "Missing Information! All fields must be set before a bug can be submitted!"
+      );
+      return;
+    }
+
     axios
       .post(this.props.serverRootUrl + "/bugs", {
         id: this.state.id,
@@ -79,6 +92,8 @@ class NewBug extends Component {
       })
       .then(function (response) {
         console.log(response);
+        alert("Bug was successfully submitted!");
+        window.location.reload(true);
       })
       .catch(function (error) {
         console.log(error);
