@@ -107,7 +107,11 @@ class AddUser extends Component {
 
   handleRedirect = () => {
     if (this.state.redirect) {
-      return <Redirect to="/" />;
+      return (
+        <Redirect
+          to={"/projects/p/" + this.props.match.params.hash + "/bugs"}
+        />
+      );
     }
   };
 
