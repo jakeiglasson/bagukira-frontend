@@ -323,15 +323,15 @@ class BugList extends Component {
     let style;
     switch (status) {
       case "OPEN":
-        style = "outline-danger uniform-status";
+        style = "danger uniform-status";
         break;
 
       case "IN PROGRESS":
-        style = "outline-warning uniform-status";
+        style = "warning uniform-status";
         break;
 
       case "CLOSED":
-        style = "outline-success uniform-status";
+        style = "success uniform-status";
         break;
     }
 
@@ -340,7 +340,7 @@ class BugList extends Component {
 
   displayCurrentStatus = (status, style) => {
     return (
-      <Button variant={style} disabled>
+      <Button variant={style} className="statusButton">
         {status}
       </Button>
     );
@@ -348,7 +348,7 @@ class BugList extends Component {
 
   renderDescription = () => {
     return (
-      <div className="eb-description-container display-1 ml-2">
+      <div className="eb-description-container eb-bug-section display-1 ml-2">
         <FontAwesomeIcon icon={faBug} className="eb-image" />
         <div className="eb-description-text-container">
           <div className="eb-description-text px-4 pt-3 text-justify overflow-auto">
@@ -377,16 +377,16 @@ class BugList extends Component {
       bug = bug[0];
       console.log("|->", bug);
       return (
-        <div>
+        <div className="eb-grid-container">
           <h6>
             <Link to={this.state.root}>BUG LIST</Link>{" "}
             {"> BUG #" + bug.idInProject}
           </h6>
 
           <h3>SUBJECT: {bug.subject}</h3>
-          <div className="eb-grid-container">
-            <div className="eb-info">
-              <Table striped bordered>
+          <div className="eb-grid-bug-container">
+            <div className="eb-info eb-bug-section">
+              <Table striped bordered className="eb-table-container">
                 <thead>
                   <tr>
                     <th>BUG #{bug.idInProject}</th>
@@ -397,6 +397,10 @@ class BugList extends Component {
                   </tr>
                 </thead>
                 <tbody>
+                  <tr>
+                    <td>SEVERITY LEVEL</td>
+                    <td>{bug.severity}</td>
+                  </tr>
                   <tr>
                     <td>DATE OPENED</td>
                     <td>{bug.created_at}</td>
