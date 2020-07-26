@@ -21,7 +21,7 @@ class NavBar extends Component {
     }
     return (
       <Nav className="mr-auto">
-        <Navbar.Brand href="#home">{welcomeMessage}</Navbar.Brand>
+        <Navbar.Brand>{welcomeMessage}</Navbar.Brand>
       </Nav>
     );
   };
