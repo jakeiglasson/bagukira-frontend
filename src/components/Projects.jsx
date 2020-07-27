@@ -21,17 +21,26 @@ class Projects extends Component {
     console.log("componentDidMount");
     // needs to be reworked for when backend is ready, packaging and sending correct headers etc.
     axios
-      .get(this.props.serverRootUrl + "/projects?userId=" + this.state.userId)
+      .get(
+        process.env.REACT_APP_API_URL +
+          "/users/" +
+          this.state.userId +
+          "/units",
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        }
+      )
       .then((response) => {
         const data = response.data;
-        this.setState({ projects: data });
+        console.log(data);
+        this.setState({ projects: data.units });
+      })
+      .catch((error) => {
+        console.log(error);
       });
   }
-
-  // componentDidUpdate() {
-  //   console.log("componentDidUpdate");
-  //   console.log(this.state.projects);
-  // }
 
   randomColor = () => {
     console.log(Math.floor(Math.random() * 16777215).toString(16));
@@ -54,29 +63,29 @@ class Projects extends Component {
 
   existingProject = () => {
     let { projects } = this.state;
-    let collection;
 
-    if (projects) {
-      collection = projects.map((project, index) => {
-        return (
-          <Button
-            key={index}
-            href={"/projects/p/" + project.hashId + "/bugs"}
-            className="projects-item-container"
-            variant="warning"
-            size="lg"
-            block
-          >
-            <div className="projects-item">{project.name}</div>
-            <div className="projects-item">
-              Belongs To User ID: {project.userId}
-            </div>
-          </Button>
-        );
-      });
-    }
-
-    return <>{collection}</>;
+    return (
+      <>
+        {projects &&
+          projects.map((project, index) => {
+            return (
+              <Button
+                key={index}
+                href={"/projects/p/" + project.hashId + "/bugs"}
+                className="projects-item-container"
+                variant="warning"
+                size="lg"
+                block
+              >
+                <div className="projects-item">{project.name}</div>
+                <div className="projects-item">
+                  Belongs To User ID: {project.userId}
+                </div>
+              </Button>
+            );
+          })}
+      </>
+    );
   };
 
   executeRedirect = () => {
@@ -98,15 +107,6 @@ class Projects extends Component {
           {this.existingProject()}
         </div>
       </>
-      // // Old layout code, used as reference material
-      // <div className="projects-grid-container p-3">
-      //   <div className="new-project projects-item-container">
-      //     <div className="projects-item">NEW PROJECT</div>
-      //   </div>
-      //   <div className="existing-project projects-item-container">
-      //     <div className="projects-item">EXISTING PROJECT</div>
-      //   </div>
-      // </div>
     );
   }
 }
