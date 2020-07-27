@@ -1,28 +1,38 @@
 import React, { Component } from "react";
 import { Form, Button } from "react-bootstrap";
 import { Link } from "react-router-dom";
-import Axios from "axios";
+import axios from "axios";
 import "./css/Login.css";
 import "./css/Global.css";
 
 class Login extends Component {
   state = { email: "", password: "", errMessage: "" };
 
+  parseJwt(token) {
+    if (!token) {
+      return;
+    }
+    const base64Url = token.split(".")[1];
+    const base64 = base64Url.replace("-", "+").replace("_", "/");
+    return JSON.parse(window.atob(base64));
+  }
+
   handleSubmit = () => {
     // UserId needs to be dynamically set when user login functionality is working. Setting as a placeholder for now
     // localStorage.setItem("userId", 1);
     // localStorage.setItem("userEmail", "jake@gmail.com");
     let { email, password } = this.state;
-    Axios.post(process.env.REACT_APP_API_URL + "/login", {
-      auth: {
-        email: email,
-        password: password,
-      },
-    })
+    axios
+      .post(process.env.REACT_APP_API_URL + "/login", {
+        auth: {
+          email: email,
+          password: password,
+        },
+      })
       .then((response) => {
-        console.log(response);
         localStorage.setItem("token", response.data.jwt);
-        console.log(localStorage);
+        let userId = this.parseJwt(localStorage.getItem("token")).sub;
+        localStorage.setItem("userId", userId);
       })
       .catch((error) => {
         console.log(error);
