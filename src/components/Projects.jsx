@@ -80,7 +80,7 @@ class Projects extends Component {
   };
 
   executeRedirect = () => {
-    if (localStorage.getItem("userId") === null) {
+    if (localStorage.getItem("token") === null) {
       return (
         <Redirect to={{ pathname: "/", state: { alertNotLoggedIn: "true" } }} />
       );
