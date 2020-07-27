@@ -9,7 +9,7 @@ class NewProject extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      value: "",
+      projectNameValue: "",
       redirect: false,
     };
 
@@ -18,48 +18,38 @@ class NewProject extends Component {
   }
 
   handleChange(event) {
-    this.setState({ value: event.target.value });
+    this.setState({ projectNameValue: event.target.value });
   }
 
   handleSubmit(event) {
-    alert("A new project was submitted: " + this.state.value);
+    alert("A new project was submitted: " + this.state.projectNameValue);
     // console.log("New Project > handleSubmit");
     // console.log("|-> state:", this.state);
     event.preventDefault();
 
-    // A lot of this code is unneeded, when the backend is working only project name and user id will need to be sent through. Also we will not need to get the amount of projects in the db, so we can remove the first request.
-
-    let dateTime = GetTime();
-
-    // Get amount of projects in JSON db
-    let id, hash, userId, name, created_at;
+    // let dateTime = GetTime();
+    const userId = localStorage.getItem("userId");
+    const url = process.env.REACT_APP_API_URL + "/users/" + userId + "/units";
     axios
-      .get(this.props.serverRootUrl + "/projects")
+      .post(
+        url,
+        {
+          unit: { name: this.state.projectNameValue, unit_type: "project" },
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+            "Content-Type": "application/json",
+          },
+        }
+      )
       .then((response) => {
-        id = hash = response.data.length + 1;
-        userId = localStorage.getItem("userId");
-        name = this.state.value;
-        created_at = dateTime;
+        this.setState({ hash: response.data.units.id, redirect: true });
       })
-      .then(() => {
-        axios
-          .post(this.props.serverRootUrl + "/projects", {
-            id: id,
-            hashId: hash,
-            userId: userId,
-            name: name,
-            created_at: created_at,
-          })
-          .then(function (response) {
-            console.log(response);
-          })
-          .catch(function (error) {
-            console.log(error);
-          });
-      })
-      .then(() => {
-        this.setState({ hash: hash });
-        this.setState({ redirect: true });
+      .catch((error) => {
+        alert(error);
+        console.log(error);
+        window.location.reload(true);
       });
   }
 
@@ -71,7 +61,7 @@ class NewProject extends Component {
           <Form.Control
             type="text"
             placeholder="PROJECT NAME"
-            value={this.state.value}
+            value={this.state.projectNameValue}
             onChange={this.handleChange}
           />
         </Form.Group>
