@@ -3,7 +3,7 @@ import {
   BrowserRouter,
   Route,
   Link,
-  useHistor,
+  useHistory,
   Redirect,
 } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
