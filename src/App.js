@@ -31,6 +31,7 @@ class App extends Component {
     this.state = {
       sideBarActiveLink: "",
     };
+    document.title = "Bagukira: Bug Killer";
   }
 
   components = {
