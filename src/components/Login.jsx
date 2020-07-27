@@ -21,7 +21,8 @@ class Login extends Component {
     })
       .then((response) => {
         console.log(response);
-        localStorage.setItem(("token", response.data.jwt));
+        localStorage.setItem("token", response.data.jwt);
+        console.log(localStorage);
       })
       .catch((error) => {
         console.log(error);
