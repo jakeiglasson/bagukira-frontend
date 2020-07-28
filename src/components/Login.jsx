@@ -6,7 +6,15 @@ import "./css/Login.css";
 import "./css/Global.css";
 
 class Login extends Component {
-  state = { email: "", password: "", errMessage: "" };
+  constructor(props) {
+    super(props);
+    this.state = { email: "", password: "", errMessage: "" };
+  }
+
+  componentDidMount = () => {
+    console.log("componentDidMount");
+    console.log("localStorage:", localStorage);
+  };
 
   parseJwt(token) {
     if (!token) {
@@ -17,9 +25,10 @@ class Login extends Component {
     return JSON.parse(window.atob(base64));
   }
 
-  handleSubmit = () => {
+  handleSubmit = async (event) => {
+    event.preventDefault();
     let { email, password } = this.state;
-    axios
+    await axios
       .post(process.env.REACT_APP_API_URL + "/login", {
         auth: {
           email: email,
@@ -27,13 +36,21 @@ class Login extends Component {
         },
       })
       .then((response) => {
+        // console.log(response);
         localStorage.setItem("token", response.data.jwt);
-        let userId = this.parseJwt(localStorage.getItem("token")).sub;
+
+        const userId = this.parseJwt(localStorage.getItem("token")).sub;
         localStorage.setItem("userId", userId);
+
+        // console.log(localStorage);
+
+        this.props.history.push("/projects");
+        window.location.reload(true);
       })
       .catch((error) => {
         console.log(error);
       });
+    // console.log("End handle submit");
   };
 
   onInputChange = (event) => {
@@ -48,7 +65,7 @@ class Login extends Component {
     return (
       <div className="small-centered-card">
         <h3 className="text-center mb-3">LOGIN</h3>
-        <Form>
+        <Form onSubmit={this.handleSubmit}>
           <Form.Group controlId="formBasicEmail">
             <Form.Label>Email address</Form.Label>
             <Form.Control
@@ -74,16 +91,15 @@ class Login extends Component {
               value={password}
               onChange={this.onInputChange}
             />
+            <Button
+              type="submit"
+              className="text-link btn btn-block"
+              data-testid="login"
+            >
+              LOGIN
+            </Button>
           </Form.Group>
 
-          <Link
-            to="/projects"
-            className="text-link"
-            data-testid="login"
-            onClick={this.handleSubmit.bind(this)}
-          >
-            <Button className="btn btn-block">LOGIN</Button>
-          </Link>
           <hr />
           <Link to="/signup" className="text-link">
             <Button className="btn btn-warning btn-block" data-testid="signup">

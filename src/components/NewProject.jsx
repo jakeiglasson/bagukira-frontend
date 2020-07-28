@@ -6,35 +6,29 @@ import { Link, Redirect } from "react-router-dom";
 import { GetTime } from "./shared/Helpers.jsx";
 
 class NewProject extends Component {
+  state = { projectName: "" };
+
   constructor(props) {
     super(props);
-    this.state = {
-      projectNameValue: "",
-      redirect: false,
-    };
-
-    this.handleChange = this.handleChange.bind(this);
-    this.handleSubmit = this.handleSubmit.bind(this);
   }
 
-  handleChange(event) {
-    this.setState({ projectNameValue: event.target.value });
-  }
+  onInputChange = (event) => {
+    const key = event.target.id;
+    this.setState({
+      [key]: event.target.value,
+    });
+  };
 
-  handleSubmit(event) {
-    alert("A new project was submitted: " + this.state.projectNameValue);
-    // console.log("New Project > handleSubmit");
-    // console.log("|-> state:", this.state);
+  handleSubmit = async (event) => {
     event.preventDefault();
 
-    // let dateTime = GetTime();
     const userId = localStorage.getItem("userId");
     const url = process.env.REACT_APP_API_URL + "/users/" + userId + "/units";
-    axios
+    await axios
       .post(
         url,
         {
-          unit: { name: this.state.projectNameValue, unit_type: "project" },
+          unit: { name: this.state.projectName, unit_type: "project" },
         },
         {
           headers: {
@@ -44,40 +38,37 @@ class NewProject extends Component {
         }
       )
       .then((response) => {
-        this.setState({ hash: response.data.units.id, redirect: true });
+        const hash = response.data.units.id;
+        // this.setState({ hash: response.data.units.id });
+        alert(`Your ${this.state.projectName} new project was created`);
+        this.props.history.push("./projects/p/" + hash + "/bugs");
       })
       .catch((error) => {
         alert(error);
         console.log(error);
         window.location.reload(true);
       });
-  }
+  };
 
   newProjectFrom = () => {
+    let { projectName } = this.state;
     return (
       <Form onSubmit={this.handleSubmit}>
         <Form.Group controlId="newProjectForm.ControlTextarea1">
           <Form.Label>PROJECT NAME</Form.Label>
           <Form.Control
+            id="projectName"
             type="text"
             placeholder="PROJECT NAME"
-            value={this.state.projectNameValue}
-            onChange={this.handleChange}
+            value={projectName}
+            onChange={this.onInputChange}
           />
         </Form.Group>
-        <input
-          type="submit"
-          value="SUBMIT"
-          className="btn btn-block btn-primary"
-        />
+        <Button type="submit" className="btn btn-block btn-primary">
+          SUBMIT
+        </Button>
       </Form>
     );
-  };
-
-  executeRedirect = () => {
-    if (this.state.redirect) {
-      return <Redirect to={"./p/" + this.state.hash + "/bugs"} />;
-    }
   };
 
   render() {
@@ -85,7 +76,6 @@ class NewProject extends Component {
       <div className="medium-centered-card">
         <h1 className="text-center m-3">NEW PROJECT</h1>
         <div className="new-project-form-container">
-          {this.executeRedirect()}
           {this.newProjectFrom()}
           <hr />
           <Link to="/projects" className="text-link">

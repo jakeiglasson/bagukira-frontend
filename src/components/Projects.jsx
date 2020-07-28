@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import axios from "axios";
-import { Redirect } from "react-router-dom";
+
 import SideBar from "./shared/SideBar";
 import { Button } from "react-bootstrap";
 import "./css/Global.css";
@@ -14,13 +14,15 @@ class Projects extends Component {
     this.state = {
       projects: [],
       userId: localStorage.getItem("userId"),
+      token: localStorage.getItem("token"),
     };
   }
 
-  componentDidMount() {
+  async componentWillMount() {
     console.log("componentDidMount");
-    // needs to be reworked for when backend is ready, packaging and sending correct headers etc.
-    axios
+    console.log("localStorage:", localStorage);
+
+    await axios
       .get(
         process.env.REACT_APP_API_URL +
           "/users/" +
@@ -28,7 +30,7 @@ class Projects extends Component {
           "/units",
         {
           headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
+            Authorization: `Bearer ${this.state.token}`,
           },
         }
       )
@@ -42,10 +44,10 @@ class Projects extends Component {
       });
   }
 
-  randomColor = () => {
-    console.log(Math.floor(Math.random() * 16777215).toString(16));
-    return Math.floor(Math.random() * 16777215).toString(16);
-  };
+  // randomColor = () => {
+  //   console.log(Math.floor(Math.random() * 16777215).toString(16));
+  //   return Math.floor(Math.random() * 16777215).toString(16);
+  // };
 
   newProject = () => {
     return (
@@ -62,8 +64,7 @@ class Projects extends Component {
   };
 
   existingProject = () => {
-    let { projects } = this.state;
-
+    const { projects } = this.state;
     return (
       <>
         {projects &&
@@ -88,19 +89,9 @@ class Projects extends Component {
     );
   };
 
-  executeRedirect = () => {
-    if (localStorage.getItem("token") === null) {
-      return (
-        <Redirect to={{ pathname: "/", state: { alertNotLoggedIn: "true" } }} />
-      );
-    }
-  };
-
   render() {
-    let { projects } = this.state;
     return (
       <>
-        {this.executeRedirect()}
         <h1 className="text-center m-3">ALL PROJECTS</h1>
         <div className="projects-grid-container p-3">
           {this.newProject()}

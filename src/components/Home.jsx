@@ -4,6 +4,10 @@ import { Form, Button, Alert } from "react-bootstrap";
 import "./css/Global.css";
 
 class home extends Component {
+  componentDidMount = () => {
+    console.log(localStorage);
+  };
+
   displayAlert = () => {
     try {
       if (this.props.location.state.alertNotLoggedIn) {
@@ -29,8 +33,8 @@ class home extends Component {
     console.log(this.props);
     return (
       <>
-        {this.displayAlert()}
-        {this.redirectToProjects()}
+        {this.displayAlert}
+        {this.redirectToProjects}
         <div className="justify-content-center">
           <div className="small-centered-card">
             <Link to="/login" className="text-link">

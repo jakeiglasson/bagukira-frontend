@@ -5,9 +5,10 @@ import { Button, Navbar, Nav, Form, FormControl } from "react-bootstrap";
 
 class NavBar extends Component {
   purgeLocalStorage = () => {
-    // console.log(localStorage);
-    localStorage.removeItem("userId");
-    // console.log(localStorage);
+    console.log(localStorage);
+    // localStorage.removeItem("userId", "token");
+    localStorage.clear();
+    console.log(localStorage);
   };
 
   renderWelcomeMessage = () => {
@@ -27,38 +28,43 @@ class NavBar extends Component {
   };
 
   navButtons = () => {
-    if (localStorage.userId) {
-      return (
-        <>
-          <Route path="/projects/:id">
-            <Button variant="outline-warning" className="mx-2" href="/projects">
-              ALL PROJECTS
-            </Button>
-          </Route>
+    return (
+      <>
+        {localStorage.userId && (
+          <>
+            <Route path="/projects/:id">
+              <Button
+                variant="outline-warning"
+                className="mx-2"
+                href="/projects"
+              >
+                ALL PROJECTS
+              </Button>
+            </Route>
 
-          <Link to="/" onClick={this.purgeLocalStorage.bind(this)}>
-            <Button variant="outline-warning" className="mx-2">
-              SIGN OUT
-            </Button>
-          </Link>
-        </>
-      );
-    } else {
-      return (
-        <>
-          <Link to="/login" onClick={this.purgeLocalStorage.bind(this)}>
-            <Button variant="outline-warning" className="mx-2">
-              LOG IN
-            </Button>
-          </Link>
-          <Link to="/login" onClick={this.purgeLocalStorage.bind(this)}>
-            <Button variant="outline-warning" className="mx-2">
-              SIGN UP
-            </Button>
-          </Link>
-        </>
-      );
-    }
+            <Link to="/" onClick={this.purgeLocalStorage.bind(this)}>
+              <Button variant="outline-warning" className="mx-2">
+                SIGN OUT
+              </Button>
+            </Link>
+          </>
+        )}
+        {!localStorage.userId && (
+          <>
+            <Link to="/login" onClick={this.purgeLocalStorage.bind(this)}>
+              <Button variant="outline-warning" className="mx-2">
+                LOG IN
+              </Button>
+            </Link>
+            <Link to="/login" onClick={this.purgeLocalStorage.bind(this)}>
+              <Button variant="outline-warning" className="mx-2">
+                SIGN UP
+              </Button>
+            </Link>
+          </>
+        )}
+      </>
+    );
   };
 
   render() {

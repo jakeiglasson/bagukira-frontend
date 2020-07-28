@@ -11,6 +11,7 @@ import { faBug } from "@fortawesome/free-solid-svg-icons";
 import { Alert } from "react-bootstrap";
 
 import "./App.css";
+import ProtectedRoute from "./components/shared/ProtectedRoute.jsx";
 
 import Home from "./components/Home";
 import Login from "./components/Login";
@@ -81,23 +82,11 @@ class App extends Component {
   exactPathRoutes = () => {
     return (
       <>
-        <Route
-          exact
-          path="/projects"
-          render={(props) => (
-            <Projects {...props} serverRootUrl={this.serverRootUrl()} />
-          )}
-        />
+        <ProtectedRoute exact path="/projects" component={Projects} />
         <Route exact path="/" component={Home} />
         <Route exact path="/login" component={Login} />
         <Route exact path="/signup" component={Signup} />
-        <Route
-          exact
-          path="/projects/new"
-          render={(props) => (
-            <NewProject serverRootUrl={this.serverRootUrl()} {...props} />
-          )}
-        />
+        <ProtectedRoute exact path="/projects/new" component={NewProject} />
         <Route
           exact
           path="/projects/p/:hash"
