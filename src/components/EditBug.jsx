@@ -54,9 +54,12 @@ class EditBug extends Component {
   };
 
   updateBug = async () => {
+    const data = JSON.stringify(this.state.ticket);
+    console.log(data);
+
     await axios
       .patch(this.state.url, {
-        ticket: this.state.ticket,
+        ticket: data,
       })
       .then((response) => {
         console.log(response);
@@ -68,17 +71,29 @@ class EditBug extends Component {
   };
 
   onInputChange = (event) => {
-    // event.preventDefault();
+    const setStatus = (status) =>
+      this.setState({
+        ticket: { status: status },
+      });
 
-    if (event.target.value === this.state.ticket.status) {
-      return;
+    switch (event.target.id) {
+      case "OPEN":
+      case "IN PROGRESS":
+        setStatus(event.target.id);
+        break;
+      case "CLOSED":
+        setStatus(event.target.id);
+        this.setState({
+          renderClosePopup: true,
+        });
+        break;
+      default:
+        inputEventState(this, event);
+        return;
     }
-    console.log(event.target);
 
-    if (event.target.id === "CLOSED") {
-      inputEventState(this, event);
-      this.setState({ renderClosePopup: true });
-    }
+    console.log(event.target.id);
+    console.log(this.state.ticket);
   };
 
   handleClose = () => {
@@ -103,6 +118,7 @@ class EditBug extends Component {
           {Object.keys(statusList).map((key, index) => {
             return (
               <Dropdown.Item
+                key={index}
                 id={key}
                 eventKey={index}
                 className={statusList[key][1]}
@@ -127,14 +143,14 @@ class EditBug extends Component {
             <div className=" p-4">
               <h1 className="text-center">CLOSING BUG</h1>
               {/* <h1 className="text-center">BUG SUBJECT TEXT GOES HERE</h1> */}
-              <Form onSubmit={this.handleCloseSubmit}>
+              <Form onSubmit={this.updateBug}>
                 <Form.Group controlId="closeBugForm.ControlTextarea1">
                   <Form.Label>PLEASE ENTER YOUR NAME</Form.Label>
                   <Form.Control
                     type="text"
                     // rows="6"
                     placeholder="YOUR NAME HERE"
-                    value={this.state.closeNameValue}
+                    value={this.state.ticket.closed_by}
                     onChange={this.onInputChange}
                   />
                 </Form.Group>
