@@ -24,8 +24,8 @@ class AddUser extends Component {
 
   componentWillMount = () => {
     console.log("adduser > componentWillMount");
-    let component = this;
-    let setPermission = false;
+    // let component = this;
+    // let setPermission = false;
     if (!localStorage.userId) {
       this.props.history.push("/");
       window.location.reload(true);
@@ -66,7 +66,7 @@ class AddUser extends Component {
   postEmails = (array) => {
     let userId = localStorage.userId;
     let hash = this.props.match.params.hash;
-    let url = `${process.env.REACT_APP_API_URL}/users/${userId}/units/${hash}/invite`;
+    let route = `${process.env.REACT_APP_API_URL}/users/${userId}/units/${hash}/invite`;
 
     let data = JSON.stringify({
       unit: {
@@ -76,7 +76,7 @@ class AddUser extends Component {
 
     let config = {
       method: "post",
-      url: url,
+      url: route,
       headers: {
         Authorization: "Bearer " + localStorage.token,
         "Content-Type": "application/json",

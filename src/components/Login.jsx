@@ -73,8 +73,8 @@ class Login extends Component {
               onChange={this.onInputChange}
             />
             <Form.Text className="text-muted">
-              We'll never share your email with anyone else... Unless they pay
-              us alot, alot, alot of money (sorry)
+              You're email is confidential, we will never share your personal
+              information without your permission.
             </Form.Text>
           </Form.Group>
 
@@ -87,9 +87,10 @@ class Login extends Component {
               value={password}
               onChange={this.onInputChange}
             />
+
             <Button
               type="submit"
-              className="text-link btn btn-block"
+              className=" btn btn-block mt-3 btn-primary"
               data-testid="login"
             >
               LOGIN

@@ -91,6 +91,7 @@ class SideBar extends Component {
         console.log(response.data);
         this.setState({ project: response.data.units });
         localStorage.setItem("projectOwnerId", response.data.units.user_id);
+        localStorage.setItem("projectName", response.data.units.name);
       })
       .catch((error) => {
         console.log(error);

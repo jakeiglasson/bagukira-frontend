@@ -145,7 +145,7 @@ class signup extends Component {
           <div className="">Already have an account?</div>
           <Link to="/login" className="text-link">
             <Button className="btn btn-block" data-testid="signup">
-              Login
+              LOGIN
             </Button>
           </Link>
         </Form>
