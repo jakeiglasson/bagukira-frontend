@@ -11,6 +11,7 @@ import { faBug } from "@fortawesome/free-solid-svg-icons";
 import { Alert } from "react-bootstrap";
 
 import "./App.css";
+import ProtectedRoute from "./components/shared/ProtectedRoute.jsx";
 
 import Home from "./components/Home";
 import Login from "./components/Login";
@@ -63,6 +64,10 @@ class App extends Component {
     },
   };
 
+  setAppState = (stateName, value) => {
+    this.setState({ [stateName]: value });
+  };
+
   serverRootUrl() {
     return "http://localhost:4000";
   }
@@ -81,23 +86,11 @@ class App extends Component {
   exactPathRoutes = () => {
     return (
       <>
-        <Route
-          exact
-          path="/projects"
-          render={(props) => (
-            <Projects {...props} serverRootUrl={this.serverRootUrl()} />
-          )}
-        />
+        <ProtectedRoute exact path="/projects" component={Projects} />
         <Route exact path="/" component={Home} />
         <Route exact path="/login" component={Login} />
         <Route exact path="/signup" component={Signup} />
-        <Route
-          exact
-          path="/projects/new"
-          render={(props) => (
-            <NewProject serverRootUrl={this.serverRootUrl()} {...props} />
-          )}
-        />
+        <ProtectedRoute exact path="/projects/new" component={NewProject} />
         <Route
           exact
           path="/projects/p/:hash"
@@ -147,32 +140,40 @@ class App extends Component {
     return (
       <BrowserRouter>
         {this.bagukiraTitle()}
-        <Route path="/projects" component={NavBar} />
+        <Route exact path="/projects" component={NavBar} />
+        <Route exact path="/projects/new" component={NavBar} />
         {this.exactPathRoutes()}
 
         <Route
           path="/projects/p/:hash"
           render={(props) => (
-            <div className="content-container">
-              <div className="single-project-grid-container">
-                <SideBar
-                  // activeLink="{activeLink}"
-                  serverRootUrl={this.serverRootUrl()}
-                  className="spgc-side-nav"
-                  setActiveLink={this.setActiveLink.bind(this)}
-                  {...props}
-                />
-                {this.constructComponent("BugList")}
+            <>
+              <NavBar />
+              <div className="content-container">
+                <div className="single-project-grid-container">
+                  <SideBar
+                    // activeLink="{activeLink}"
+                    serverRootUrl={this.serverRootUrl()}
+                    className="spgc-side-nav"
+                    setActiveLink={this.setActiveLink.bind(this)}
+                    {...props}
+                  />
+                  {this.constructComponent("BugList")}
 
-                {this.constructComponent("NewBug")}
+                  {this.constructComponent("NewBug")}
 
-                {this.constructComponent("EditBug")}
+                  {this.constructComponent("EditBug")}
 
-                {this.constructComponent("AddUser")}
+                  {/* <ProtectedRoute
+                  path={"/projects/p/:hash/user/add"}
+                  component={AddUser}
+                /> */}
+                  {this.constructComponent("AddUser")}
 
-                {this.constructComponent("EditProject")}
+                  {this.constructComponent("EditProject")}
+                </div>
               </div>
-            </div>
+            </>
           )}
         />
       </BrowserRouter>

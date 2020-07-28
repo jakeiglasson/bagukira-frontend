@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import { Form, Button } from "react-bootstrap";
 import { Redirect } from "react-router-dom";
 import axios from "axios";
+import { inputEventState } from "./shared/Helpers.jsx";
 
 import { checkForCorrectLoggedInUser } from "./shared/Helpers.jsx";
 
@@ -22,29 +23,36 @@ class EditProject extends Component {
   }
 
   componentWillMount = () => {
-    this.getProjectInfo();
+    // this.getProjectInfo();
 
-    let component = this;
-    let setPermission = false;
-    let redirect = true;
-    checkForCorrectLoggedInUser(component, setPermission, redirect);
+    if (!localStorage.userId) {
+      this.props.history.push("/");
+      window.location.reload(true);
+    }
+
+    this.setState({ projectName: localStorage.projectName });
+
+    // let component = this;
+    // let setPermission = false;
+    // let redirect = true;
+    // checkForCorrectLoggedInUser(component, setPermission, redirect);
   };
 
-  getProjectInfo = () => {
-    // console.log("SideBar > getProjectName");
-    let hash = this.props.match.params.hash;
-    let { serverRootUrl } = this.props;
-    let endPoint = "/projects";
-    let queries = "?hashId=" + hash;
+  // getProjectInfo = () => {
+  //   // console.log("SideBar > getProjectName");
+  //   let hash = this.props.match.params.hash;
+  //   let { serverRootUrl } = this.props;
+  //   let endPoint = "/projects";
+  //   let queries = "?hashId=" + hash;
 
-    axios.get(serverRootUrl + endPoint + queries).then((response) => {
-      console.log(response);
-      this.setState({
-        projectName: response.data[0].name,
-        projectId: response.data[0].id,
-      });
-    });
-  };
+  //   axios.get(serverRootUrl + endPoint + queries).then((response) => {
+  //     console.log(response);
+  //     this.setState({
+  //       projectName: response.data[0].name,
+  //       projectId: response.data[0].id,
+  //     });
+  //   });
+  // };
 
   handleSubmit = (event) => {
     event.preventDefault();
@@ -59,7 +67,7 @@ class EditProject extends Component {
     var letters = /^[0-9a-zA-Z]+$/;
     let projectName = this.state.projectName.replace(/\s+/g, ""); // remove spaces for regex check
     if (projectName.match(letters)) {
-      alert("Project name has been updated");
+      // alert("Project name has been updated");
       return true;
     } else {
       alert("Invalid project name, project names may only be alphanumeric");
@@ -67,37 +75,56 @@ class EditProject extends Component {
     }
   };
 
-  updateProjectName = (projectName) => {
+  updateProjectName = () => {
     // logic to send project name to backend
-    axios
-      .patch(this.props.serverRootUrl + "/projects/" + this.state.projectId, {
-        name: this.state.projectName,
-      })
+
+    let projectName = this.state.projectName;
+
+    let userId = localStorage.userId;
+    let hash = this.props.match.params.hash;
+    let route = `${process.env.REACT_APP_API_URL}/units/${hash}`;
+
+    let data = JSON.stringify({
+      unit: {
+        name: projectName,
+      },
+    });
+
+    let config = {
+      method: "patch",
+      url: route,
+      headers: {
+        Authorization: "Bearer " + localStorage.token,
+        "Content-Type": "application/json",
+      },
+      data: data,
+    };
+
+    axios(config)
       .then((response) => {
         console.log(response);
+        console.log(JSON.stringify(response.data));
+        localStorage.setItem("projectName", projectName);
         window.location.reload(true);
       })
       .catch((error) => {
-        console.log(error);
+        console.log(error.response);
       });
   };
 
-  handleChange = (event) => {
-    this.setState({ projectName: event.target.value });
-  };
+  onInputChange = (event) => inputEventState(this, event);
 
   renderEditProjectForm = () => {
     return (
       <Form onSubmit={this.handleSubmit}>
-        <Form.Group controlId="addUserForm.ControlTextarea1">
+        <Form.Group>
           <Form.Label>PROJECT NAME</Form.Label>
           <Form.Control
+            id="projectName"
             type="text"
             placeholder="PROJECT NAME"
             value={this.state.projectName}
-            onChange={(event) => {
-              this.handleChange(event);
-            }}
+            onChange={this.onInputChange}
           />
         </Form.Group>
 
@@ -121,7 +148,7 @@ class EditProject extends Component {
   };
 
   renderContent = () => {
-    if (this.state.render) {
+    if (localStorage.userId == localStorage.projectOwnerId) {
       return (
         <div className="p-4 global-form-container">
           <h2 className="text-center">EDIT PROJECT</h2>
@@ -134,7 +161,7 @@ class EditProject extends Component {
   render() {
     return (
       <div className="side-content-container p-4">
-        {this.handleRedirect()}
+        {/* {this.handleRedirect()} */}
         {this.renderContent()}
       </div>
     );

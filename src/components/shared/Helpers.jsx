@@ -10,6 +10,12 @@ export const GetTime = (params) => {
   return dateTime;
 };
 
+export const inputEventState = (thisObj, event) => {
+  thisObj.setState({
+    [event.target.id]: event.target.value,
+  });
+};
+
 export const checkForCorrectLoggedInUser = (
   component,
   setPermission,
