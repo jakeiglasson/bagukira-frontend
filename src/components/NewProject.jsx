@@ -3,7 +3,7 @@ import axios from "axios";
 import { Form, Button } from "react-bootstrap";
 import { Link, Redirect } from "react-router-dom";
 
-import { GetTime } from "./shared/Helpers.jsx";
+import { GetTime, inputEventState } from "./shared/Helpers.jsx";
 
 class NewProject extends Component {
   state = { projectName: "" };
@@ -12,12 +12,7 @@ class NewProject extends Component {
     super(props);
   }
 
-  onInputChange = (event) => {
-    const key = event.target.id;
-    this.setState({
-      [key]: event.target.value,
-    });
-  };
+  onInputChange = (event) => inputEventState(this, event);
 
   handleSubmit = async (event) => {
     event.preventDefault();
@@ -41,7 +36,7 @@ class NewProject extends Component {
         const hash = response.data.units.id;
         // this.setState({ hash: response.data.units.id });
         alert(`Your ${this.state.projectName} new project was created`);
-        this.props.history.push("./projects/p/" + hash + "/bugs");
+        this.props.history.push("./p/" + hash + "/bugs");
       })
       .catch((error) => {
         alert(error);

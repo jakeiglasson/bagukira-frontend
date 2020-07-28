@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import { Form, Button } from "react-bootstrap";
 import { Redirect } from "react-router-dom";
 import axios from "axios";
+import { inputEventState } from "./shared/Helpers.jsx";
 
 import { checkForCorrectLoggedInUser } from "./shared/Helpers.jsx";
 
@@ -82,9 +83,7 @@ class EditProject extends Component {
       });
   };
 
-  handleChange = (event) => {
-    this.setState({ projectName: event.target.value });
-  };
+  onInputChange = (event) => inputEventState(this, event);
 
   renderEditProjectForm = () => {
     return (
@@ -92,12 +91,11 @@ class EditProject extends Component {
         <Form.Group controlId="addUserForm.ControlTextarea1">
           <Form.Label>PROJECT NAME</Form.Label>
           <Form.Control
+            id="projectName"
             type="text"
             placeholder="PROJECT NAME"
             value={this.state.projectName}
-            onChange={(event) => {
-              this.handleChange(event);
-            }}
+            onChange={this.onInputChange}
           />
         </Form.Group>
 

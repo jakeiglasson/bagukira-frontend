@@ -9,7 +9,7 @@ import {
 
 import axios from "axios";
 
-import { GetTime } from "./shared/Helpers.jsx";
+import { GetTime, inputEventState } from "./shared/Helpers.jsx";
 
 import "./css/NewBug.css";
 import "./css/Global.css";
@@ -29,39 +29,39 @@ class NewBug extends Component {
     };
   }
 
-  componentWillMount = () => {
-    this.bugAmount();
-    this.bugAmountInProject();
-  };
+  // componentWillMount = () => {
+  //   this.bugAmount();
+  //   this.bugAmountInProject();
+  // };
 
   // Get amount of bugs in JSON db to set new bug {id} to amount of bugs + 1
-  bugAmount = () => {
-    axios.get(this.props.serverRootUrl + "/bugs").then((response) => {
-      this.setState({ id: response.data.length + 1 }, function () {
-        console.log("setState completed", this.state);
-      }); // response.data.length + 1
-    });
-  };
+  // bugAmount = () => {
+  //   axios.get(this.props.serverRootUrl + "/bugs").then((response) => {
+  //     this.setState({ id: response.data.length + 1 }, function () {
+  //       console.log("setState completed", this.state);
+  //     }); // response.data.length + 1
+  //   });
+  // };
 
   // Get amount of bugs in current project in JSON db to set new bug {idInProject} to amount of bugs + 1
-  bugAmountInProject = () => {
-    axios
-      .get(this.props.serverRootUrl + "/bugs?projectRefHash=" + this.state.hash)
-      .then((response) => {
-        console.log(response);
-        this.setState({ idInProject: response.data.length + 1 }, function () {
-          console.log("setState completed", this.state);
-        }); // response.data.length + 1;
-      });
-  };
+  // bugAmountInProject = () => {
+  //   axios
+  //     .get(this.props.serverRootUrl + "/bugs?projectRefHash=" + this.state.hash)
+  //     .then((response) => {
+  //       console.log(response);
+  //       this.setState({ idInProject: response.data.length + 1 }, function () {
+  //         console.log("setState completed", this.state);
+  //       }); // response.data.length + 1;
+  //     });
+  // };
 
-  handleSubmit = (event) => {
+  handleSubmit = async (event) => {
     // alert("A new bug was submitted: " + this.state.subjectValue);
-    console.log("New Project > handleSubmit");
+    console.log("New Bug > handleSubmit");
     console.log("|-> state:", this.state);
     event.preventDefault();
 
-    const dateTime = GetTime();
+    // const dateTime = GetTime();
 
     // check:
     let reported_by = this.state.reporterNameValue;
@@ -76,20 +76,23 @@ class NewBug extends Component {
       return;
     }
 
-    axios
-      .post(this.props.serverRootUrl + "/bugs", {
-        id: this.state.id,
-        idInProject: this.state.idInProject,
-        projectRefHash: this.state.hash,
-        subject: this.state.subjectValue,
-        status: "OPEN",
-        severity: this.state.severityValue,
-        description: this.state.descriptionValue,
-        created_at: dateTime,
-        closed_at: "-",
-        reported_by: this.state.reporterNameValue,
-        closed_by: "-",
-      })
+    console.log(this.state);
+    await axios
+      .post(
+        process.env.REACT_APP_API_URL +
+          "/units/" +
+          this.state.hash +
+          "/tickets",
+        {
+          ticket: {
+            subject: this.state.subjectValue,
+            status: "open",
+            severity: `${this.state.severityValue.toLowerCase()}`,
+            description: this.state.descriptionValue,
+            opened_by: this.state.reporterNameValue,
+          },
+        }
+      )
       .then(function (response) {
         console.log(response);
         alert("Bug was successfully submitted!");
@@ -217,6 +220,7 @@ class NewBug extends Component {
             </Dropdown.Toggle>
 
             <Dropdown.Menu className="">
+              <Dropdown.Item eventKey="CRITICAL">CRITICAL</Dropdown.Item>
               <Dropdown.Item eventKey="HIGH">HIGH</Dropdown.Item>
               <Dropdown.Item eventKey="MEDIUM">MEDIUM</Dropdown.Item>
               <Dropdown.Item eventKey="LOW">LOW</Dropdown.Item>
@@ -237,11 +241,9 @@ class NewBug extends Component {
             className="bug-description-text"
           />
         </Form.Group>
-        <input
-          type="submit"
-          value="SUBMIT"
-          className="btn btn-block btn-primary"
-        />
+        <Button type="submit" className="btn btn-block btn-primary">
+          SUBMIT
+        </Button>
       </Form>
     );
   };

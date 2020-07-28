@@ -4,6 +4,7 @@ import { Link } from "react-router-dom";
 import axios from "axios";
 import "./css/Login.css";
 import "./css/Global.css";
+import { inputEventState } from "./shared/Helpers.jsx";
 
 class Login extends Component {
   constructor(props) {
@@ -53,12 +54,7 @@ class Login extends Component {
     // console.log("End handle submit");
   };
 
-  onInputChange = (event) => {
-    const key = event.target.id;
-    this.setState({
-      [key]: event.target.value,
-    });
-  };
+  onInputChange = (event) => inputEventState(this, event);
 
   render() {
     let { email, password, errMessage } = this.state;

@@ -64,6 +64,10 @@ class App extends Component {
     },
   };
 
+  setAppState = (stateName, value) => {
+    this.setState({ [stateName]: value });
+  };
+
   serverRootUrl() {
     return "http://localhost:4000";
   }
@@ -157,7 +161,8 @@ class App extends Component {
 
                 {this.constructComponent("EditBug")}
 
-                {this.constructComponent("AddUser")}
+                <ProtectedRoute exact path="./user/add" component={AddUser} />
+                {/* {this.constructComponent("AddUser")} */}
 
                 {this.constructComponent("EditProject")}
               </div>

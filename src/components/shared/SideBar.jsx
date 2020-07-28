@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import axios from "axios";
 import { BrowserRouter, Route, Link, NavLink } from "react-router-dom";
 
-import { checkForCorrectLoggedInUser } from "./Helpers.jsx";
+// import { checkForCorrectLoggedInUser } from "./Helpers.jsx";
 
 import "../css/Global.css";
 import "../css/SideBar.css";
@@ -21,16 +21,26 @@ class SideBar extends Component {
     };
     console.log("|-> state:", this.state);
   }
+
   componentWillMount = () => {
     // console.log("SideBar > componentWillMount");
+
+    if (localStorage.userId) {
+      console.log("id detected");
+      this.setState({ permission: true });
+    }
+    console.log(this.props.match.params);
     let { hash } = this.props.match.params;
     this.setState({ root: "/projects/p/" + hash + "/" });
-    this.getProjectName(hash);
+    this.getProject(hash);
 
     let component = this;
     let setPermission = true;
     let redirect = false;
-    checkForCorrectLoggedInUser(component, setPermission, redirect);
+
+    console.log(localStorage);
+
+    // checkForCorrectLoggedInUser(component, setPermission, redirect);
   };
 
   componentWillUpdate = () => {
@@ -40,32 +50,31 @@ class SideBar extends Component {
 
   // checkForCorrectLoggedInUser = () => {
   //   let match = false;
-  //   if (localStorage.userEmail) {
-  //     axios
-  //       .get(
-  //         // get all projects that belong to the logged in user
-  //         this.props.serverRootUrl + "/projects?userId=" + localStorage.userId
-  //       )
-  //       .then((response) => {
-  //         // iterate though each of those projects, checking if the current hash matches one of the users projects hash
-  //         response.data.forEach((project) => {
-  //           if (project.hashId == this.state.hash) {
-  //             console.log("match!");
-  //             match = true;
-  //           } else {
-  //             return false;
-  //           }
-  //         });
-  //       })
-  //       .then(() => {
-  //         if (match) {
-  //           this.setState({ permission: true }, () => {
-  //             console.log(this.state);
-  //           });
-  //         }
-  //       });
+  //   console.log(localStorage);
+  //   if (localStorage.userId === this.state.project.user_id) {
+  //     this.setState({ permission: true }), console.log(this.state);
   //   }
   // };
+  // axios
+  //   .get(
+  //     // get all projects that belong to the logged in user
+  //     process.env.REACT_APP_API_URL +
+  //       "/projects?userId=" +
+  //       localStorage.userId
+  //   )
+  //   .then((response) => {
+  // iterate though each of those projects, checking if the current hash matches one of the users projects hash
+  //   response.data.forEach((project) => {
+  //     if (project.hashId == this.state.hash) {
+  //       console.log("match!");
+  //       match = true;
+  //     } else {
+  //       return false;
+  //     }
+  //   });
+  // })
+  // .then(() => {
+  //   if (match) {
 
   // shouldComponentUpdate = (nextProps, nextState) => {
   //   console.log("SideBar > shouldComponentUpdate");
@@ -73,15 +82,19 @@ class SideBar extends Component {
   //   console.log("|-> state:", this.state);
   // };
 
-  getProjectName = (hash) => {
-    // console.log("SideBar > getProjectName");
-    let { serverRootUrl } = this.props;
-    let endPoint = "/projects";
-    let queries = "?hashId=" + hash;
-
-    axios.get(serverRootUrl + endPoint + queries).then((response) => {
-      this.setState({ projectName: response.data[0].name });
-    });
+  getProject = async (hash) => {
+    // console.log("SideBar > getProject");
+    const endPoint = "/units/";
+    await axios
+      .get(process.env.REACT_APP_API_URL + endPoint + hash)
+      .then((response) => {
+        console.log(response.data);
+        this.setState({ project: response.data.units });
+        localStorage.setItem("projectOwnerId", response.data.units.user_id);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
   };
 
   renderLink = (endPoint, linkName) => {
@@ -94,7 +107,7 @@ class SideBar extends Component {
   };
 
   renderAdminLinks = () => {
-    if (this.state.permission) {
+    if (localStorage.userId == this.state.project.user_id) {
       return (
         <>
           {this.renderLink("user/add", "ADD USER")}
@@ -107,13 +120,13 @@ class SideBar extends Component {
   render() {
     // console.log("SideBar > render");
     // console.log("|-> state:", this.state);
-    let { projectName } = this.state;
+    let { name } = this.state.project || { name: null };
 
-    if (projectName) {
+    if (name) {
       return (
         <div className={"side-bar-container " + this.props.className}>
           <Nav defaultActiveKey="/home" className="flex-column sidebar">
-            <h3>{projectName}</h3>
+            <h3>{name}</h3>
             {this.renderLink("bugs", "BUG LIST")}
 
             {this.renderLink("bug/new", "NEW BUG")}

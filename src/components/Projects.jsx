@@ -63,7 +63,7 @@ class Projects extends Component {
     );
   };
 
-  existingProject = () => {
+  existingProjects = () => {
     const { projects } = this.state;
     return (
       <>
@@ -72,7 +72,7 @@ class Projects extends Component {
             return (
               <Button
                 key={index}
-                href={"/projects/p/" + project.hashId + "/bugs"}
+                href={"/projects/p/" + project.id + "/bugs"}
                 className="projects-item-container"
                 variant="warning"
                 size="lg"
@@ -95,7 +95,7 @@ class Projects extends Component {
         <h1 className="text-center m-3">ALL PROJECTS</h1>
         <div className="projects-grid-container p-3">
           {this.newProject()}
-          {this.existingProject()}
+          {this.existingProjects()}
         </div>
       </>
     );

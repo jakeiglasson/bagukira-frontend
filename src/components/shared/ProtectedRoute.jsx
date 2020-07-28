@@ -9,35 +9,40 @@ class ProtectedRoute extends React.Component {
   };
 
   componentDidMount = async () => {
-    try {
-      const response = await axios.get(
-        `${process.env.REACT_APP_API_URL}/status/user`,
-        {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-          },
+    console.log(this.props.path);
+    console.log("http://localhost:3000" + this.props.path);
+    if (window.location.href == "http://localhost:3000" + this.props.path) {
+      try {
+        const response = await axios.get(
+          `${process.env.REACT_APP_API_URL}/status/user`,
+          {
+            headers: {
+              Authorization: `Bearer ${localStorage.getItem("token")}`,
+            },
+          }
+        );
+        if (response.status >= 400) {
+          throw new Error("not authorized");
+        } else {
+          console.log(response);
+          this.setState({
+            auth: true,
+            loading: false,
+          });
         }
-      );
-      if (response.status >= 400) {
-        throw new Error("not authorized");
-      } else {
-        console.log(response);
+      } catch (err) {
+        console.log(err.message);
         this.setState({
-          auth: true,
           loading: false,
         });
       }
-    } catch (err) {
-      console.log(err.message);
-      this.setState({
-        loading: false,
-      });
     }
   };
 
   render() {
     const { loading, auth } = this.state;
     if (!loading && !auth) {
+      console.log("REDIRECTING USER", this.props.component);
       return <Redirect to="/" />;
     } else {
       return (

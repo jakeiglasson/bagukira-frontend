@@ -4,10 +4,10 @@ import "../css/Global.css";
 import { Button, Navbar, Nav, Form, FormControl } from "react-bootstrap";
 
 class NavBar extends Component {
-  purgeLocalStorage = () => {
+  purgeLocalStorage = async () => {
     console.log(localStorage);
     // localStorage.removeItem("userId", "token");
-    localStorage.clear();
+    await localStorage.clear();
     console.log(localStorage);
   };
 
@@ -32,17 +32,12 @@ class NavBar extends Component {
       <>
         {localStorage.userId && (
           <>
-            <Route path="/projects/:id">
-              <Button
-                variant="outline-warning"
-                className="mx-2"
-                href="/projects"
-              >
-                ALL PROJECTS
-              </Button>
-            </Route>
+            {/* REMOVED Link because when clicked it doesn't render /projects initially, user has to force a reload */}
+            <Button variant="outline-warning" className="mx-2" href="/projects">
+              ALL PROJECTS
+            </Button>
 
-            <Link to="/" onClick={this.purgeLocalStorage.bind(this)}>
+            <Link to="/" onClick={this.purgeLocalStorage}>
               <Button variant="outline-warning" className="mx-2">
                 SIGN OUT
               </Button>
@@ -51,12 +46,12 @@ class NavBar extends Component {
         )}
         {!localStorage.userId && (
           <>
-            <Link to="/login" onClick={this.purgeLocalStorage.bind(this)}>
+            <Link to="/login">
               <Button variant="outline-warning" className="mx-2">
                 LOG IN
               </Button>
             </Link>
-            <Link to="/login" onClick={this.purgeLocalStorage.bind(this)}>
+            <Link to="/login">
               <Button variant="outline-warning" className="mx-2">
                 SIGN UP
               </Button>
@@ -72,7 +67,6 @@ class NavBar extends Component {
     return (
       <Navbar bg="dark" variant="dark" className="">
         {this.renderWelcomeMessage()}
-
         {this.navButtons()}
       </Navbar>
     );

@@ -1,9 +1,11 @@
 import React, { Component } from "react";
-import { Redirect } from "react-router-dom";
 import { Form, Button } from "react-bootstrap";
 import axios from "axios";
 
-import { checkForCorrectLoggedInUser } from "./shared/Helpers.jsx";
+import {
+  checkForCorrectLoggedInUser,
+  inputEventState,
+} from "./shared/Helpers.jsx";
 
 import "./css/AddUser.css";
 import "./css/Global.css";
@@ -14,7 +16,6 @@ class AddUser extends Component {
     this.state = {
       emailsValue: "",
       emailsAreValid: false,
-      redirect: false,
       render: false,
       hash: this.props.match.params.hash,
     };
@@ -24,8 +25,7 @@ class AddUser extends Component {
   componentWillMount = () => {
     let component = this;
     let setPermission = false;
-    let redirect = true;
-    checkForCorrectLoggedInUser(component, setPermission, redirect);
+    checkForCorrectLoggedInUser(component, setPermission);
   };
 
   handleSubmit = (event) => {
@@ -62,9 +62,7 @@ class AddUser extends Component {
     // logic to send emails to backend
   };
 
-  handleChange = (event) => {
-    this.setState({ emailsValue: event.target.value });
-  };
+  onInputChange = (event) => inputEventState(this, event);
 
   renderAddUserForm = () => {
     return (
@@ -90,9 +88,7 @@ class AddUser extends Component {
             rows="6"
             placeholder="EMAILS"
             value={this.state.emailsValue}
-            onChange={(event) => {
-              this.handleChange(event);
-            }}
+            onChange={this.onInputChange}
           />
         </Form.Group>
 
@@ -105,18 +101,9 @@ class AddUser extends Component {
     );
   };
 
-  handleRedirect = () => {
-    if (this.state.redirect) {
-      return (
-        <Redirect
-          to={"/projects/p/" + this.props.match.params.hash + "/bugs"}
-        />
-      );
-    }
-  };
-
   renderContent = () => {
-    if (this.state.render) {
+    console.log(localStorage);
+    if (localStorage.userId == localStorage.projectOwnerId) {
       return (
         <div className="p-4 global-form-container">
           <h2 className="text-center">ADD USER</h2>
@@ -128,10 +115,7 @@ class AddUser extends Component {
 
   render() {
     return (
-      <div className="side-content-container p-4">
-        {this.handleRedirect()}
-        {this.renderContent()}
-      </div>
+      <div className="side-content-container p-4">{this.renderContent()}</div>
     );
   }
 }
