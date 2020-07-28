@@ -23,9 +23,14 @@ class AddUser extends Component {
   }
 
   componentWillMount = () => {
+    console.log("adduser > componentWillMount");
     let component = this;
     let setPermission = false;
-    checkForCorrectLoggedInUser(component, setPermission);
+    if (!localStorage.userId) {
+      this.props.history.push("/");
+      window.location.reload(true);
+    }
+    // checkForCorrectLoggedInUser(component, setPermission);
   };
 
   handleSubmit = (event) => {
@@ -45,7 +50,7 @@ class AddUser extends Component {
     }
 
     // After passing above test, string contains valid emails and can be sent to backend
-    this.postEmails(string);
+    this.postEmails(array);
   };
 
   ValidateEmail(mail) {
@@ -58,8 +63,35 @@ class AddUser extends Component {
     }
   }
 
-  postEmails = (emailString) => {
-    // logic to send emails to backend
+  postEmails = (array) => {
+    let userId = localStorage.userId;
+    let hash = this.props.match.params.hash;
+    let url = `${process.env.REACT_APP_API_URL}/users/${userId}/units/${hash}/invite`;
+
+    let data = JSON.stringify({
+      unit: {
+        invite_list: array,
+      },
+    });
+
+    let config = {
+      method: "post",
+      url: url,
+      headers: {
+        Authorization: "Bearer " + localStorage.token,
+        "Content-Type": "application/json",
+      },
+      data: data,
+    };
+
+    axios(config)
+      .then((response) => {
+        console.log(response);
+        console.log(JSON.stringify(response.data));
+      })
+      .catch((error) => {
+        console.log(error);
+      });
   };
 
   onInputChange = (event) => inputEventState(this, event);
@@ -81,15 +113,22 @@ class AddUser extends Component {
             </li>
           </ul>
         </div>
-        <Form.Group controlId="addUserForm.ControlTextarea1">
+        <Form.Group>
           {/* <Form.Label>EMAILS</Form.Label> */}
           <Form.Control
             as="textarea"
             rows="6"
             placeholder="EMAILS"
+            id="emailsValue"
             value={this.state.emailsValue}
             onChange={this.onInputChange}
           />
+          {/* type="email"
+              placeholder="Enter email"
+              name="email"
+              id="email"
+              value={email}
+              onChange={this.onInputChange} */}
         </Form.Group>
 
         <input
@@ -102,7 +141,7 @@ class AddUser extends Component {
   };
 
   renderContent = () => {
-    console.log(localStorage);
+    // console.log(localStorage);
     if (localStorage.userId == localStorage.projectOwnerId) {
       return (
         <div className="p-4 global-form-container">

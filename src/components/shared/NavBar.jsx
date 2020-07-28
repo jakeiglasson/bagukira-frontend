@@ -37,11 +37,14 @@ class NavBar extends Component {
               ALL PROJECTS
             </Button>
 
-            <Link to="/" onClick={this.purgeLocalStorage}>
-              <Button variant="outline-warning" className="mx-2">
-                SIGN OUT
-              </Button>
-            </Link>
+            <Button
+              href="/"
+              variant="outline-warning"
+              className="mx-2"
+              onClick={this.purgeLocalStorage}
+            >
+              SIGN OUT
+            </Button>
           </>
         )}
         {!localStorage.userId && (

@@ -140,33 +140,40 @@ class App extends Component {
     return (
       <BrowserRouter>
         {this.bagukiraTitle()}
-        <Route path="/projects" component={NavBar} />
+        <Route exact path="/projects" component={NavBar} />
+        <Route exact path="/projects/new" component={NavBar} />
         {this.exactPathRoutes()}
 
         <Route
           path="/projects/p/:hash"
           render={(props) => (
-            <div className="content-container">
-              <div className="single-project-grid-container">
-                <SideBar
-                  // activeLink="{activeLink}"
-                  serverRootUrl={this.serverRootUrl()}
-                  className="spgc-side-nav"
-                  setActiveLink={this.setActiveLink.bind(this)}
-                  {...props}
-                />
-                {this.constructComponent("BugList")}
+            <>
+              <NavBar />
+              <div className="content-container">
+                <div className="single-project-grid-container">
+                  <SideBar
+                    // activeLink="{activeLink}"
+                    serverRootUrl={this.serverRootUrl()}
+                    className="spgc-side-nav"
+                    setActiveLink={this.setActiveLink.bind(this)}
+                    {...props}
+                  />
+                  {this.constructComponent("BugList")}
 
-                {this.constructComponent("NewBug")}
+                  {this.constructComponent("NewBug")}
 
-                {this.constructComponent("EditBug")}
+                  {this.constructComponent("EditBug")}
 
-                <ProtectedRoute exact path="./user/add" component={AddUser} />
-                {/* {this.constructComponent("AddUser")} */}
+                  {/* <ProtectedRoute
+                  path={"/projects/p/:hash/user/add"}
+                  component={AddUser}
+                /> */}
+                  {this.constructComponent("AddUser")}
 
-                {this.constructComponent("EditProject")}
+                  {this.constructComponent("EditProject")}
+                </div>
               </div>
-            </div>
+            </>
           )}
         />
       </BrowserRouter>

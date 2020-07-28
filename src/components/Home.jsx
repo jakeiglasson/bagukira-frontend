@@ -4,6 +4,10 @@ import { Form, Button, Alert } from "react-bootstrap";
 import "./css/Global.css";
 
 class home extends Component {
+  componentWillMount = () => {
+    localStorage.clear();
+  };
+
   componentDidMount = () => {
     console.log(localStorage);
   };
