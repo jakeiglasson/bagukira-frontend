@@ -25,9 +25,17 @@ class BugList extends Component {
       .get(url)
       .then((response) => {
         const data = response.data;
+        console.log(response);
         this.setState({ bugs: data.tickets });
       })
-      .catch((error) => console.log(error));
+      .catch((error) => {
+        console.log(error.response);
+        if (error.response.status >= 500) {
+          alert("This resource doesn't exist");
+          this.props.history.push("/");
+          window.location.reload(true);
+        }
+      });
   };
 
   componentDidUpdate() {

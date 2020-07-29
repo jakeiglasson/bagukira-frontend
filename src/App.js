@@ -64,6 +64,10 @@ class App extends Component {
     },
   };
 
+  componentWillMount = () => {
+    localStorage.setItem("unauthorizedAlert", false);
+  };
+
   setAppState = (stateName, value) => {
     this.setState({ [stateName]: value });
   };
@@ -75,10 +79,8 @@ class App extends Component {
   bagukiraTitle = () => {
     return (
       <div className="text-center display-1 py-3 banner-text">
-        <Link to="/" className="text-link">
-          <FontAwesomeIcon icon={faBug} style={{ color: "orange" }} /> Bagukira{" "}
-          <FontAwesomeIcon icon={faBug} style={{ color: "orange" }} />
-        </Link>
+        <FontAwesomeIcon icon={faBug} style={{ color: "orange" }} /> Bagukira{" "}
+        <FontAwesomeIcon icon={faBug} style={{ color: "orange" }} />
       </div>
     );
   };
@@ -140,8 +142,8 @@ class App extends Component {
     return (
       <BrowserRouter>
         {this.bagukiraTitle()}
-        <Route exact path="/projects" component={NavBar} />
-        <Route exact path="/projects/new" component={NavBar} />
+        <ProtectedRoute exact path="/projects" component={NavBar} />
+        <ProtectedRoute exact path="/projects/new" component={NavBar} />
         {this.exactPathRoutes()}
 
         <Route

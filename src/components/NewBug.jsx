@@ -29,10 +29,13 @@ class NewBug extends Component {
     };
   }
 
-  // componentWillMount = () => {
-  //   this.bugAmount();
-  //   this.bugAmountInProject();
-  // };
+  componentWillMount = () => {
+    if (this.props.authorized == false) {
+      alert("You are not authorized to access this resource");
+      this.props.history.push("/");
+      window.location.reload(true);
+    }
+  };
 
   // Get amount of bugs in JSON db to set new bug {id} to amount of bugs + 1
   // bugAmount = () => {

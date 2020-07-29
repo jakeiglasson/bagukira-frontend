@@ -24,13 +24,12 @@ class AddUser extends Component {
 
   componentWillMount = () => {
     console.log("adduser > componentWillMount");
-    // let component = this;
-    // let setPermission = false;
+
     if (!localStorage.userId) {
+      alert("You are not authorized to access this resource");
       this.props.history.push("/");
       window.location.reload(true);
     }
-    // checkForCorrectLoggedInUser(component, setPermission);
   };
 
   handleSubmit = (event) => {
