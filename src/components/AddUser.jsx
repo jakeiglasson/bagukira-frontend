@@ -125,7 +125,9 @@ class AddUser extends Component {
           type="submit"
           value="SUBMIT"
           className="btn btn-block btn-primary"
-        ></Button>
+        >
+          SUBMIT
+        </Button>
       </Form>
     );
   };

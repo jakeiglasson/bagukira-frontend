@@ -1,0 +1,7 @@
+/* mobile and tablet */
+@media (min-width: 320px) and (max-width: 1024px) {
+  .single-project-grid-container {
+    grid-template-columns: 1fr;
+    grid-template-areas: none;
+  }
+}

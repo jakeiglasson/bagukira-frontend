@@ -5,6 +5,8 @@ import { Link } from "react-router-dom";
 
 import { inputEventState } from "./shared/Helpers.jsx";
 
+import "./css/NewProject.css";
+
 class NewProject extends Component {
   state = { projectName: "" };
 
@@ -20,6 +22,11 @@ class NewProject extends Component {
 
   handleSubmit = async (event) => {
     event.preventDefault();
+
+    if (this.state.projectName.length > 40) {
+      alert("Project name is too long, 40 character limit");
+      return;
+    }
 
     const userId = localStorage.getItem("userId");
     const url = process.env.REACT_APP_API_URL + "/users/" + userId + "/units";
