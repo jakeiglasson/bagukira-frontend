@@ -11,9 +11,11 @@ import axios from "axios";
 
 class EditBug extends Component {
   state = {
+    description: "",
+    closedBy: "",
     renderClosePopup: false,
     renderEditDescription: false,
-    ticket: { status: "open" },
+    // ticket: { status: "open" },
     previousStatus: "open",
     root: `/projects/p/${this.props.match.params.hash}/bugs`,
     statusList: {
@@ -30,7 +32,11 @@ class EditBug extends Component {
       const { data = {}, error } = response;
 
       if (typeof error !== undefined) {
-        this.setState({ ticket: data.tickets });
+        this.setState({
+          ticket: data.tickets,
+          closedBy: data.tickets.closed_by,
+          description: data.tickets.description,
+        });
         return;
       } else {
         throw error;
@@ -52,7 +58,15 @@ class EditBug extends Component {
     this.props.history.push(`${this.state.root}`);
   };
 
-  updateBug = async () => {
+  updateBug = async (event) => {
+    try {
+      event.preventDefault();
+    } catch (error) {
+      console.log(error);
+    }
+
+    console.log("UPDATING BUG");
+    console.log(event.target);
     await axios
       .patch(this.state.url, {
         ticket: this.state.ticket,
@@ -63,9 +77,12 @@ class EditBug extends Component {
         this.setState({
           renderClosePopup: false,
           renderEditDescription: false,
+          description: this.state.ticket.description,
+          closedBy: this.state.ticket.closed_by,
         });
 
-        if (this.state.ticket.status === "CLOSED" || descriptionChanged) {
+        if (this.state.ticket.status === "CLOSED") {
+          console.log("changPage");
           this.changePage();
         }
       })
@@ -76,19 +93,21 @@ class EditBug extends Component {
 
   //   Handle user interface inputs for bug ticket
   onInputChange = (event) => {
+    console.log(event.target.id);
     switch (event.target.id) {
       // Handle changes of bug status
       case "OPEN":
       case "IN PROGRESS":
         this.setTicketState("status", event.target.id);
+        this.setTicketState("closed_by", "");
         // Update and changes to the bug from ticket state
-        this.updateBug();
+        this.updateBug(event);
         break;
 
       case "CLOSED":
         this.setState({
           previousStatus: this.state.ticket.status,
-          previousClosedBy: this.state.tickets.closed_by,
+          previousClosedBy: this.state.ticket.closed_by,
           renderClosePopup: true,
         });
         this.setTicketState("status", event.target.id);
@@ -97,7 +116,16 @@ class EditBug extends Component {
 
       default:
         //  Handle all other field changes
-        this.setTicketState(event.target.id, event.target.value);
+        if (event.target.id == "closed_by") {
+          console.log("closing");
+          this.setTicketState(
+            event.target.id,
+            event.target.value.toUpperCase()
+          );
+        } else {
+          this.setTicketState(event.target.id, event.target.value);
+        }
+
         return;
     }
   };
@@ -120,15 +148,18 @@ class EditBug extends Component {
   };
 
   //   Close the description or close function modals
-  handleCloseModal = () => {
-    // Rollback status
-    this.setTicketState("status", this.state.previousStatus);
-    this.setTicketState("closed_by", this.state.previousClosedBy);
-    // Hide modals
-    this.setState({
-      renderClosePopup: false,
-      renderEditDescription: false,
-    });
+  handleCloseModal = (event) => {
+    // unfortunate that this has to be used, but deadline is too close to refactor and work as intended
+    window.location.reload(true);
+    // // Rollback status
+    // this.setTicketState("status", this.state.previousStatus);
+    // this.setTicketState("closed_by", this.state.previousClosedBy);
+    // this.setTicketState("description", this.state.description);
+    // // Hide modals
+    // this.setState({
+    //   renderClosePopup: false,
+    //   renderEditDescription: false,
+    // });
   };
 
   dropDown = () => {
@@ -138,7 +169,7 @@ class EditBug extends Component {
 
     return (
       <>
-        <Button variant={statusList[status][0]} className="statusButton">
+        <Button variant={statusList[status][0]} className="statusButton mr-2">
           {status}
         </Button>
         <Dropdown as={ButtonGroup}>
@@ -215,7 +246,11 @@ class EditBug extends Component {
           <div className="popup-container p-4">
             <div className="popup-content p-4">
               <h1 className="text-center">EDIT BUG DESCRIPTION</h1>
-              <Form onSubmit={this.updateBug} className="eb-description-width">
+              <Form
+                id="descriptionForm"
+                onSubmit={this.updateBug}
+                className="eb-description-width"
+              >
                 <Form.Group controlId="editDescriptionForm.ControlTextarea1">
                   <Form.Control
                     id="description"
@@ -229,15 +264,15 @@ class EditBug extends Component {
                     id="save"
                     type="submit"
                     variant="primary"
-                    className="btn btn-primary"
+                    className="btn btn-primary mt-2 display-inline"
                   >
                     SAVE
                   </Button>
-                  <div className="x-spacer" />
+                  <div className="x-spacer display-inline" />
                   <Button
                     id="editDescriptionClose"
                     variant="danger"
-                    className="btn mt-2"
+                    className="btn mt-2 display-inline"
                     onClick={this.handleCloseModal}
                   >
                     CANCEL
@@ -257,7 +292,7 @@ class EditBug extends Component {
         <FontAwesomeIcon icon={faBug} className="eb-image" />
         <div className="eb-description-text-container">
           <div className="eb-description-text px-4 pt-3 overflow-auto eb-description-width">
-            {this.state.ticket.description}
+            {this.state.description}
           </div>
         </div>
         <div className="eb-description-button-container">
@@ -309,7 +344,7 @@ class EditBug extends Component {
                 </tr>
                 <tr>
                   <td>CLOSED BY</td>
-                  <td>{ticket.closed_by}</td>
+                  <td>{this.state.closedBy}</td>
                 </tr>
               </tbody>
             </Table>
@@ -323,13 +358,18 @@ class EditBug extends Component {
   render() {
     const { ticket } = this.state;
 
-    return (
-      <div className="side-content-container p-4">
-        {ticket === {} || this.renderBug(ticket)}
-        {this.renderClosePopup()}
-        {this.renderEditDescription()}
-      </div>
-    );
+    if (ticket) {
+      console.log("TICKET:", ticket);
+      return (
+        <div className="side-content-container p-4">
+          {this.renderBug(ticket)}
+          {this.renderClosePopup()}
+          {this.renderEditDescription()}
+        </div>
+      );
+    } else {
+      return null;
+    }
   }
 }
 
