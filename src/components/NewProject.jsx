@@ -27,7 +27,10 @@ class NewProject extends Component {
       .post(
         url,
         {
-          unit: { name: this.state.projectName, unit_type: "project" },
+          unit: {
+            name: this.state.projectName.toUpperCase(),
+            unit_type: "project",
+          },
         },
         {
           headers: {
@@ -62,7 +65,7 @@ class NewProject extends Component {
                 id="projectName"
                 type="text"
                 placeholder="PROJECT NAME"
-                value={projectName}
+                value={projectName.toUpperCase()}
                 onChange={this.onInputChange}
               />
             </Form.Group>
