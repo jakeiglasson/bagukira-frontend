@@ -8,6 +8,14 @@ import { inputEventState } from "./shared/Helpers.jsx";
 class NewProject extends Component {
   state = { projectName: "" };
 
+  componentWillMount = () => {
+    if (this.props.authorized == false) {
+      alert("You are not authorized to access this resource");
+      this.props.history.push("/");
+      window.location.reload(true);
+    }
+  };
+
   onInputChange = (event) => inputEventState(this, event);
 
   handleSubmit = async (event) => {

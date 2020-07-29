@@ -19,6 +19,13 @@ class Projects extends Component {
   async componentWillMount() {
     console.log("componentDidMount");
     console.log("localStorage:", localStorage);
+    console.log(this.props);
+
+    if (this.props.unAuthorized == false) {
+      alert("You are not authorized to access this resource");
+      this.props.history.push("/");
+      window.location.reload(true);
+    }
 
     await axios
       .get(
