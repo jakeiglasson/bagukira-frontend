@@ -57,9 +57,7 @@ class App extends Component {
     },
   };
 
-  componentWillMount = () => {
-    localStorage.setItem("unauthorizedAlert", false);
-  };
+  componentWillMount = () => {};
 
   setAppState = (stateName, value) => {
     this.setState({ [stateName]: value });
