@@ -52,7 +52,10 @@ class EditBug extends Component {
     this.props.history.push(`${this.state.root}`);
   };
 
-  updateBug = async () => {
+  updateBug = async (event) => {
+    event.preventDefault();
+    console.log("UPDATING BUG");
+    console.log(event.target);
     await axios
       .patch(this.state.url, {
         ticket: this.state.ticket,
@@ -65,7 +68,8 @@ class EditBug extends Component {
           renderEditDescription: false,
         });
 
-        if (this.state.ticket.status === "CLOSED" || descriptionChanged) {
+        if (this.state.ticket.status === "CLOSED") {
+          console.log("changPage");
           this.changePage();
         }
       })
@@ -215,7 +219,11 @@ class EditBug extends Component {
           <div className="popup-container p-4">
             <div className="popup-content p-4">
               <h1 className="text-center">EDIT BUG DESCRIPTION</h1>
-              <Form onSubmit={this.updateBug} className="eb-description-width">
+              <Form
+                id="descriptionForm"
+                onSubmit={this.updateBug}
+                className="eb-description-width"
+              >
                 <Form.Group controlId="editDescriptionForm.ControlTextarea1">
                   <Form.Control
                     id="description"
