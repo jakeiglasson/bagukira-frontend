@@ -4,9 +4,18 @@ import { Link } from "react-router-dom";
 import axios from "axios";
 import "./css/Login.css";
 import "./css/Global.css";
+import { inputEventState } from "./shared/Helpers.jsx";
 
 class Login extends Component {
-  state = { email: "", password: "", errMessage: "" };
+  constructor(props) {
+    super(props);
+    this.state = { email: "", password: "", errMessage: "" };
+  }
+
+  componentDidMount = () => {
+    console.log("componentDidMount");
+    console.log("localStorage:", localStorage);
+  };
 
   parseJwt(token) {
     if (!token) {
@@ -17,9 +26,10 @@ class Login extends Component {
     return JSON.parse(window.atob(base64));
   }
 
-  handleSubmit = () => {
+  handleSubmit = async (event) => {
+    event.preventDefault();
     let { email, password } = this.state;
-    axios
+    await axios
       .post(process.env.REACT_APP_API_URL + "/login", {
         auth: {
           email: email,
@@ -27,28 +37,31 @@ class Login extends Component {
         },
       })
       .then((response) => {
+        // console.log(response);
         localStorage.setItem("token", response.data.jwt);
-        let userId = this.parseJwt(localStorage.getItem("token")).sub;
+
+        const userId = this.parseJwt(localStorage.getItem("token")).sub;
         localStorage.setItem("userId", userId);
+
+        // console.log(localStorage);
+
+        this.props.history.push("/projects");
+        window.location.reload(true);
       })
       .catch((error) => {
         console.log(error);
       });
+    // console.log("End handle submit");
   };
 
-  onInputChange = (event) => {
-    const key = event.target.id;
-    this.setState({
-      [key]: event.target.value,
-    });
-  };
+  onInputChange = (event) => inputEventState(this, event);
 
   render() {
     let { email, password, errMessage } = this.state;
     return (
       <div className="small-centered-card">
         <h3 className="text-center mb-3">LOGIN</h3>
-        <Form>
+        <Form onSubmit={this.handleSubmit}>
           <Form.Group controlId="formBasicEmail">
             <Form.Label>Email address</Form.Label>
             <Form.Control
@@ -60,8 +73,8 @@ class Login extends Component {
               onChange={this.onInputChange}
             />
             <Form.Text className="text-muted">
-              We'll never share your email with anyone else... Unless they pay
-              us alot, alot, alot of money (sorry)
+              You're email is confidential, we will never share your personal
+              information without your permission.
             </Form.Text>
           </Form.Group>
 
@@ -74,16 +87,16 @@ class Login extends Component {
               value={password}
               onChange={this.onInputChange}
             />
+
+            <Button
+              type="submit"
+              className=" btn btn-block mt-3 btn-primary"
+              data-testid="login"
+            >
+              LOGIN
+            </Button>
           </Form.Group>
 
-          <Link
-            to="/projects"
-            className="text-link"
-            data-testid="login"
-            onClick={this.handleSubmit.bind(this)}
-          >
-            <Button className="btn btn-block">LOGIN</Button>
-          </Link>
           <hr />
           <Link to="/signup" className="text-link">
             <Button className="btn btn-warning btn-block" data-testid="signup">

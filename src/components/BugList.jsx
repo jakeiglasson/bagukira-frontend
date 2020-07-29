@@ -7,18 +7,28 @@ import "./css/Global.css";
 class BugList extends Component {
   state = {
     bugs: [],
+    hash: this.props.match.params.hash,
+  };
+
+  componentWillMount = () => {
+    this.getTickets();
   };
 
   componentDidMount() {
     // console.log("componentDidMount", this.props);
-    let { hash } = this.props.match.params;
-    let route = this.props.serverRootUrl + "/bugs?projectRefHash=" + hash;
-
-    axios.get(route).then((response) => {
-      const data = response.data;
-      this.setState({ bugs: data });
-    });
   }
+
+  getTickets = () => {
+    const url = `${process.env.REACT_APP_API_URL}/units/${this.state.hash}/tickets`;
+
+    axios
+      .get(url)
+      .then((response) => {
+        const data = response.data;
+        this.setState({ bugs: data.tickets });
+      })
+      .catch((error) => console.log(error));
+  };
 
   componentDidUpdate() {
     // console.log(this.state.bugs);
@@ -50,19 +60,18 @@ class BugList extends Component {
     let collection;
 
     if (bugs) {
-      collection = bugs.map((bug, index) => {
+      collection = bugs.map((bug) => {
         return (
-          <tr key={index}>
-            <td>{index + 1}</td>
-
+          <tr key={bug.id}>
+            <td>{bug.ticket_num}</td>
             <td>
-              <Link to={"bugs/b/" + bug.idInProject}>{bug.subject}</Link>
+              <Link to={"bugs/b/" + bug.ticket_num}>{bug.subject}</Link>
             </td>
             <td>{bug.status}</td>
             <td>{bug.severity}</td>
             <td>{bug.created_at}</td>
-            <td>{bug.closed_at}</td>
-            <td>{bug.reported_by}</td>
+            <td>{bug.updated_at}</td>
+            <td>{bug.opened_by}</td>
             <td>{bug.closed_by}</td>
           </tr>
         );
