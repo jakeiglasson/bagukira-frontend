@@ -330,7 +330,7 @@ class EditBug extends Component {
         <Media
           queries={{
             desktop: "(min-width: 1025px)",
-            tablet: "(min-width: 768px) and (max-width: 1024px)",
+            tablet: "(min-width: 481px) and (max-width: 1024px)",
             mobile: "(min-width: 320px) and (max-width: 480px)",
           }}
         >
@@ -344,6 +344,19 @@ class EditBug extends Component {
         </Media>
       </div>
     );
+  };
+
+  returnClosedStatus = (ticket) => {
+    if (ticket.closed_by) {
+      return (
+        <>
+          {ticket.updated_at.split("T")[0].split("-")[1]}/
+          {ticket.updated_at.split("T")[0].split("-")[2]}
+        </>
+      );
+    } else {
+      return " ";
+    }
   };
 
   renderBugDesktop = (ticket) => {
@@ -370,11 +383,14 @@ class EditBug extends Component {
                 </tr>
                 <tr>
                   <td>DATE OPENED</td>
-                  <td>{ticket.created_at}</td>
+                  <td>
+                    {ticket.created_at.split("T")[0].split("-")[1]}/
+                    {ticket.created_at.split("T")[0].split("-")[2]}
+                  </td>
                 </tr>
                 <tr>
                   <td>DATE CLOSED</td>
-                  <td>{ticket.closed_at}</td>
+                  <td>{this.returnClosedStatus(ticket)}</td>
                 </tr>
                 <tr>
                   <td>REPORTED BY</td>
@@ -417,11 +433,14 @@ class EditBug extends Component {
                 </tr>
                 <tr>
                   <td>DATE OPENED</td>
-                  <td>{ticket.created_at}</td>
+                  <td>
+                    {ticket.created_at.split("T")[0].split("-")[1]}/
+                    {ticket.created_at.split("T")[0].split("-")[2]}
+                  </td>
                 </tr>
                 <tr>
                   <td>DATE CLOSED</td>
-                  <td>{ticket.closed_at}</td>
+                  <td>{this.returnClosedStatus(ticket)}</td>
                 </tr>
                 <tr>
                   <td>REPORTED BY</td>
