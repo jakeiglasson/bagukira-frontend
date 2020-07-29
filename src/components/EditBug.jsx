@@ -11,9 +11,11 @@ import axios from "axios";
 
 class EditBug extends Component {
   state = {
+    description: "",
+    closedBy: "",
     renderClosePopup: false,
     renderEditDescription: false,
-    ticket: { status: "open" },
+    // ticket: { status: "open" },
     previousStatus: "open",
     root: `/projects/p/${this.props.match.params.hash}/bugs`,
     statusList: {
@@ -30,7 +32,11 @@ class EditBug extends Component {
       const { data = {}, error } = response;
 
       if (typeof error !== undefined) {
-        this.setState({ ticket: data.tickets });
+        this.setState({
+          ticket: data.tickets,
+          closedBy: data.tickets.closed_by,
+          description: data.tickets.description,
+        });
         return;
       } else {
         throw error;
@@ -71,6 +77,8 @@ class EditBug extends Component {
         this.setState({
           renderClosePopup: false,
           renderEditDescription: false,
+          description: this.state.ticket.description,
+          closedBy: this.state.ticket.closed_by,
         });
 
         if (this.state.ticket.status === "CLOSED") {
@@ -85,11 +93,13 @@ class EditBug extends Component {
 
   //   Handle user interface inputs for bug ticket
   onInputChange = (event) => {
+    console.log(event.target.id);
     switch (event.target.id) {
       // Handle changes of bug status
       case "OPEN":
       case "IN PROGRESS":
         this.setTicketState("status", event.target.id);
+        this.setTicketState("closed_by", "");
         // Update and changes to the bug from ticket state
         this.updateBug(event);
         break;
@@ -106,7 +116,16 @@ class EditBug extends Component {
 
       default:
         //  Handle all other field changes
-        this.setTicketState(event.target.id, event.target.value);
+        if (event.target.id == "closed_by") {
+          console.log("closing");
+          this.setTicketState(
+            event.target.id,
+            event.target.value.toUpperCase()
+          );
+        } else {
+          this.setTicketState(event.target.id, event.target.value);
+        }
+
         return;
     }
   };
@@ -129,10 +148,11 @@ class EditBug extends Component {
   };
 
   //   Close the description or close function modals
-  handleCloseModal = () => {
+  handleCloseModal = (event) => {
     // Rollback status
     this.setTicketState("status", this.state.previousStatus);
     this.setTicketState("closed_by", this.state.previousClosedBy);
+    this.setTicketState("description", this.state.description);
     // Hide modals
     this.setState({
       renderClosePopup: false,
@@ -270,7 +290,7 @@ class EditBug extends Component {
         <FontAwesomeIcon icon={faBug} className="eb-image" />
         <div className="eb-description-text-container">
           <div className="eb-description-text px-4 pt-3 overflow-auto eb-description-width">
-            {this.state.ticket.description}
+            {this.state.description}
           </div>
         </div>
         <div className="eb-description-button-container">
@@ -322,7 +342,7 @@ class EditBug extends Component {
                 </tr>
                 <tr>
                   <td>CLOSED BY</td>
-                  <td>{ticket.closed_by}</td>
+                  <td>{this.state.closedBy}</td>
                 </tr>
               </tbody>
             </Table>
@@ -336,13 +356,18 @@ class EditBug extends Component {
   render() {
     const { ticket } = this.state;
 
-    return (
-      <div className="side-content-container p-4">
-        {ticket === {} || this.renderBug(ticket)}
-        {this.renderClosePopup()}
-        {this.renderEditDescription()}
-      </div>
-    );
+    if (ticket) {
+      console.log("TICKET:", ticket);
+      return (
+        <div className="side-content-container p-4">
+          {this.renderBug(ticket)}
+          {this.renderClosePopup()}
+          {this.renderEditDescription()}
+        </div>
+      );
+    } else {
+      return null;
+    }
   }
 }
 
