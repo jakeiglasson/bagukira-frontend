@@ -37,7 +37,7 @@ class AddUser extends Component {
     let array = string.split(","); // separate by commas into array
 
     try {
-      array.forEach((email) => this.ValidateEmail(email));
+      array.forEach((email) => this.validateEmail(email));
       this.setState({ emailsAreValid: true }, () => {
         console.log(this.state);
       });
@@ -49,7 +49,7 @@ class AddUser extends Component {
     this.postEmails(array);
   };
 
-  ValidateEmail(mail) {
+  validateEmail(mail) {
     console.log(mail);
     if (/^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/.test(mail)) {
       return true;
