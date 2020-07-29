@@ -18,6 +18,7 @@ import EditBug from "./components/EditBug";
 import NewBug from "./components/NewBug";
 import AddUser from "./components/AddUser";
 import EditProject from "./components/EditProject";
+import ProjectName from "./components/ProjectName";
 
 class App extends Component {
   constructor(props) {
@@ -142,6 +143,7 @@ class App extends Component {
           render={(props) => (
             <>
               <NavBar {...props} />
+              <ProjectName {...props} />
               <div className="content-container">
                 <div className="single-project-grid-container">
                   <SideBar

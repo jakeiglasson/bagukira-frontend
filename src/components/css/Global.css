@@ -77,3 +77,18 @@
   height: 100%;
   background-color: white;
 }
+
+@media (min-width: 1025px) {
+  .responsive-project-name {
+    display: none;
+  }
+}
+
+@media (min-width: 320px) and (max-width: 1024px) {
+  .responsive-project-name {
+    text-align: center;
+    font-size: 1.5rem;
+    word-wrap: anywhere;
+    padding: 0 2rem;
+  }
+}
