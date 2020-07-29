@@ -62,7 +62,9 @@ class EditBug extends Component {
       .then((response) => {
         console.log(response);
 
-        this.changePage();
+        if (this.state.ticket.status === "CLOSED") {
+          this.changePage();
+        }
       })
       .catch(function (error) {
         console.log(error);
@@ -105,12 +107,14 @@ class EditBug extends Component {
     });
   };
 
+  //   Render the description edit modal
   showEditDescription = () => {
     this.setState({
       renderEditDescription: true,
     });
   };
 
+  //   Close the description or close function modals
   handleCloseModal = () => {
     // Rollback status
     this.setTicketState("status", this.state.previousStatus);
@@ -127,33 +131,31 @@ class EditBug extends Component {
     status = status.toUpperCase();
 
     return (
-      <Dropdown as={ButtonGroup}>
-        <Dropdown.Toggle
-          id="dropdown-custom-1"
-          variant={statusList[status][0]}
-          // className="statusButton"
-        >
+      <>
+        <Button variant={statusList[status][0]} className="statusButton">
           {status}
-        </Dropdown.Toggle>
-        <Dropdown.Menu className="bg-dark">
-          {/* <Button variant={statusList[status][0]} className="statusButton">
-            {status}
-          </Button> */}
-          {Object.keys(statusList).map((key, index) => {
-            return (
-              <Dropdown.Item
-                key={index}
-                id={key}
-                eventKey={index}
-                className={statusList[key][1]}
-                onClick={this.onInputChange}
-              >
-                {key}
-              </Dropdown.Item>
-            );
-          })}
-        </Dropdown.Menu>
-      </Dropdown>
+        </Button>
+        <Dropdown as={ButtonGroup}>
+          <Dropdown.Toggle id="dropdown-custom-1 text-centered">
+            SET STATUS
+          </Dropdown.Toggle>
+          <Dropdown.Menu className="bg-dark">
+            {Object.keys(statusList).map((key, index) => {
+              return (
+                <Dropdown.Item
+                  key={index}
+                  id={key}
+                  eventKey={index}
+                  className={statusList[key][1]}
+                  onClick={this.onInputChange}
+                >
+                  {key}
+                </Dropdown.Item>
+              );
+            })}
+          </Dropdown.Menu>
+        </Dropdown>
+      </>
     );
   };
 
@@ -220,14 +222,16 @@ class EditBug extends Component {
                   <Button
                     id="save"
                     type="submit"
-                    value="SAVE"
+                    variant="primary"
                     className="btn btn-primary"
                   >
                     SAVE
                   </Button>
+                  <div className="x-spacer" />
                   <Button
                     id="editDescriptionClose"
                     variant="danger"
+                    className="btn mt-2"
                     onClick={this.handleCloseModal}
                   >
                     CANCEL
@@ -315,7 +319,6 @@ class EditBug extends Component {
 
     return (
       <div className="side-content-container p-4">
-        {/* {this.executeRedirect()} */}
         {ticket === {} || this.renderBug(ticket)}
         {this.renderClosePopup()}
         {this.renderEditDescription()}

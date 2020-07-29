@@ -13,3 +13,10 @@
 .spgc-main-content {
   grid-area: main-content;
 }
+
+@media (min-width: 768px) and (max-width: 1024px) {
+  .single-project-grid-container {
+    grid-template-columns: 1fr;
+    grid-template-rows: 1fr;
+  }
+}
