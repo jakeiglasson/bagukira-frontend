@@ -31,3 +31,14 @@
   /* manual calculations to match bug edit description */
   padding-right: calc(1.5rem * 2 - 0.75rem - 2px);
 }
+@media (min-width: 320px) and (max-width: 1024px) {
+  .side-content-container {
+    padding: 0.5rem 0.75rem !important;
+  }
+  .global-form-container {
+    padding: 0.5rem 0.75rem !important;
+  }
+  .bug-description-text {
+    width: calc(100vw - 2px - 4 * 0.75rem);
+  }
+}
