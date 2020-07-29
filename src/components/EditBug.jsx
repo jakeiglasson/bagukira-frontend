@@ -149,15 +149,17 @@ class EditBug extends Component {
 
   //   Close the description or close function modals
   handleCloseModal = (event) => {
-    // Rollback status
-    this.setTicketState("status", this.state.previousStatus);
-    this.setTicketState("closed_by", this.state.previousClosedBy);
-    this.setTicketState("description", this.state.description);
-    // Hide modals
-    this.setState({
-      renderClosePopup: false,
-      renderEditDescription: false,
-    });
+    // unfortunate that this has to be used, but deadline is too close to refactor and work as intended
+    window.location.reload(true);
+    // // Rollback status
+    // this.setTicketState("status", this.state.previousStatus);
+    // this.setTicketState("closed_by", this.state.previousClosedBy);
+    // this.setTicketState("description", this.state.description);
+    // // Hide modals
+    // this.setState({
+    //   renderClosePopup: false,
+    //   renderEditDescription: false,
+    // });
   };
 
   dropDown = () => {
@@ -167,7 +169,7 @@ class EditBug extends Component {
 
     return (
       <>
-        <Button variant={statusList[status][0]} className="statusButton">
+        <Button variant={statusList[status][0]} className="statusButton mr-2">
           {status}
         </Button>
         <Dropdown as={ButtonGroup}>
@@ -262,15 +264,15 @@ class EditBug extends Component {
                     id="save"
                     type="submit"
                     variant="primary"
-                    className="btn btn-primary"
+                    className="btn btn-primary mt-2 display-inline"
                   >
                     SAVE
                   </Button>
-                  <div className="x-spacer" />
+                  <div className="x-spacer display-inline" />
                   <Button
                     id="editDescriptionClose"
                     variant="danger"
-                    className="btn mt-2"
+                    className="btn mt-2 display-inline"
                     onClick={this.handleCloseModal}
                   >
                     CANCEL
