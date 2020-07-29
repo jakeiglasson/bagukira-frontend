@@ -23,7 +23,7 @@ class Projects extends Component {
     console.log("localStorage:", localStorage);
     console.log(this.props);
 
-    if (this.props.unAuthorized == false) {
+    if (this.props.authorized == false) {
       alert("You are not authorized to access this resource");
       this.props.history.push("/");
       window.location.reload(true);
