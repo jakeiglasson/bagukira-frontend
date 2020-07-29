@@ -14,9 +14,22 @@
   grid-area: main-content;
 }
 
+/* MEDIA QUERIES */
+
+/* tablet */
 @media (min-width: 768px) and (max-width: 1024px) {
   .single-project-grid-container {
     grid-template-columns: 1fr;
     grid-template-rows: 1fr;
+  }
+}
+
+/* mobile */
+@media (min-width: 320px) and (max-width: 767px) {
+  .banner-text {
+    font-size: 12.5vw;
+  }
+  .banner-text > svg {
+    max-width: 10vw !important;
   }
 }
