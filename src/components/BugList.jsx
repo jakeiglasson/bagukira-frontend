@@ -78,6 +78,19 @@ class BugList extends Component {
     return <tbody>{this.generateBugList(conditional)}</tbody>;
   };
 
+  returnClosedStatus = (ticket) => {
+    if (ticket.closed_by) {
+      return (
+        <>
+          {ticket.updated_at.split("T")[0].split("-")[1]}/
+          {ticket.updated_at.split("T")[0].split("-")[2]}
+        </>
+      );
+    } else {
+      return " ";
+    }
+  };
+
   generateBugList = (conditional) => {
     let { bugs } = this.state;
     let collection;
@@ -96,10 +109,7 @@ class BugList extends Component {
               {bug.created_at.split("T")[0].split("-")[1]}/
               {bug.created_at.split("T")[0].split("-")[2]}
             </td>
-            <td>
-              {bug.updated_at.split("T")[0].split("-")[1]}/
-              {bug.updated_at.split("T")[0].split("-")[2]}
-            </td>
+            <td>{this.returnClosedStatus(bug)}</td>
             <td>{bug.opened_by}</td>
             <td>{bug.closed_by}</td>
           </tr>

@@ -74,6 +74,12 @@ class EditBug extends Component {
       console.log(error);
     }
 
+    // if (!this.state.ticket.closed_by) {
+    //   let ticket = this.state.ticket;
+    //   ticket["closed_by"] = " ";
+    //   this.setState({ ticket: ticket });
+    // }
+
     if (this.state.ticket.closed_by.length > 30) {
       alert("Name is too long (30 character limit)");
       return;
