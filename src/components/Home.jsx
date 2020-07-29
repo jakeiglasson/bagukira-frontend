@@ -1,6 +1,6 @@
 import React, { Component } from "react";
-import { BrowserRouter, Route, Link, Redirect } from "react-router-dom";
-import { Form, Button, Alert } from "react-bootstrap";
+import { Link, Redirect } from "react-router-dom";
+import { Button, Alert } from "react-bootstrap";
 import "./css/Global.css";
 
 class home extends Component {

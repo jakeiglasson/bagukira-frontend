@@ -11,7 +11,7 @@ class signup extends Component {
 
   validateEmail(mail) {
     console.log(mail);
-    if (/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(mail)) {
+    if (/^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/.test(mail)) {
       return true;
     } else {
       alert("Invalid email");
@@ -39,7 +39,7 @@ class signup extends Component {
     // check if email is valid
     if (this.validateEmail(email)) {
       // check if password and confirmPassword match
-      if (password == confirmPassword) {
+      if (password === confirmPassword) {
         // create new account
         console.log("passwords match");
         await axios

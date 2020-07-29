@@ -1,7 +1,7 @@
 import React, { Component } from "react";
-import { BrowserRouter, Route, Link } from "react-router-dom";
+import { Link } from "react-router-dom";
 import "../css/Global.css";
-import { Button, Navbar, Nav, Form, FormControl } from "react-bootstrap";
+import { Button, Navbar, Nav } from "react-bootstrap";
 
 class NavBar extends Component {
   purgeLocalStorage = async () => {

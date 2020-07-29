@@ -1,10 +1,8 @@
 import React, { Component } from "react";
-import { Form, Button } from "react-bootstrap";
+import { Form } from "react-bootstrap";
 import { Redirect } from "react-router-dom";
 import axios from "axios";
 import { inputEventState } from "./shared/Helpers.jsx";
-
-import { checkForCorrectLoggedInUser } from "./shared/Helpers.jsx";
 
 import "./css/NewBug.css";
 import "./css/Global.css";
@@ -23,19 +21,12 @@ class EditProject extends Component {
   }
 
   componentWillMount = () => {
-    // this.getProjectInfo();
-
     if (!localStorage.userId) {
       this.props.history.push("/");
       window.location.reload(true);
     }
 
     this.setState({ projectName: localStorage.projectName });
-
-    // let component = this;
-    // let setPermission = false;
-    // let redirect = true;
-    // checkForCorrectLoggedInUser(component, setPermission, redirect);
   };
 
   // getProjectInfo = () => {
@@ -79,8 +70,6 @@ class EditProject extends Component {
     // logic to send project name to backend
 
     let projectName = this.state.projectName;
-
-    let userId = localStorage.userId;
     let hash = this.props.match.params.hash;
     let route = `${process.env.REACT_APP_API_URL}/units/${hash}`;
 
@@ -148,7 +137,7 @@ class EditProject extends Component {
   };
 
   renderContent = () => {
-    if (localStorage.userId == localStorage.projectOwnerId) {
+    if (localStorage.userId === localStorage.projectOwnerId) {
       return (
         <div className="p-4 global-form-container">
           <h2 className="text-center">EDIT PROJECT</h2>

@@ -43,8 +43,6 @@ class Login extends Component {
         const userId = this.parseJwt(localStorage.getItem("token")).sub;
         localStorage.setItem("userId", userId);
 
-        // console.log(localStorage);
-
         this.props.history.push("/projects");
         window.location.reload(true);
       })
@@ -57,7 +55,8 @@ class Login extends Component {
   onInputChange = (event) => inputEventState(this, event);
 
   render() {
-    let { email, password, errMessage } = this.state;
+    //  Need to handle errMessage
+    let { email, password } = this.state;
     return (
       <div className="small-centered-card">
         <h3 className="text-center mb-3">LOGIN</h3>

@@ -1,7 +1,5 @@
 import React, { Component } from "react";
 import axios from "axios";
-
-import SideBar from "./shared/SideBar";
 import { Button } from "react-bootstrap";
 import "./css/Global.css";
 import "./css/Projects.css";

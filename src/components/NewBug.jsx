@@ -1,67 +1,27 @@
 import React, { Component } from "react";
-import {
-  Form,
-  Button,
-  Dropdown,
-  DropdownButton,
-  ButtonGroup,
-} from "react-bootstrap";
+import { Form, Button, Dropdown, ButtonGroup } from "react-bootstrap";
 
 import axios from "axios";
 
-import { GetTime, inputEventState } from "./shared/Helpers.jsx";
+// import { inputEventState } from "./shared/Helpers.jsx";
 
 import "./css/NewBug.css";
 import "./css/Global.css";
 
 class NewBug extends Component {
-  constructor(props) {
-    super(props);
-    console.log(this.props.match.params);
-    this.state = {
-      id: "",
-      idInProject: "",
-      reporterNameValue: "",
-      subjectValue: "",
-      descriptionValue: "",
-      severityValue: "",
-      hash: this.props.match.params.hash,
-    };
-  }
-
-  // componentWillMount = () => {
-  //   this.bugAmount();
-  //   this.bugAmountInProject();
-  // };
-
-  // Get amount of bugs in JSON db to set new bug {id} to amount of bugs + 1
-  // bugAmount = () => {
-  //   axios.get(this.props.serverRootUrl + "/bugs").then((response) => {
-  //     this.setState({ id: response.data.length + 1 }, function () {
-  //       console.log("setState completed", this.state);
-  //     }); // response.data.length + 1
-  //   });
-  // };
-
-  // Get amount of bugs in current project in JSON db to set new bug {idInProject} to amount of bugs + 1
-  // bugAmountInProject = () => {
-  //   axios
-  //     .get(this.props.serverRootUrl + "/bugs?projectRefHash=" + this.state.hash)
-  //     .then((response) => {
-  //       console.log(response);
-  //       this.setState({ idInProject: response.data.length + 1 }, function () {
-  //         console.log("setState completed", this.state);
-  //       }); // response.data.length + 1;
-  //     });
-  // };
+  state = {
+    reporterNameValue: "",
+    subjectValue: "",
+    descriptionValue: "",
+    severityValue: "",
+    hash: this.props.match.params.hash,
+  };
 
   handleSubmit = async (event) => {
     // alert("A new bug was submitted: " + this.state.subjectValue);
     console.log("New Bug > handleSubmit");
     console.log("|-> state:", this.state);
     event.preventDefault();
-
-    // const dateTime = GetTime();
 
     // check:
     let reported_by = this.state.reporterNameValue;
@@ -86,8 +46,8 @@ class NewBug extends Component {
         {
           ticket: {
             subject: this.state.subjectValue,
-            status: "open",
-            severity: `${this.state.severityValue.toLowerCase()}`,
+            status: "OPEN",
+            severity: `${this.state.severityValue}`,
             description: this.state.descriptionValue,
             opened_by: this.state.reporterNameValue,
           },
@@ -116,6 +76,8 @@ class NewBug extends Component {
       case "BUG DESCRIPTION":
         this.setState({ descriptionValue: event.target.value });
         break;
+
+      default:
     }
   };
 
@@ -141,6 +103,8 @@ class NewBug extends Component {
       case "CLOSED":
         style = "outline-success uniform-status";
         break;
+
+      default:
     }
 
     return style;

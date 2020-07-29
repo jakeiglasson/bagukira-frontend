@@ -1,16 +1,12 @@
 import React, { Component } from "react";
 import axios from "axios";
 import { Form, Button } from "react-bootstrap";
-import { Link, Redirect } from "react-router-dom";
+import { Link } from "react-router-dom";
 
-import { GetTime, inputEventState } from "./shared/Helpers.jsx";
+import { inputEventState } from "./shared/Helpers.jsx";
 
 class NewProject extends Component {
   state = { projectName: "" };
-
-  constructor(props) {
-    super(props);
-  }
 
   onInputChange = (event) => inputEventState(this, event);
 

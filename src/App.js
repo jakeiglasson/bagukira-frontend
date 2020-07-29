@@ -1,14 +1,7 @@
 import React, { Component } from "react";
-import {
-  BrowserRouter,
-  Route,
-  Link,
-  useHistory,
-  Redirect,
-} from "react-router-dom";
+import { BrowserRouter, Route, Link, Redirect } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faBug } from "@fortawesome/free-solid-svg-icons";
-import { Alert } from "react-bootstrap";
 
 import "./App.css";
 import ProtectedRoute from "./components/shared/ProtectedRoute.jsx";
