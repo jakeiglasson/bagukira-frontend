@@ -74,6 +74,11 @@ class EditProject extends Component {
     let hash = this.props.match.params.hash;
     let route = `${process.env.REACT_APP_API_URL}/units/${hash}`;
 
+    if (projectName.length > 40) {
+      alert("Project name is too long, 40 character limit");
+      return;
+    }
+
     let data = JSON.stringify({
       unit: {
         name: projectName.toUpperCase(),
