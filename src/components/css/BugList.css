@@ -1,3 +1,42 @@
 .bug-list-table {
   font-size: 0.7rem;
 }
+
+.bug-list-table {
+  width: auto;
+  margin: 0 auto;
+}
+
+.spgc-main-content > table {
+  width: 100%;
+}
+
+.spgc-main-content > table > div > thead > tr > th {
+  width: 25%;
+}
+
+@media (min-width: 320px) and (max-width: 1024px) {
+  .side-content-container {
+    padding-left: 0.5rem !important;
+    padding-right: 0.5rem !important;
+  }
+
+  .spgc-main-content > table {
+    width: auto;
+  }
+}
+
+@media (min-width: 481px) and (max-width: 1024px) {
+  .small-th-text {
+    font-size: 0.6rem !important;
+  }
+}
+
+@media (min-width: 320px) and (max-width: 480px) {
+  .small-th-text {
+    font-size: 2.5vw !important;
+  }
+  .bug-list-table {
+    font-size: 3vw !important;
+  }
+}

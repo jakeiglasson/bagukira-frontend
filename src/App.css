@@ -25,6 +25,11 @@
   .single-project-grid-container {
     grid-template-columns: 1fr;
     grid-template-rows: 1fr;
+    grid-template-areas: initial;
+  }
+
+  .spgc-main-content {
+    grid-area: initial;
   }
 }
 
