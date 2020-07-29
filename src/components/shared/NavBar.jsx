@@ -13,13 +13,13 @@ class NavBar extends Component {
 
   renderWelcomeMessage = () => {
     // console.log(localStorage);
-    let welcomeMessage;
-    if (localStorage.getItem("userId") === null) {
-      welcomeMessage = "Welcome, to Bagukira!";
-    } else {
-      welcomeMessage =
-        "Welcome " + localStorage.getItem("userEmail") + ", to Bagukira!";
-    }
+    let welcomeMessage = "Welcome to Bagukira!";
+    // if (localStorage.getItem("userId") === null) {
+    //   welcomeMessage = "Welcome, to Bagukira!";
+    // } else {
+    //   welcomeMessage =
+    //     "Welcome " + localStorage.getItem("userEmail") + ", to Bagukira!";
+    // }
     return (
       <Nav className="mr-auto">
         <Navbar.Brand>{welcomeMessage}</Navbar.Brand>

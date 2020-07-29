@@ -76,7 +76,7 @@ class EditProject extends Component {
 
     let data = JSON.stringify({
       unit: {
-        name: projectName,
+        name: projectName.toUpperCase(),
       },
     });
 
@@ -113,7 +113,7 @@ class EditProject extends Component {
             id="projectName"
             type="text"
             placeholder="PROJECT NAME"
-            value={this.state.projectName}
+            value={this.state.projectName.toUpperCase()}
             onChange={this.onInputChange}
           />
         </Form.Group>
