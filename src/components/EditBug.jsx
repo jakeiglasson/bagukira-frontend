@@ -53,7 +53,12 @@ class EditBug extends Component {
   };
 
   updateBug = async (event) => {
-    event.preventDefault();
+    try {
+      event.preventDefault();
+    } catch (error) {
+      console.log(error);
+    }
+
     console.log("UPDATING BUG");
     console.log(event.target);
     await axios
@@ -86,13 +91,13 @@ class EditBug extends Component {
       case "IN PROGRESS":
         this.setTicketState("status", event.target.id);
         // Update and changes to the bug from ticket state
-        this.updateBug();
+        this.updateBug(event);
         break;
 
       case "CLOSED":
         this.setState({
           previousStatus: this.state.ticket.status,
-          previousClosedBy: this.state.tickets.closed_by,
+          previousClosedBy: this.state.ticket.closed_by,
           renderClosePopup: true,
         });
         this.setTicketState("status", event.target.id);
