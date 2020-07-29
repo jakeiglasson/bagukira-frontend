@@ -2,10 +2,7 @@ import React, { Component } from "react";
 import { Form, Button } from "react-bootstrap";
 import axios from "axios";
 
-import {
-  checkForCorrectLoggedInUser,
-  inputEventState,
-} from "./shared/Helpers.jsx";
+import { inputEventState } from "./shared/Helpers.jsx";
 
 import "./css/AddUser.css";
 import "./css/Global.css";
@@ -54,11 +51,11 @@ class AddUser extends Component {
 
   ValidateEmail(mail) {
     console.log(mail);
-    if (/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(mail)) {
+    if (/^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/.test(mail)) {
       return true;
     } else {
-      // this.setState({ emailsAreValid: false });
-      throw "invalid email detected";
+      // this.setS: tate({ emailsAreValid: false });
+      throw new Error("invalid email detected");
     }
   }
 
@@ -122,26 +119,20 @@ class AddUser extends Component {
             value={this.state.emailsValue}
             onChange={this.onInputChange}
           />
-          {/* type="email"
-              placeholder="Enter email"
-              name="email"
-              id="email"
-              value={email}
-              onChange={this.onInputChange} */}
         </Form.Group>
 
-        <input
+        <Button
           type="submit"
           value="SUBMIT"
           className="btn btn-block btn-primary"
-        />
+        ></Button>
       </Form>
     );
   };
 
   renderContent = () => {
     // console.log(localStorage);
-    if (localStorage.userId == localStorage.projectOwnerId) {
+    if (localStorage.userId === localStorage.projectOwnerId) {
       return (
         <div className="p-4 global-form-container">
           <h2 className="text-center">ADD USER</h2>

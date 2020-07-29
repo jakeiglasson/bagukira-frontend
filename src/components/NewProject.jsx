@@ -1,16 +1,12 @@
 import React, { Component } from "react";
 import axios from "axios";
 import { Form, Button } from "react-bootstrap";
-import { Link, Redirect } from "react-router-dom";
+import { Link } from "react-router-dom";
 
-import { GetTime, inputEventState } from "./shared/Helpers.jsx";
+import { inputEventState } from "./shared/Helpers.jsx";
 
 class NewProject extends Component {
   state = { projectName: "" };
-
-  constructor(props) {
-    super(props);
-  }
 
   componentWillMount = () => {
     if (this.props.authorized == false) {
@@ -53,33 +49,27 @@ class NewProject extends Component {
       });
   };
 
-  newProjectFrom = () => {
-    let { projectName } = this.state;
-    return (
-      <Form onSubmit={this.handleSubmit}>
-        <Form.Group controlId="newProjectForm.ControlTextarea1">
-          <Form.Label>PROJECT NAME</Form.Label>
-          <Form.Control
-            id="projectName"
-            type="text"
-            placeholder="PROJECT NAME"
-            value={projectName}
-            onChange={this.onInputChange}
-          />
-        </Form.Group>
-        <Button type="submit" className="btn btn-block btn-primary">
-          SUBMIT
-        </Button>
-      </Form>
-    );
-  };
-
   render() {
+    let { projectName } = this.state;
     return (
       <div className="medium-centered-card">
         <h1 className="text-center m-3">NEW PROJECT</h1>
         <div className="new-project-form-container">
-          {this.newProjectFrom()}
+          <Form onSubmit={this.handleSubmit}>
+            <Form.Group controlId="newProjectForm.ControlTextarea1">
+              <Form.Label>PROJECT NAME</Form.Label>
+              <Form.Control
+                id="projectName"
+                type="text"
+                placeholder="PROJECT NAME"
+                value={projectName}
+                onChange={this.onInputChange}
+              />
+            </Form.Group>
+            <Button type="submit" className="btn btn-block btn-primary">
+              SUBMIT
+            </Button>
+          </Form>
           <hr />
           <Link to="/projects" className="text-link">
             <Button className="btn btn-warning btn-block" data-testid="signup">

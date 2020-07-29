@@ -1,6 +1,7 @@
-import React, { Component } from "react";
-import { Route, Switch, Redirect } from "react-router-dom";
-import NavBar from "./NavBar";
+
+import React from "react";
+import { Route, Redirect } from "react-router-dom";
+
 import axios from "axios";
 
 class ProtectedRoute extends React.Component {
