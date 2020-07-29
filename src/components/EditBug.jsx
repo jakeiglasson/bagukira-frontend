@@ -53,16 +53,19 @@ class EditBug extends Component {
   };
 
   updateBug = async () => {
-    this.setState({ renderClosePopup: false, renderEditDescription: false });
-
     await axios
       .patch(this.state.url, {
         ticket: this.state.ticket,
       })
       .then((response) => {
         console.log(response);
+        const descriptionChanged = this.state.renderEditDescription;
+        this.setState({
+          renderClosePopup: false,
+          renderEditDescription: false,
+        });
 
-        if (this.state.ticket.status === "CLOSED") {
+        if (this.state.ticket.status === "CLOSED" || descriptionChanged) {
           this.changePage();
         }
       })
@@ -85,9 +88,11 @@ class EditBug extends Component {
       case "CLOSED":
         this.setState({
           previousStatus: this.state.ticket.status,
+          previousClosedBy: this.state.tickets.closed_by,
           renderClosePopup: true,
         });
         this.setTicketState("status", event.target.id);
+        this.setTicketState("closed_by", "");
         break;
 
       default:
@@ -118,6 +123,7 @@ class EditBug extends Component {
   handleCloseModal = () => {
     // Rollback status
     this.setTicketState("status", this.state.previousStatus);
+    this.setTicketState("closed_by", this.state.previousClosedBy);
     // Hide modals
     this.setState({
       renderClosePopup: false,
