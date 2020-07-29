@@ -5,6 +5,7 @@ import axios from "axios";
 import { inputEventState } from "./shared/Helpers.jsx";
 
 import "./css/NewBug.css";
+import "./css/EditProject.css";
 import "./css/Global.css";
 
 class EditProject extends Component {

@@ -1,0 +1,7 @@
+/* mobile and tablet */
+@media (min-width: 320px) and (max-width: 1024px) {
+  .medium-centered-card {
+    width: auto;
+    padding: 0 2rem !important;
+  }
+}

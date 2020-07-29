@@ -5,6 +5,8 @@ import { Link } from "react-router-dom";
 
 import { inputEventState } from "./shared/Helpers.jsx";
 
+import "./css/NewProject.css";
+
 class NewProject extends Component {
   state = { projectName: "" };
 

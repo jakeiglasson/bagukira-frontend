@@ -92,8 +92,14 @@ class BugList extends Component {
             </td>
             <td>{bug.status}</td>
             <td>{bug.severity}</td>
-            <td>{bug.created_at.split("T")[0]}</td>
-            <td>{bug.updated_at.split("T")[0]}</td>
+            <td>
+              {bug.created_at.split("T")[0].split("-")[1]}/
+              {bug.created_at.split("T")[0].split("-")[2]}
+            </td>
+            <td>
+              {bug.updated_at.split("T")[0].split("-")[1]}/
+              {bug.updated_at.split("T")[0].split("-")[2]}
+            </td>
             <td>{bug.opened_by}</td>
             <td>{bug.closed_by}</td>
           </tr>
