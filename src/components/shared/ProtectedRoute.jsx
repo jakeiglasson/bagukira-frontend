@@ -1,4 +1,4 @@
-import React from "react";
+import React, { Component } from "react";
 import { Route, Switch, Redirect } from "react-router-dom";
 import NavBar from "./NavBar";
 import axios from "axios";
@@ -14,6 +14,9 @@ class ProtectedRoute extends React.Component {
     console.log(localStorage);
     console.log("http://localhost:3000" + this.props.path);
     console.log(window.location.href.includes(this.props.path));
+
+    this.setState({ Component: this.props.component });
+
     // if (window.location.href == "http://localhost:3000" + this.props.path)
     if (window.location.href.includes(this.props.path)) {
       try {
@@ -41,14 +44,30 @@ class ProtectedRoute extends React.Component {
         });
       }
     }
+
+    const { loading, auth } = this.state;
+    if (!loading && !auth) {
+      // console.log("REDIRECTING USER", this.props.component);
+      // this.props.history.push("/");
+      // window.location.reload(true);
+    }
   };
 
   render() {
     const { loading, auth } = this.state;
-    console.log(this.state);
+
     if (!loading && !auth) {
       console.log("REDIRECTING USER", this.props.component);
-      return <Redirect to="/" />;
+      const { Component } = this.state;
+      return (
+        <>
+          <Route
+            exact={this.props.exact}
+            path={this.props.path}
+            render={(props) => <Component {...props} authorized={false} />}
+          />
+        </>
+      );
     } else {
       console.log("loading protected component");
       console.log(this.props.component);

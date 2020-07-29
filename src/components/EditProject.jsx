@@ -23,19 +23,13 @@ class EditProject extends Component {
   }
 
   componentWillMount = () => {
-    // this.getProjectInfo();
-
     if (!localStorage.userId) {
+      alert("You are not authorized to access this resource");
       this.props.history.push("/");
       window.location.reload(true);
     }
 
     this.setState({ projectName: localStorage.projectName });
-
-    // let component = this;
-    // let setPermission = false;
-    // let redirect = true;
-    // checkForCorrectLoggedInUser(component, setPermission, redirect);
   };
 
   // getProjectInfo = () => {

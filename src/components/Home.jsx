@@ -2,28 +2,44 @@ import React, { Component } from "react";
 import { BrowserRouter, Route, Link, Redirect } from "react-router-dom";
 import { Form, Button, Alert } from "react-bootstrap";
 import "./css/Global.css";
+import { cssNumber } from "jquery";
+import { faThermometerHalf } from "@fortawesome/free-solid-svg-icons";
 
 class home extends Component {
+  state = {
+    clearLocalStorage: true,
+    displayAlert: false,
+  };
+
   componentWillMount = () => {
-    localStorage.clear();
+    if (localStorage.userId) {
+      this.setState({ clearLocalStorage: false });
+      this.props.history.push("/projects");
+      window.location.reload(true);
+    } else {
+      this.setState({ clearLocalStorage: true });
+    }
   };
 
   componentDidMount = () => {
-    console.log(localStorage);
+    if (this.state.clearLocalStorage) {
+      localStorage.clear();
+      console.log(localStorage);
+    }
+  };
+
+  componentWillUnmount = () => {
+    console.log("unmounting");
   };
 
   displayAlert = () => {
-    try {
-      if (this.props.location.state.alertNotLoggedIn) {
-        this.props.location.state.alertNotLoggedIn = false;
-        return (
-          <Alert className="alert" variant={"danger"}>
-            You must be logged in to perform this action
-          </Alert>
-        );
-      }
-    } catch (error) {
-      return;
+    if (this.state.displayAlert) {
+      this.setState({ displayAlert: false });
+      return (
+        <Alert className="alert" variant={"danger"}>
+          You must be logged in to perform this action
+        </Alert>
+      );
     }
   };
 
@@ -34,11 +50,10 @@ class home extends Component {
   };
 
   render() {
-    console.log(this.props);
     return (
       <>
-        {this.displayAlert}
-        {this.redirectToProjects}
+        {this.displayAlert()}
+        {this.redirectToProjects()}
         <div className="justify-content-center">
           <div className="small-centered-card">
             <Link to="/login" className="text-link">
