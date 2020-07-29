@@ -46,14 +46,14 @@ class BugList extends Component {
     return (
       <thead>
         <tr>
-          <th>#</th>
+          {/* <th>#</th> */}
           <th>SUBJECT</th>
           <th>STATUS</th>
           <th>SEVERITY</th>
           <th>DATE OPENED</th>
           <th>DATE CLOSED</th>
-          <th>REPORTED BY</th>
-          <th>CLOSED BY</th>
+          {/* <th>REPORTED BY</th> */}
+          {/* <th>CLOSED BY</th> */}
         </tr>
       </thead>
     );
@@ -71,7 +71,7 @@ class BugList extends Component {
       collection = bugs.map((bug) => {
         return (
           <tr key={bug.id}>
-            <td>{bug.ticket_num}</td>
+            {/* <td>{bug.ticket_num}</td> */}
             <td>
               <Link to={"bugs/b/" + bug.ticket_num}>{bug.subject}</Link>
             </td>
@@ -79,8 +79,8 @@ class BugList extends Component {
             <td>{bug.severity}</td>
             <td>{bug.created_at}</td>
             <td>{bug.updated_at}</td>
-            <td>{bug.opened_by}</td>
-            <td>{bug.closed_by}</td>
+            {/* <td>{bug.opened_by}</td> */}
+            {/* <td>{bug.closed_by}</td> */}
           </tr>
         );
       });
@@ -120,7 +120,7 @@ class BugList extends Component {
   render() {
     return (
       <div className={"side-content-container p-4 " + this.props.className}>
-        <Table striped bordered hover>
+        <Table striped bordered hover className="bug-list-table">
           {this.tableHead()}
           {this.tableBody()}
         </Table>

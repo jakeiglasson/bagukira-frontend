@@ -37,6 +37,16 @@ class NewBug extends Component {
     let severity = this.state.severityValue;
     let subject = this.state.subjectValue;
 
+    if (reported_by.length > 30) {
+      alert("Reporter name is too long (30 character limit)");
+      return;
+    }
+
+    if (subject.length > 30) {
+      alert("Bug subject is too long (30 character limit)");
+      return;
+    }
+
     if (!reported_by || !description || !severity || !subject) {
       alert(
         "Missing Information! All fields must be set before a bug can be submitted!"

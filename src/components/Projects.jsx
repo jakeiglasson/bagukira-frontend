@@ -83,9 +83,8 @@ class Projects extends Component {
                 size="lg"
                 block
               >
-                <div className="projects-item">{project.name}</div>
-                <div className="projects-item">
-                  Belongs To User ID: {project.userId}
+                <div className="projects-item word-wrap-anywhere">
+                  {project.name}
                 </div>
               </Button>
             );
