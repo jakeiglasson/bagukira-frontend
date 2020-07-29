@@ -1,10 +1,8 @@
 import React, { Component } from "react";
-import { BrowserRouter, Route, Link, Redirect } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { Dropdown, Button, ButtonGroup, Table, Form } from "react-bootstrap";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faBug } from "@fortawesome/free-solid-svg-icons";
-
-import { inputEventState } from "./shared/Helpers.jsx";
 
 import "./css/BugList.css";
 import "./css/EditBug.css";
@@ -14,8 +12,9 @@ import axios from "axios";
 class EditBug extends Component {
   state = {
     renderClosePopup: false,
-    renderEditDescriptionPopup: false,
-    ticket: {},
+    renderEditDescription: false,
+    ticket: { status: "open" },
+    previousStatus: "open",
     root: `/projects/p/${this.props.match.params.hash}/bugs`,
     statusList: {
       OPEN: ["danger uniform-status", "eb-open"],
@@ -50,19 +49,19 @@ class EditBug extends Component {
   };
 
   changePage = () => {
-    this.props.history.push(`${this.state.root}bugs/b/${this.state.ticket.id}`);
+    this.props.history.push(`${this.state.root}`);
   };
 
   updateBug = async () => {
-    const data = JSON.stringify(this.state.ticket);
-    console.log(data);
+    this.setState({ renderClosePopup: false, renderEditDescription: false });
 
     await axios
       .patch(this.state.url, {
-        ticket: data,
+        ticket: this.state.ticket,
       })
       .then((response) => {
         console.log(response);
+
         this.changePage();
       })
       .catch(function (error) {
@@ -70,51 +69,76 @@ class EditBug extends Component {
       });
   };
 
+  //   Handle user interface inputs for bug ticket
   onInputChange = (event) => {
-    const setStatus = (status) =>
-      this.setState({
-        ticket: { status: status },
-      });
-
     switch (event.target.id) {
+      // Handle changes of bug status
       case "OPEN":
       case "IN PROGRESS":
-        setStatus(event.target.id);
+        this.setTicketState("status", event.target.id);
+        // Update and changes to the bug from ticket state
+        this.updateBug();
         break;
+
       case "CLOSED":
-        setStatus(event.target.id);
         this.setState({
+          previousStatus: this.state.ticket.status,
           renderClosePopup: true,
         });
+        this.setTicketState("status", event.target.id);
         break;
+
       default:
-        inputEventState(this, event);
+        //  Handle all other field changes
+        this.setTicketState(event.target.id, event.target.value);
         return;
     }
-
-    console.log(event.target.id);
-    console.log(this.state.ticket);
   };
 
-  handleClose = () => {
+  // Handle ticket status changes and rollbacks
+  setTicketState = (key, value) => {
+    const ticket = this.state.ticket;
+    ticket[key] = value;
+    // Set changes to ticket status in state
+    this.setState({
+      ticket: ticket,
+    });
+  };
+
+  showEditDescription = () => {
+    this.setState({
+      renderEditDescription: true,
+    });
+  };
+
+  handleCloseModal = () => {
+    // Rollback status
+    this.setTicketState("status", this.state.previousStatus);
+    // Hide modals
     this.setState({
       renderClosePopup: false,
-      renderEditDescriptionPopup: false,
+      renderEditDescription: false,
     });
   };
 
   dropDown = () => {
-    let { status } = { status: "open" } || this.state.ticket;
+    let { status } = this.state.ticket;
     const { statusList } = this.state;
     status = status.toUpperCase();
 
     return (
       <Dropdown as={ButtonGroup}>
-        <Dropdown.Toggle id="dropdown-custom-1">SET STATUS</Dropdown.Toggle>
+        <Dropdown.Toggle
+          id="dropdown-custom-1"
+          variant={statusList[status][0]}
+          // className="statusButton"
+        >
+          {status}
+        </Dropdown.Toggle>
         <Dropdown.Menu className="bg-dark">
-          <Button variant={statusList[status][0]} className="statusButton">
+          {/* <Button variant={statusList[status][0]} className="statusButton">
             {status}
-          </Button>
+          </Button> */}
           {Object.keys(statusList).map((key, index) => {
             return (
               <Dropdown.Item
@@ -142,25 +166,28 @@ class EditBug extends Component {
           <div className="popup-container p-4">
             <div className=" p-4">
               <h1 className="text-center">CLOSING BUG</h1>
-              {/* <h1 className="text-center">BUG SUBJECT TEXT GOES HERE</h1> */}
+              <h1 className="text-center">{this.state.ticket.subject}</h1>
               <Form onSubmit={this.updateBug}>
                 <Form.Group controlId="closeBugForm.ControlTextarea1">
                   <Form.Label>PLEASE ENTER YOUR NAME</Form.Label>
                   <Form.Control
+                    id="closed_by"
                     type="text"
-                    // rows="6"
                     placeholder="YOUR NAME HERE"
                     value={this.state.ticket.closed_by}
                     onChange={this.onInputChange}
+                    required
                   />
                 </Form.Group>
-                <input
+                <Button
                   type="submit"
                   value="CLOSE BUG"
                   className="btn btn-primary"
-                />
+                >
+                  CLOSE BUG
+                </Button>
                 <> </>
-                <Button variant="danger" onClick={this.handleClose}>
+                <Button variant="danger" onClick={this.handleCloseModal}>
                   CANCEL
                 </Button>
               </Form>
@@ -171,12 +198,12 @@ class EditBug extends Component {
     );
   };
 
-  renderEditDescriptionPopup = () => {
-    const { renderEditDescriptionPopup } = this.state;
+  renderEditDescription = () => {
+    const { renderEditDescription } = this.state;
 
     return (
       <>
-        {renderEditDescriptionPopup && (
+        {renderEditDescription && (
           <div className="popup-container p-4">
             <div className="popup-content p-4">
               <h1 className="text-center">EDIT BUG DESCRIPTION</h1>
@@ -195,11 +222,13 @@ class EditBug extends Component {
                     type="submit"
                     value="SAVE"
                     className="btn btn-primary"
-                  />
+                  >
+                    SAVE
+                  </Button>
                   <Button
                     id="editDescriptionClose"
                     variant="danger"
-                    onClick={this.handleClose}
+                    onClick={this.handleCloseModal}
                   >
                     CANCEL
                   </Button>
@@ -225,7 +254,7 @@ class EditBug extends Component {
           <Button
             variant="primary"
             type="submit"
-            onClick={this.handleEditDescription}
+            onClick={this.showEditDescription}
           >
             EDIT DESCRIPTION
           </Button>
@@ -289,7 +318,7 @@ class EditBug extends Component {
         {/* {this.executeRedirect()} */}
         {ticket === {} || this.renderBug(ticket)}
         {this.renderClosePopup()}
-        {this.renderEditDescriptionPopup()}
+        {this.renderEditDescription()}
       </div>
     );
   }
