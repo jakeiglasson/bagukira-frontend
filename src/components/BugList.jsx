@@ -52,10 +52,10 @@ class BugList extends Component {
             <th>SUBJECT</th>
             <th>STATUS</th>
             <th>SEVERITY</th>
-            <th>DATE OPENED</th>
-            <th>DATE CLOSED</th>
-            <th>REPORTED BY</th>
-            <th>CLOSED BY</th>
+            <th>OPENED</th>
+            <th>CLOSED</th>
+            <th>REPORTER</th>
+            <th>CLOSER</th>
           </tr>
         </thead>
       );
@@ -67,7 +67,7 @@ class BugList extends Component {
             <th className="col-4">SUBJECT</th>
             <th className="col-3">STATUS</th>
             <th className="col-3">SEVERITY</th>
-            <th className="col-2 small-th-text">DATE OPENED</th>
+            <th className="col-2">OPENED</th>
           </tr>
         </thead>
       );

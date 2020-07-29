@@ -90,7 +90,7 @@ class NavBar extends Component {
     );
   };
 
-  conditionalNavButtons = () => {
+  conditionalNavButtons = (onProjectView) => {
     let admin = false;
     let hash = this.props.match.params.hash;
 
@@ -100,84 +100,119 @@ class NavBar extends Component {
     ) {
       admin = true;
     }
-    return (
-      <>
-        {localStorage.userId && (
-          <>
-            {/* REMOVED Link because when clicked it doesn't render /projects initially, user has to force a reload */}
-            <Nav.Link
-              href={`${process.env.REACT_APP_FE_URL}/projects/p/${hash}/bugs`}
-              variant="outline-warning"
-              className=""
-            >
-              BUG LIST
-            </Nav.Link>
-            <Nav.Link
-              href={`${process.env.REACT_APP_FE_URL}/projects/p/${hash}/bug/new`}
-              variant="outline-warning"
-              className=""
-            >
-              NEW BUG
-            </Nav.Link>
-            {admin && (
-              <>
-                <Nav.Link
-                  href={`${process.env.REACT_APP_FE_URL}/projects/p/${hash}/user/add`}
-                  variant="outline-warning"
-                  className=""
-                >
-                  ADD USER
-                </Nav.Link>
-                <Nav.Link
-                  href={`${process.env.REACT_APP_FE_URL}/projects/p/${hash}/edit`}
-                  variant="outline-warning"
-                  className=""
-                >
-                  EDIT PROJECT
-                </Nav.Link>
-              </>
-            )}
-            <Nav.Link variant="outline-warning" className="" href="/projects">
-              ALL PROJECTS
-            </Nav.Link>
-            <Nav.Link
-              href="/"
-              variant="outline-warning"
-              className=""
-              onClick={this.purgeLocalStorage}
-            >
-              SIGN OUT
-            </Nav.Link>
-          </>
-        )}
-        {!localStorage.userId && (
-          <>
-            <Nav.Link
-              href={`${process.env.REACT_APP_FE_URL}/projects/p/${hash}/bugs`}
-              variant="outline-warning"
-              className=""
-            >
-              BUG LIST
-            </Nav.Link>
-            <Nav.Link
-              href={`${process.env.REACT_APP_FE_URL}/projects/p/${hash}/bug/new`}
-              variant="outline-warning"
-              className=""
-            >
-              NEW BUG
-            </Nav.Link>
 
-            <Nav.Link variant="outline-warning" href="/login">
-              LOG IN
-            </Nav.Link>
+    if (onProjectView) {
+      return (
+        <>
+          {localStorage.userId && (
+            <>
+              {/* REMOVED Link because when clicked it doesn't render /projects initially, user has to force a reload */}
+              <Nav.Link
+                href={`${process.env.REACT_APP_FE_URL}/projects/p/${hash}/bugs`}
+                variant="outline-warning"
+                className=""
+              >
+                BUG LIST
+              </Nav.Link>
+              <Nav.Link
+                href={`${process.env.REACT_APP_FE_URL}/projects/p/${hash}/bug/new`}
+                variant="outline-warning"
+                className=""
+              >
+                NEW BUG
+              </Nav.Link>
+              {admin && (
+                <>
+                  <Nav.Link
+                    href={`${process.env.REACT_APP_FE_URL}/projects/p/${hash}/user/add`}
+                    variant="outline-warning"
+                    className=""
+                  >
+                    ADD USER
+                  </Nav.Link>
+                  <Nav.Link
+                    href={`${process.env.REACT_APP_FE_URL}/projects/p/${hash}/edit`}
+                    variant="outline-warning"
+                    className=""
+                  >
+                    EDIT PROJECT
+                  </Nav.Link>
+                </>
+              )}
+              <Nav.Link variant="outline-warning" className="" href="/projects">
+                ALL PROJECTS
+              </Nav.Link>
+              <Nav.Link
+                href="/"
+                variant="outline-warning"
+                className=""
+                onClick={this.purgeLocalStorage}
+              >
+                SIGN OUT
+              </Nav.Link>
+            </>
+          )}
+          {!localStorage.userId && (
+            <>
+              <Nav.Link
+                href={`${process.env.REACT_APP_FE_URL}/projects/p/${hash}/bugs`}
+                variant="outline-warning"
+                className=""
+              >
+                BUG LIST
+              </Nav.Link>
+              <Nav.Link
+                href={`${process.env.REACT_APP_FE_URL}/projects/p/${hash}/bug/new`}
+                variant="outline-warning"
+                className=""
+              >
+                NEW BUG
+              </Nav.Link>
 
-            <Nav.Link variant="outline-warning" href="/signup">
-              SIGN UP
-            </Nav.Link>
-          </>
-        )}
-      </>
-    );
+              <Nav.Link variant="outline-warning" href="/login">
+                LOG IN
+              </Nav.Link>
+
+              <Nav.Link variant="outline-warning" href="/signup">
+                SIGN UP
+              </Nav.Link>
+            </>
+          )}
+        </>
+      );
+    } else {
+      return (
+        <>
+          {localStorage.userId && (
+            <>
+              {/* REMOVED Link because when clicked it doesn't render /projects initially, user has to force a reload */}
+              <Nav.Link variant="outline-warning" className="" href="/projects">
+                ALL PROJECTS
+              </Nav.Link>
+              <Nav.Link
+                href="/"
+                variant="outline-warning"
+                className=""
+                onClick={this.purgeLocalStorage}
+              >
+                SIGN OUT
+              </Nav.Link>
+            </>
+          )}
+          {!localStorage.userId && (
+            <>
+              <Nav.Link variant="outline-warning" href="/login">
+                LOG IN
+              </Nav.Link>
+
+              <Nav.Link variant="outline-warning" href="/signup">
+                SIGN UP
+              </Nav.Link>
+            </>
+          )}
+        </>
+      );
+    }
   };
 
   desktopNavBar() {
@@ -210,7 +245,7 @@ class NavBar extends Component {
           </Navbar.Brand>
           <Navbar.Toggle aria-controls="responsive-navbar-nav" />
           <Navbar.Collapse id="responsive-navbar-nav">
-            <Nav className="mr-auto">{this.conditionalNavButtons()}</Nav>
+            <Nav className="mr-auto">{this.conditionalNavButtons(false)}</Nav>
           </Navbar.Collapse>
         </Navbar>
       );
@@ -223,7 +258,7 @@ class NavBar extends Component {
             </Navbar.Brand>
             <Navbar.Toggle aria-controls="responsive-navbar-nav" />
             <Navbar.Collapse id="responsive-navbar-nav">
-              <Nav className="mr-auto">{this.conditionalNavButtons()}</Nav>
+              <Nav className="mr-auto">{this.conditionalNavButtons(true)}</Nav>
             </Navbar.Collapse>
           </Navbar>
         );
