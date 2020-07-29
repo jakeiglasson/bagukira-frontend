@@ -68,6 +68,10 @@ class Projects extends Component {
     );
   };
 
+  storeHash(event, hash) {
+    localStorage.setItem("hash", hash);
+  }
+
   existingProjects = () => {
     const { projects } = this.state;
     return (
@@ -82,6 +86,9 @@ class Projects extends Component {
                 variant="warning"
                 size="lg"
                 block
+                onClick={(event) => {
+                  this.storeHash(event, project.id);
+                }}
               >
                 <div className="projects-item word-wrap-anywhere">
                   {project.name}

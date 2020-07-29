@@ -141,7 +141,7 @@ class App extends Component {
           path="/projects/p/:hash"
           render={(props) => (
             <>
-              <NavBar />
+              <NavBar {...props} />
               <div className="content-container">
                 <div className="single-project-grid-container">
                   <SideBar
