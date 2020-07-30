@@ -1,11 +1,10 @@
 import React, { Component } from "react";
-import { BrowserRouter, Route, Link, Redirect } from "react-router-dom";
+import { BrowserRouter, Route, Redirect } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faBug } from "@fortawesome/free-solid-svg-icons";
 
 import "./App.css";
 import ProtectedRoute from "./components/shared/ProtectedRoute.jsx";
-
 import Home from "./components/Home";
 import Login from "./components/Login";
 import Signup from "./components/Signup";
@@ -147,10 +146,9 @@ class App extends Component {
               <div className="content-container">
                 <div className="single-project-grid-container">
                   <SideBar
-                    // activeLink="{activeLink}"
                     serverRootUrl={this.serverRootUrl()}
                     className="spgc-side-nav"
-                    setActiveLink={this.setActiveLink.bind(this)}
+                    setActiveLink={this.setActiveLink}
                     {...props}
                   />
                   {this.constructComponent("BugList")}
