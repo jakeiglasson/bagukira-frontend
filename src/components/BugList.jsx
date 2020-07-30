@@ -8,47 +8,34 @@ import "./css/Global.css";
 class BugList extends Component {
   state = {
     bugs: [],
-    hash: this.props.match.params.hash,
-  };
-
-  componentWillMount = () => {
-    this.getTickets();
   };
 
   componentDidMount() {
-    // console.log("componentDidMount", this.props);
+    this.getTickets();
   }
 
   getTickets = () => {
-    const url = `${process.env.REACT_APP_API_URL}/units/${this.state.hash}/tickets`;
+    const url = `${process.env.REACT_APP_API_URL}/units/${this.props.match.params.hash}/tickets`;
 
     axios
       .get(url)
       .then((response) => {
         const data = response.data;
-        console.log(response);
         this.setState({ bugs: data.tickets });
       })
       .catch((error) => {
-        console.log(error.response);
-        if (error.response.status >= 500) {
-          alert("This resource doesn't exist");
+        if (error.response.status >= 400) {
           this.props.history.push("/");
           window.location.reload(true);
         }
       });
   };
 
-  componentDidUpdate() {
-    // console.log(this.state.bugs);
-  }
-
   tableHead = (conditional) => {
     if (!conditional) {
       return (
         <thead>
           <tr>
-            {/* <th>#</th> */}
             <th>SUBJECT</th>
             <th>STATUS</th>
             <th>SEVERITY</th>
@@ -63,7 +50,6 @@ class BugList extends Component {
       return (
         <thead>
           <tr className="d-flex">
-            {/* <th>#</th> */}
             <th className="col-4">SUBJECT</th>
             <th className="col-3">STATUS</th>
             <th className="col-3">SEVERITY</th>
@@ -91,6 +77,7 @@ class BugList extends Component {
     }
   };
 
+  //   Make mobile responsive
   generateBugList = (conditional) => {
     let { bugs } = this.state;
     let collection;
@@ -99,7 +86,6 @@ class BugList extends Component {
       collection = bugs.map((bug) => {
         return (
           <tr key={bug.id}>
-            {/* <td>{bug.ticket_num}</td> */}
             <td>
               <Link to={"bugs/b/" + bug.ticket_num}>{bug.subject}</Link>
             </td>
@@ -121,7 +107,6 @@ class BugList extends Component {
       collection = bugs.map((bug) => {
         return (
           <tr key={bug.id} className="d-flex">
-            {/* <td>{bug.ticket_num}</td> */}
             <td className="col-4 word-wrap-anywhere">
               <Link to={"bugs/b/" + bug.ticket_num}>{bug.subject}</Link>
             </td>
@@ -139,34 +124,7 @@ class BugList extends Component {
     return <>{collection}</>;
   };
 
-  // generateBugList = () => {
-  //   let { bugs } = this.state;
-  //   console.log("bug array:", bugs);
-  //   let collection;
-
-  //   if (bugs) {
-  //     bugs.map((bug, index) => {
-  //       return (
-  // <tr>
-  //   <td>{index}</td>
-
-  //   <td>
-  //     <Link to={"./bug-list/" + index}>
-  //       Sidebar displaying on all pages
-  //     </Link>
-  //   </td>
-  //   <td>OPEN</td>
-  //   <td>LOW</td>
-  //   <td>1/1/2020</td>
-  //   <td>-</td>
-  //   <td>JAKE GLASSON</td>
-  //   <td>-</td>
-  // </tr>
-  //       );
-  //     });
-  //   }
-  // };
-
+  //   Make mobile responsive
   packageComponentsForMediaQuery = (conditional) => {
     return (
       <>
@@ -176,6 +134,7 @@ class BugList extends Component {
     );
   };
 
+  //   Make mobile responsive
   renderThroughMediaQuery = () => {
     return (
       <div>
@@ -201,16 +160,8 @@ class BugList extends Component {
   render() {
     return (
       <div className={"side-content-container p-4 " + this.props.className}>
-        <Table
-          striped
-          bordered
-          hover
-          className="bug-list-table"
-          // responsive="sm"
-        >
+        <Table striped bordered hover className="bug-list-table">
           {this.renderThroughMediaQuery()}
-          {/* {this.tableHead()}
-          {this.tableBody(false)} */}
         </Table>
       </div>
     );
