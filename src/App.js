@@ -58,7 +58,34 @@ class App extends Component {
     },
   };
 
-  componentWillMount = () => {};
+  componentWillMount = () => {
+    let d = new Date();
+    let currentTime = d.getTime();
+    // If a JWT is present, check if its expired, if so clear local storage
+    if (localStorage.token != undefined) {
+      let info = this.parseJwt(localStorage.token);
+      let exp = info.exp * 1000;
+      // convert milliseconds to hours
+      let timeSince = (currentTime - exp) / 3600000;
+      console.log(timeSince);
+      if (timeSince >= 4) {
+        localStorage.clear();
+      }
+    }
+
+    // if (localStorage.startTime) (
+
+    // )
+  };
+
+  parseJwt(token) {
+    if (!token) {
+      return;
+    }
+    const base64Url = token.split(".")[1];
+    const base64 = base64Url.replace("-", "+").replace("_", "/");
+    return JSON.parse(window.atob(base64));
+  }
 
   setAppState = (stateName, value) => {
     this.setState({ [stateName]: value });
