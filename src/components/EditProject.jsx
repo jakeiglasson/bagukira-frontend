@@ -18,7 +18,6 @@ class EditProject extends Component {
       render: false,
       hash: this.props.match.params.hash,
     };
-    console.log(this.props);
   }
 
   componentWillMount = () => {
@@ -30,22 +29,6 @@ class EditProject extends Component {
 
     this.setState({ projectName: localStorage.projectName });
   };
-
-  // getProjectInfo = () => {
-  //   // console.log("SideBar > getProjectName");
-  //   let hash = this.props.match.params.hash;
-  //   let { serverRootUrl } = this.props;
-  //   let endPoint = "/projects";
-  //   let queries = "?hashId=" + hash;
-
-  //   axios.get(serverRootUrl + endPoint + queries).then((response) => {
-  //     console.log(response);
-  //     this.setState({
-  //       projectName: response.data[0].name,
-  //       projectId: response.data[0].id,
-  //     });
-  //   });
-  // };
 
   handleSubmit = (event) => {
     event.preventDefault();
@@ -69,8 +52,6 @@ class EditProject extends Component {
   };
 
   updateProjectName = () => {
-    // logic to send project name to backend
-
     let projectName = this.state.projectName;
     let hash = this.props.match.params.hash;
     let route = `${process.env.REACT_APP_API_URL}/units/${hash}`;
@@ -98,8 +79,6 @@ class EditProject extends Component {
 
     axios(config)
       .then((response) => {
-        console.log(response);
-        console.log(JSON.stringify(response.data));
         localStorage.setItem("projectName", projectName);
         window.location.reload(true);
       })

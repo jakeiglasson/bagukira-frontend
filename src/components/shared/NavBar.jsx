@@ -125,6 +125,7 @@ class NavBar extends Component {
                 <>
                   <Nav.Link
                     href={`${process.env.REACT_APP_FE_URL}/projects/p/${hash}/user/add`}
+                    data-testid={`linkTestADD USER`}
                     variant="outline-warning"
                     className=""
                   >
@@ -132,6 +133,7 @@ class NavBar extends Component {
                   </Nav.Link>
                   <Nav.Link
                     href={`${process.env.REACT_APP_FE_URL}/projects/p/${hash}/edit`}
+                    data-testid={`linkTestEDIT PROJECT`}
                     variant="outline-warning"
                     className=""
                   >
@@ -216,7 +218,6 @@ class NavBar extends Component {
   };
 
   desktopNavBar() {
-    // console.log(localStorage);
     return (
       <Navbar bg="dark" variant="dark" className="">
         {this.renderWelcomeMessage()}
@@ -243,7 +244,10 @@ class NavBar extends Component {
           <Navbar.Brand href="#home">
             {this.renderWelcomeMessage()}
           </Navbar.Brand>
-          <Navbar.Toggle aria-controls="responsive-navbar-nav" />
+          <Navbar.Toggle
+            aria-controls="responsive-navbar-nav"
+            data-testid="mToggle"
+          />
           <Navbar.Collapse id="responsive-navbar-nav">
             <Nav className="mr-auto">{this.conditionalNavButtons(false)}</Nav>
           </Navbar.Collapse>
@@ -263,7 +267,6 @@ class NavBar extends Component {
           </Navbar>
         );
       } else {
-        console.log("LOADING OVERLAY");
         return <div className="loading-overlay"></div>;
       }
     }

@@ -14,12 +14,10 @@ class ProjectName extends Component {
   };
 
   getProject = async (hash) => {
-    // console.log("SideBar > getProject");
     const endPoint = "/units/";
     await axios
       .get(process.env.REACT_APP_API_URL + endPoint + hash)
       .then((response) => {
-        // console.log(response.data);
         this.setState({ project: response.data.units });
         localStorage.setItem("projectOwnerId", response.data.units.user_id);
         localStorage.setItem("projectName", response.data.units.name);
@@ -30,9 +28,6 @@ class ProjectName extends Component {
   };
 
   render() {
-    console.log(this.props);
-    console.log(localStorage);
-
     let { name } = this.state.project || { name: null };
 
     if (name) {

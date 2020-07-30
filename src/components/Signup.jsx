@@ -10,7 +10,6 @@ class signup extends Component {
   state = { email: "", password: "", confirmPassword: "" };
 
   validateEmail(mail) {
-    console.log(mail);
     if (/^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/.test(mail)) {
       return true;
     } else {
@@ -41,7 +40,6 @@ class signup extends Component {
       // check if password and confirmPassword match
       if (password === confirmPassword) {
         // create new account
-        console.log("passwords match");
         await axios
           .post(process.env.REACT_APP_API_URL + "/sign-up", {
             user: {
@@ -50,7 +48,6 @@ class signup extends Component {
             },
           })
           .then((response) => {
-            console.log(response);
             login = true;
           })
           .catch((error) => {
@@ -68,13 +65,10 @@ class signup extends Component {
               },
             })
             .then((response) => {
-              // console.log(response);
               localStorage.setItem("token", response.data.jwt);
 
               const userId = this.parseJwt(localStorage.getItem("token")).sub;
               localStorage.setItem("userId", userId);
-
-              // console.log(localStorage);
 
               this.props.history.push("/projects");
               window.location.reload(true);
@@ -129,9 +123,6 @@ class signup extends Component {
               onChange={this.onInputChange}
             />
           </Form.Group>
-          {/* <Form.Group controlId="formBasicCheckbox">
-            <Form.Check type="checkbox" label="Check me out" />
-          </Form.Group> */}
 
           <Button
             className="btn btn-warning btn-block"

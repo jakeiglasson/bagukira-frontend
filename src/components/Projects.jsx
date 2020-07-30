@@ -7,8 +7,7 @@ import "./css/Projects.css";
 class Projects extends Component {
   constructor(props) {
     super(props);
-    console.log("Projects > constructor");
-    console.log("|-> props:", this.props);
+
     this.state = {
       projects: [],
       userId: localStorage.getItem("userId"),
@@ -17,10 +16,6 @@ class Projects extends Component {
   }
 
   async componentWillMount() {
-    console.log("componentDidMount");
-    console.log("localStorage:", localStorage);
-    console.log(this.props);
-
     if (this.props.authorized == false) {
       alert("You are not authorized to access this resource");
       this.props.history.push("/");
@@ -41,7 +36,6 @@ class Projects extends Component {
       )
       .then((response) => {
         const data = response.data;
-        console.log(data);
         this.setState({ projects: data.units });
       })
       .catch((error) => {
@@ -49,15 +43,11 @@ class Projects extends Component {
       });
   }
 
-  // randomColor = () => {
-  //   console.log(Math.floor(Math.random() * 16777215).toString(16));
-  //   return Math.floor(Math.random() * 16777215).toString(16);
-  // };
-
   newProject = () => {
     return (
       <Button
         href="/projects/new"
+        data-testid={`NEW PROJECT`}
         className="projects-item-container"
         variant="success"
         size="lg"
@@ -81,6 +71,7 @@ class Projects extends Component {
             return (
               <Button
                 key={index}
+                data-testid={`EXISTING PROJECT${index}`}
                 href={"/projects/p/" + project.id + "/bugs"}
                 className="projects-item-container"
                 variant="warning"

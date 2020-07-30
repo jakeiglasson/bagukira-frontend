@@ -9,15 +9,6 @@ import "./css/EditBug.css";
 
 import axios from "axios";
 
-// const GLOBAL_MEDIA_QUERIES = {
-//   small: "(max-width: 599px)",
-//   medium: "(min-width: 600px) and (max-width: 1199px)",
-//   large: "(min-width: 1200px)",
-// };
-// const matches = Media({ queries: GLOBAL_MEDIA_QUERIES });
-
-// const marginBottom = matches.large ? 0 : 10;
-
 class EditBug extends Component {
   state = {
     description: "",
@@ -74,25 +65,16 @@ class EditBug extends Component {
       console.log(error);
     }
 
-    // if (!this.state.ticket.closed_by) {
-    //   let ticket = this.state.ticket;
-    //   ticket["closed_by"] = " ";
-    //   this.setState({ ticket: ticket });
-    // }
-
     if (this.state.ticket.closed_by.length > 30) {
       alert("Name is too long (30 character limit)");
       return;
     }
 
-    console.log("UPDATING BUG");
-    console.log(event.target);
     await axios
       .patch(this.state.url, {
         ticket: this.state.ticket,
       })
       .then((response) => {
-        console.log(response);
         const descriptionChanged = this.state.renderEditDescription;
         this.setState({
           renderClosePopup: false,
@@ -102,7 +84,6 @@ class EditBug extends Component {
         });
 
         if (this.state.ticket.status === "CLOSED") {
-          console.log("changPage");
           this.changePage();
         }
       })
@@ -113,7 +94,6 @@ class EditBug extends Component {
 
   //   Handle user interface inputs for bug ticket
   onInputChange = (event) => {
-    console.log(event.target.id);
     switch (event.target.id) {
       // Handle changes of bug status
       case "OPEN":
@@ -137,7 +117,6 @@ class EditBug extends Component {
       default:
         //  Handle all other field changes
         if (event.target.id == "closed_by") {
-          console.log("closing");
           this.setTicketState(
             event.target.id,
             event.target.value.toUpperCase()
@@ -171,15 +150,6 @@ class EditBug extends Component {
   handleCloseModal = (event) => {
     // unfortunate that this has to be used, but deadline is too close to refactor and work as intended
     window.location.reload(true);
-    // // Rollback status
-    // this.setTicketState("status", this.state.previousStatus);
-    // this.setTicketState("closed_by", this.state.previousClosedBy);
-    // this.setTicketState("description", this.state.description);
-    // // Hide modals
-    // this.setState({
-    //   renderClosePopup: false,
-    //   renderEditDescription: false,
-    // });
   };
 
   dropDown = () => {

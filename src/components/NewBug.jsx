@@ -3,8 +3,6 @@ import { Form, Button, Dropdown, ButtonGroup } from "react-bootstrap";
 
 import axios from "axios";
 
-// import { inputEventState } from "./shared/Helpers.jsx";
-
 import "./css/NewBug.css";
 import "./css/Global.css";
 
@@ -26,9 +24,6 @@ class NewBug extends Component {
   };
 
   handleSubmit = async (event) => {
-    // alert("A new bug was submitted: " + this.state.subjectValue);
-    console.log("New Bug > handleSubmit");
-    console.log("|-> state:", this.state);
     event.preventDefault();
 
     // check:
@@ -54,7 +49,6 @@ class NewBug extends Component {
       return;
     }
 
-    console.log(this.state);
     await axios
       .post(
         process.env.REACT_APP_API_URL +
@@ -72,7 +66,6 @@ class NewBug extends Component {
         }
       )
       .then(function (response) {
-        console.log(response);
         alert("Bug was successfully submitted!");
         window.location.reload(true);
       })
@@ -100,8 +93,6 @@ class NewBug extends Component {
   };
 
   handleSelect = (severity) => {
-    console.log(severity);
-
     this.setState({ severityValue: severity }, () => {
       console.log(this.state);
     });
@@ -182,19 +173,6 @@ class NewBug extends Component {
               this.handleSelect(severity);
             }}
           >
-            {/* <Button variant="primary dropDownTextContainer">
-              <div className="dropDownText">
-                {this.setSeverityStatusText(
-                  this.state.severityValue.toUpperCase()
-                )}
-              </div>
-            </Button>
-
-            <Dropdown.Toggle
-              split
-              variant="primary"
-              id="dropdown-split-basic"
-            /> */}
             <Dropdown.Toggle id="dropdown-basic" variant="primary">
               {this.setSeverityStatusText(
                 this.state.severityValue.toUpperCase()
@@ -236,24 +214,6 @@ class NewBug extends Component {
         <div className="p-4 global-form-container">
           <h2 className="text-center">NEW BUG FORM</h2>
           {this.renderNewBugForm()}
-          {/* <Form>
-            <Form.Group controlId="exampleForm.ControlTextarea1">
-              <Form.Label>REPORTER NAME</Form.Label>
-
-              <Form.Control as="textarea" rows="1" />
-            </Form.Group>{" "}
-            <Form.Group controlId="exampleForm.ControlTextarea1">
-              <Form.Label>BUG SUBJECT</Form.Label>
-              <Form.Control as="textarea" rows="1" />
-            </Form.Group>
-            <Form.Group controlId="exampleForm.ControlTextarea1">
-              <Form.Label>BUG DESCRIPTION</Form.Label>
-              <Form.Control as="textarea" rows="3" />
-            </Form.Group>
-            <Button variant="primary" type="submit">
-              Submit
-            </Button>
-          </Form> */}
         </div>
       </div>
     );
