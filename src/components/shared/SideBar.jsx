@@ -15,37 +15,28 @@ class SideBar extends Component {
   };
 
   componentWillMount = () => {
-    // console.log("SideBar > componentWillMount");
-
     if (localStorage.userId) {
-      //   console.log("id detected");
       this.setState({ permission: true });
     }
-    // console.log(this.props.match.params);
     let { hash } = this.props.match.params;
     this.setState({ root: "/projects/p/" + hash + "/" });
     this.getProject(hash);
   };
 
-  componentWillUpdate = () => {
-    // console.log("componentWillUpdate");
-    // console.log(this.state);
-  };
-
   getProject = async (hash) => {
-    // console.log("SideBar > getProject");
     const endPoint = "/units/";
-    await axios
-      .get(process.env.REACT_APP_API_URL + endPoint + hash)
-      .then((response) => {
-        // console.log(response.data);
+    try {
+      const response = await axios.get(
+        process.env.REACT_APP_API_URL + endPoint + hash
+      );
+      if (response === 200) {
         this.setState({ project: response.data.units });
         localStorage.setItem("projectOwnerId", response.data.units.user_id);
         localStorage.setItem("projectName", response.data.units.name);
-      })
-      .catch((error) => {
-        console.log(error);
-      });
+      }
+    } catch (error) {
+      alert(error);
+    }
   };
 
   renderLink = (endPoint, linkName) => {
@@ -75,8 +66,6 @@ class SideBar extends Component {
   };
 
   render() {
-    // console.log("SideBar > render");
-    // console.log("|-> state:", this.state);
     let { name } = this.state.project || { name: null };
 
     if (name) {

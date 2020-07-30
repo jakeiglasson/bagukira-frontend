@@ -2,20 +2,17 @@ import React, { Component } from "react";
 import { Link, Redirect } from "react-router-dom";
 import { Button, Alert } from "react-bootstrap";
 import "./css/Global.css";
-import { cssNumber } from "jquery";
-import { faThermometerHalf } from "@fortawesome/free-solid-svg-icons";
 
-class home extends Component {
+class Home extends Component {
   state = {
     clearLocalStorage: true,
     displayAlert: false,
   };
 
-  componentWillMount = () => {
+  componentDidMount = () => {
     if (localStorage.userId) {
       this.setState({ clearLocalStorage: false });
       this.props.history.push("/projects");
-      window.location.reload(true);
     } else {
       this.setState({ clearLocalStorage: true });
     }
@@ -71,4 +68,4 @@ class home extends Component {
   }
 }
 
-export default home;
+export default Home;

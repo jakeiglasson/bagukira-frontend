@@ -41,13 +41,6 @@ class EditBug extends Component {
     }
   };
 
-  //   Future handling of leaving page before response received
-  //   componentWillUnmount = () => {
-  //     if (this.response) {
-  //       this.response.cancel();
-  //     }
-  //   };
-
   changePage = () => {
     this.props.history.push(`${this.state.root}`);
   };

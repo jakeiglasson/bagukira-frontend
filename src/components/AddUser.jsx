@@ -13,10 +13,8 @@ class AddUser extends Component {
   };
 
   componentDidMount = () => {
-    if (!localStorage.userId) {
-      alert("You are not authorized to access this resource");
+    if (this.props.authorized === false) {
       this.props.history.push("/");
-      window.location.reload(true);
     }
   };
 
@@ -24,8 +22,8 @@ class AddUser extends Component {
     event.preventDefault();
 
     //remove spaces & new lines
-    let emailArr = this.state.emailsValue.trim().replace(/\s+^./g, ",");
-    let emailList = emailArr.split(/,+/); // divide list by commas, ignore double commas
+    const emailArr = this.state.emailsValue.trim().replace(/\s+^./g, ",");
+    const emailList = emailArr.split(/,+/); // divide list by commas, ignore double commas
 
     try {
       emailList.forEach((email) => this.validateEmail(email));
@@ -33,7 +31,7 @@ class AddUser extends Component {
       this.postEmails(emailList);
     } catch (error) {
       // Display alert informing of incorrect email format in list.
-      alert(error);
+      alert(`Error: ${error}`);
     }
   };
 
@@ -49,17 +47,17 @@ class AddUser extends Component {
 
   postEmails = async (array) => {
     //   Set variables
-    let userId = localStorage.userId;
-    let hash = this.props.match.params.hash;
-    let api_url = `${process.env.REACT_APP_API_URL}/users/${userId}/units/${hash}/invite`;
-    let data = JSON.stringify({
+    const userId = localStorage.userId;
+    const hash = this.props.match.params.hash;
+    const api_url = `${process.env.REACT_APP_API_URL}/users/${userId}/units/${hash}/invite`;
+    const data = JSON.stringify({
       unit: {
         invite_list: array,
       },
     });
 
     // Compose axios request
-    let config = {
+    const config = {
       method: "post",
       url: api_url,
       headers: {
@@ -82,7 +80,7 @@ class AddUser extends Component {
         );
       }
     } catch (error) {
-      alert(error);
+      alert(`Error: ${error}`);
     }
   };
 

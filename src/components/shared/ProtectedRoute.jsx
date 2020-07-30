@@ -1,6 +1,5 @@
-
 import React from "react";
-import { Route, Redirect } from "react-router-dom";
+import { Route } from "react-router-dom";
 
 import axios from "axios";
 
@@ -11,14 +10,8 @@ class ProtectedRoute extends React.Component {
   };
 
   componentWillMount = async () => {
-    console.log(this.props.path);
-    console.log(localStorage);
-    console.log("http://localhost:3000" + this.props.path);
-    console.log(window.location.href.includes(this.props.path));
-
     this.setState({ Component: this.props.component });
 
-    // if (window.location.href == "http://localhost:3000" + this.props.path)
     if (window.location.href.includes(this.props.path)) {
       try {
         const response = await axios.get(
@@ -32,25 +25,16 @@ class ProtectedRoute extends React.Component {
         if (response.status >= 400) {
           throw new Error("not authorized");
         } else {
-          console.log(response);
           this.setState({
             auth: true,
             loading: false,
           });
         }
       } catch (err) {
-        console.log(err.message);
         this.setState({
           loading: false,
         });
       }
-    }
-
-    const { loading, auth } = this.state;
-    if (!loading && !auth) {
-      // console.log("REDIRECTING USER", this.props.component);
-      // this.props.history.push("/");
-      // window.location.reload(true);
     }
   };
 
@@ -58,7 +42,6 @@ class ProtectedRoute extends React.Component {
     const { loading, auth } = this.state;
 
     if (!loading && !auth) {
-      console.log("REDIRECTING USER", this.props.component);
       const { Component } = this.state;
       return (
         <>
@@ -70,9 +53,6 @@ class ProtectedRoute extends React.Component {
         </>
       );
     } else {
-      console.log("loading protected component");
-      console.log(this.props.component);
-      console.log(this.props.path);
       return (
         !loading && (
           <>

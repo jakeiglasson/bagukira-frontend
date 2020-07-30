@@ -12,13 +12,10 @@ class NavBar extends Component {
 
   componentDidMount = () => {
     this.setState({ hash: localStorage.hash });
-
     let { hash } = this.props.match.params;
-    this.getProject(hash);
-  };
-
-  componentDidMount = () => {
-    this.setState({ loading: false });
+    if (this.getProject(hash)) {
+      this.setState({ loading: false });
+    }
   };
 
   purgeLocalStorage = async () => {
@@ -28,16 +25,20 @@ class NavBar extends Component {
   getProject = async (hash) => {
     const endPoint = "/units/";
 
-    await axios
-      .get(process.env.REACT_APP_API_URL + endPoint + hash)
-      .then((response) => {
+    try {
+      const response = await axios.get(
+        process.env.REACT_APP_API_URL + endPoint + hash
+      );
+      if (response.status === 200) {
         this.setState({ project: response.data.units });
         localStorage.setItem("projectOwnerId", response.data.units.user_id);
         localStorage.setItem("projectName", response.data.units.name);
-      })
-      .catch((error) => {
-        console.log(error);
-      });
+        return true;
+      }
+    } catch (error) {
+      alert(`Error: ${error}`);
+      return false;
+    }
   };
 
   renderWelcomeMessage = () => {
@@ -107,14 +108,14 @@ class NavBar extends Component {
             <>
               {/* REMOVED Link because when clicked it doesn't render /projects initially, user has to force a reload */}
               <Nav.Link
-                href={`${process.env.REACT_APP_FE_URL}/projects/p/${hash}/bugs`}
+                href={`/projects/p/${hash}/bugs`}
                 variant="outline-warning"
                 className=""
               >
                 BUG LIST
               </Nav.Link>
               <Nav.Link
-                href={`${process.env.REACT_APP_FE_URL}/projects/p/${hash}/bug/new`}
+                href={`/projects/p/${hash}/bug/new`}
                 variant="outline-warning"
                 className=""
               >
@@ -123,14 +124,14 @@ class NavBar extends Component {
               {admin && (
                 <>
                   <Nav.Link
-                    href={`${process.env.REACT_APP_FE_URL}/projects/p/${hash}/user/add`}
+                    href={`/projects/p/${hash}/user/add`}
                     variant="outline-warning"
                     className=""
                   >
                     ADD USER
                   </Nav.Link>
                   <Nav.Link
-                    href={`${process.env.REACT_APP_FE_URL}/projects/p/${hash}/edit`}
+                    href={`/projects/p/${hash}/edit`}
                     variant="outline-warning"
                     className=""
                   >
@@ -154,14 +155,14 @@ class NavBar extends Component {
           {!localStorage.userId && (
             <>
               <Nav.Link
-                href={`${process.env.REACT_APP_FE_URL}/projects/p/${hash}/bugs`}
+                href={`/projects/p/${hash}/bugs`}
                 variant="outline-warning"
                 className=""
               >
                 BUG LIST
               </Nav.Link>
               <Nav.Link
-                href={`${process.env.REACT_APP_FE_URL}/projects/p/${hash}/bug/new`}
+                href={`/projects/p/${hash}/bug/new`}
                 variant="outline-warning"
                 className=""
               >
@@ -261,7 +262,6 @@ class NavBar extends Component {
           </Navbar>
         );
       } else {
-        console.log("LOADING OVERLAY");
         return <div className="loading-overlay"></div>;
       }
     }

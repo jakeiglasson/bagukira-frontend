@@ -17,14 +17,6 @@ class NewBug extends Component {
     hash: this.props.match.params.hash,
   };
 
-  componentWillMount = () => {
-    if (this.props.authorized == false) {
-      alert("You are not authorized to access this resource");
-      this.props.history.push("/");
-      window.location.reload(true);
-    }
-  };
-
   handleSubmit = async (event) => {
     event.preventDefault();
 

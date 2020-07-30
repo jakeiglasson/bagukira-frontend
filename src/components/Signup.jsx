@@ -6,11 +6,10 @@ import "./css/Global.css";
 import { inputEventState } from "./shared/Helpers.jsx";
 import axios from "axios";
 
-class signup extends Component {
+class Signup extends Component {
   state = { email: "", password: "", confirmPassword: "" };
 
   validateEmail(mail) {
-    console.log(mail);
     if (/^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/.test(mail)) {
       return true;
     } else {
@@ -29,63 +28,62 @@ class signup extends Component {
   }
 
   handleSubmit = async () => {
-    // UserId needs to be dynamically set when user login functionality is working. Setting as a placeholder for now
-    // localStorage.setItem("userId", 1);
-    // localStorage.setItem("userEmail", "jake@gmail.com");
-
     let { email, password, confirmPassword } = this.state;
     let login = false;
 
     // check if email is valid
-    if (this.validateEmail(email)) {
-      // check if password and confirmPassword match
-      if (password === confirmPassword) {
-        // create new account
-        console.log("passwords match");
-        await axios
-          .post(process.env.REACT_APP_API_URL + "/sign-up", {
-            user: {
-              email: email,
-              password: password,
-            },
-          })
-          .then((response) => {
-            console.log(response);
-            login = true;
-          })
-          .catch((error) => {
-            if (error.response.status) {
-              alert("User already exists");
-            }
-          });
-        // login the new user if account is successfully created
-        if (login) {
-          await axios
-            .post(process.env.REACT_APP_API_URL + "/login", {
-              auth: {
+    try {
+      if (this.validateEmail(email)) {
+        // check if password and confirmPassword match
+        if (password === confirmPassword) {
+          // create new account
+          const response = await axios.post(
+            process.env.REACT_APP_API_URL + "/sign-up",
+            {
+              user: {
                 email: email,
                 password: password,
               },
-            })
-            .then((response) => {
-              // console.log(response);
+            }
+          );
+          if (response.status === 201) {
+            login = true;
+          } else if (response.status === 422) {
+            alert("User already exists");
+          } else {
+            throw new Error("Error: Something went wrong");
+          }
+
+          // login the new user if account is successfully created
+          if (login) {
+            const response = await axios.post(
+              process.env.REACT_APP_API_URL + "/login",
+              {
+                auth: {
+                  email: email,
+                  password: password,
+                },
+              }
+            );
+
+            if (response.status <= 400) {
               localStorage.setItem("token", response.data.jwt);
 
               const userId = this.parseJwt(localStorage.getItem("token")).sub;
               localStorage.setItem("userId", userId);
 
-              // console.log(localStorage);
-
               this.props.history.push("/projects");
               window.location.reload(true);
-            })
-            .catch((error) => {
-              console.log(error);
-            });
+            } else {
+              throw new Error("Error: Couldn't log in :(");
+            }
+          }
+        } else {
+          throw new Error("Passwords don't match");
         }
-      } else {
-        alert("passwords don't match");
       }
+    } catch (error) {
+      alert(error);
     }
   };
 
@@ -129,10 +127,6 @@ class signup extends Component {
               onChange={this.onInputChange}
             />
           </Form.Group>
-          {/* <Form.Group controlId="formBasicCheckbox">
-            <Form.Check type="checkbox" label="Check me out" />
-          </Form.Group> */}
-
           <Button
             className="btn btn-warning btn-block"
             data-testid="login"
@@ -140,7 +134,6 @@ class signup extends Component {
           >
             REGISTER
           </Button>
-
           <hr />
           <div className="">Already have an account?</div>
           <Link to="/login" className="text-link">
@@ -154,4 +147,4 @@ class signup extends Component {
   }
 }
 
-export default signup;
+export default Signup;

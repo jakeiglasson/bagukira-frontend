@@ -10,15 +10,13 @@ import "./css/NewProject.css";
 class NewProject extends Component {
   state = { projectName: "" };
 
-  componentWillMount = () => {
-    if (this.props.authorized == false) {
-      alert("You are not authorized to access this resource");
+  onInputChange = (event) => inputEventState(this, event);
+
+  componentDidMount = () => {
+    if (this.props.authorized === false) {
       this.props.history.push("/");
-      window.location.reload(true);
     }
   };
-
-  onInputChange = (event) => inputEventState(this, event);
 
   handleSubmit = async (event) => {
     event.preventDefault();
@@ -30,8 +28,9 @@ class NewProject extends Component {
 
     const userId = localStorage.getItem("userId");
     const url = process.env.REACT_APP_API_URL + "/users/" + userId + "/units";
-    await axios
-      .post(
+
+    try {
+      const response = await axios.post(
         url,
         {
           unit: {
@@ -45,18 +44,14 @@ class NewProject extends Component {
             "Content-Type": "application/json",
           },
         }
-      )
-      .then((response) => {
+      );
+      if (response.status === 201) {
         const hash = response.data.units.id;
-        // this.setState({ hash: response.data.units.id });
-        alert(`Your ${this.state.projectName} new project was created`);
         this.props.history.push("./p/" + hash + "/bugs");
-      })
-      .catch((error) => {
-        alert(error);
-        console.log(error);
-        window.location.reload(true);
-      });
+      }
+    } catch (error) {
+      alert(`Error: ${error}`);
+    }
   };
 
   render() {
