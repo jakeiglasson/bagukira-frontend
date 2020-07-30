@@ -7,15 +7,7 @@ import "./css/Global.css";
 import { inputEventState } from "./shared/Helpers.jsx";
 
 class Login extends Component {
-  constructor(props) {
-    super(props);
-    this.state = { email: "", password: "", errMessage: "" };
-  }
-
-  componentDidMount = () => {
-    console.log("componentDidMount");
-    console.log("localStorage:", localStorage);
-  };
+  state = { email: "", password: "" };
 
   parseJwt(token) {
     if (!token) {
@@ -28,7 +20,9 @@ class Login extends Component {
 
   handleSubmit = async (event) => {
     event.preventDefault();
-    let { email, password } = this.state;
+
+    const { email, password } = this.state;
+
     await axios
       .post(process.env.REACT_APP_API_URL + "/login", {
         auth: {
@@ -37,7 +31,6 @@ class Login extends Component {
         },
       })
       .then((response) => {
-        // console.log(response);
         localStorage.setItem("token", response.data.jwt);
 
         const userId = this.parseJwt(localStorage.getItem("token")).sub;
@@ -48,16 +41,15 @@ class Login extends Component {
         window.location.reload(true);
       })
       .catch((error) => {
-        console.log(error);
+        alert("There was a problem authenticating your credentials");
       });
-    // console.log("End handle submit");
   };
 
   onInputChange = (event) => inputEventState(this, event);
 
   render() {
-    //  Need to handle errMessage
-    let { email, password } = this.state;
+    const { email, password } = this.state;
+
     return (
       <div className="small-centered-card">
         <h3 className="text-center mb-3">LOGIN</h3>
