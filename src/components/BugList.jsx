@@ -2,7 +2,7 @@ import React, { Component, Fragment } from "react";
 import axios from "axios";
 import { Link } from "react-router-dom";
 import { Table } from "react-bootstrap";
-import Media, { useMedia } from "react-media";
+import Media from "react-media";
 import "./css/Global.css";
 
 class BugList extends Component {
