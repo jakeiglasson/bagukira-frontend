@@ -12,11 +12,6 @@ class Login extends Component {
     this.state = { email: "", password: "", errMessage: "" };
   }
 
-  componentDidMount = () => {
-    console.log("componentDidMount");
-    console.log("localStorage:", localStorage);
-  };
-
   parseJwt(token) {
     if (!token) {
       return;
@@ -37,7 +32,6 @@ class Login extends Component {
         },
       })
       .then((response) => {
-        // console.log(response);
         localStorage.setItem("token", response.data.jwt);
 
         const userId = this.parseJwt(localStorage.getItem("token")).sub;
@@ -50,13 +44,11 @@ class Login extends Component {
       .catch((error) => {
         console.log(error);
       });
-    // console.log("End handle submit");
   };
 
   onInputChange = (event) => inputEventState(this, event);
 
   render() {
-    //  Need to handle errMessage
     let { email, password } = this.state;
     return (
       <div className="small-centered-card">

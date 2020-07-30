@@ -15,10 +15,6 @@ class BugList extends Component {
     this.getTickets();
   };
 
-  componentDidMount() {
-    // console.log("componentDidMount", this.props);
-  }
-
   getTickets = () => {
     const url = `${process.env.REACT_APP_API_URL}/units/${this.state.hash}/tickets`;
 
@@ -26,7 +22,6 @@ class BugList extends Component {
       .get(url)
       .then((response) => {
         const data = response.data;
-        console.log(response);
         this.setState({ bugs: data.tickets });
       })
       .catch((error) => {
@@ -38,10 +33,6 @@ class BugList extends Component {
         }
       });
   };
-
-  componentDidUpdate() {
-    // console.log(this.state.bugs);
-  }
 
   tableHead = (conditional) => {
     if (!conditional) {
@@ -96,12 +87,17 @@ class BugList extends Component {
     let collection;
 
     if (bugs && !conditional) {
-      collection = bugs.map((bug) => {
+      collection = bugs.map((bug, index) => {
         return (
           <tr key={bug.id}>
             {/* <td>{bug.ticket_num}</td> */}
             <td>
-              <Link to={"bugs/b/" + bug.ticket_num}>{bug.subject}</Link>
+              <Link
+                data-testid={`bugId${index}`}
+                to={"bugs/b/" + bug.ticket_num}
+              >
+                {bug.subject}
+              </Link>
             </td>
             <td>{bug.status}</td>
             <td>{bug.severity}</td>
@@ -118,12 +114,17 @@ class BugList extends Component {
     }
 
     if (bugs && conditional) {
-      collection = bugs.map((bug) => {
+      collection = bugs.map((bug, index) => {
         return (
           <tr key={bug.id} className="d-flex">
             {/* <td>{bug.ticket_num}</td> */}
             <td className="col-4 word-wrap-anywhere">
-              <Link to={"bugs/b/" + bug.ticket_num}>{bug.subject}</Link>
+              <Link
+                data-testid={`bugId${index}`}
+                to={"bugs/b/" + bug.ticket_num}
+              >
+                {bug.subject}
+              </Link>
             </td>
             <td className="col-3">{bug.status}</td>
             <td className="col-3">{bug.severity}</td>
@@ -138,34 +139,6 @@ class BugList extends Component {
 
     return <>{collection}</>;
   };
-
-  // generateBugList = () => {
-  //   let { bugs } = this.state;
-  //   console.log("bug array:", bugs);
-  //   let collection;
-
-  //   if (bugs) {
-  //     bugs.map((bug, index) => {
-  //       return (
-  // <tr>
-  //   <td>{index}</td>
-
-  //   <td>
-  //     <Link to={"./bug-list/" + index}>
-  //       Sidebar displaying on all pages
-  //     </Link>
-  //   </td>
-  //   <td>OPEN</td>
-  //   <td>LOW</td>
-  //   <td>1/1/2020</td>
-  //   <td>-</td>
-  //   <td>JAKE GLASSON</td>
-  //   <td>-</td>
-  // </tr>
-  //       );
-  //     });
-  //   }
-  // };
 
   packageComponentsForMediaQuery = (conditional) => {
     return (

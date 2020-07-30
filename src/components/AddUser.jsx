@@ -16,12 +16,9 @@ class AddUser extends Component {
       render: false,
       hash: this.props.match.params.hash,
     };
-    console.log(this.props);
   }
 
   componentWillMount = () => {
-    console.log("adduser > componentWillMount");
-
     if (!localStorage.userId) {
       alert("You are not authorized to access this resource");
       this.props.history.push("/");
@@ -31,7 +28,6 @@ class AddUser extends Component {
 
   handleSubmit = (event) => {
     event.preventDefault();
-    console.log(this.state);
 
     let string = this.state.emailsValue.replace(/\s+/g, ""); //remove spaces
     let array = string.split(","); // separate by commas into array
@@ -50,7 +46,6 @@ class AddUser extends Component {
   };
 
   validateEmail(mail) {
-    console.log(mail);
     if (/^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/.test(mail)) {
       return true;
     } else {
@@ -133,7 +128,6 @@ class AddUser extends Component {
   };
 
   renderContent = () => {
-    // console.log(localStorage);
     if (localStorage.userId === localStorage.projectOwnerId) {
       return (
         <div className="p-4 global-form-container">

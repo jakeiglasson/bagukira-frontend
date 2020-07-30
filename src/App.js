@@ -67,15 +67,10 @@ class App extends Component {
       let exp = info.exp * 1000;
       // convert milliseconds to hours
       let timeSince = (currentTime - exp) / 3600000;
-      console.log(timeSince);
       if (timeSince >= 4) {
         localStorage.clear();
       }
     }
-
-    // if (localStorage.startTime) (
-
-    // )
   };
 
   parseJwt(token) {
@@ -186,10 +181,6 @@ class App extends Component {
 
                   {this.constructComponent("EditBug")}
 
-                  {/* <ProtectedRoute
-                  path={"/projects/p/:hash/user/add"}
-                  component={AddUser}
-                /> */}
                   {this.constructComponent("AddUser")}
 
                   {this.constructComponent("EditProject")}
