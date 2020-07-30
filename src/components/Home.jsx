@@ -24,12 +24,7 @@ class home extends Component {
   componentDidMount = () => {
     if (this.state.clearLocalStorage) {
       localStorage.clear();
-      console.log(localStorage);
     }
-  };
-
-  componentWillUnmount = () => {
-    console.log("unmounting");
   };
 
   displayAlert = () => {
