@@ -6,6 +6,4 @@
 # Production context: all deploys from the Production branch set in your site's
 # deploy contexts will inherit these settings.
 [context.production]
-REACT_APP_API_URL = "https://api.bagukira.com"
-REACT_APP_FE_URL = "https://bagukira.com"
 
