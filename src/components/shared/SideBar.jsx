@@ -62,7 +62,9 @@ class SideBar extends Component {
   };
 
   renderAdminLinks = () => {
-    if (localStorage.userId == this.state.project.user_id) {
+    const userId = parseInt(localStorage.userId);
+
+    if (userId === this.state.project.user_id) {
       return (
         <>
           {this.renderLink("user/add", "ADD USER")}
