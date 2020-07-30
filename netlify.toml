@@ -7,6 +7,6 @@ t
 # Production context: all deploys from the Production branch set in your site's
 # deploy contexts will inherit these settings.
 [context.production]
-REACT_APP_API_URL='http://www.parallel-mistletoe-tn61dcru2io24qdpma30w09o.herokudns.com'
-REACT_APP_FE_URL='http://www.bagukira.com'
+REACT_APP_API_URL = "http://www.parallel-mistletoe-tn61dcru2io24qdpma30w09o.herokudns.com"
+REACT_APP_FE_URL = "http://www.bagukira.com"
 
