@@ -8,20 +8,11 @@ import "./css/AddUser.css";
 import "./css/Global.css";
 
 class AddUser extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      emailsValue: "",
-      emailsAreValid: false,
-      render: false,
-      hash: this.props.match.params.hash,
-    };
-    console.log(this.props);
-  }
+  state = {
+    emailsValue: "",
+  };
 
-  componentWillMount = () => {
-    console.log("adduser > componentWillMount");
-
+  componentDidMount = () => {
     if (!localStorage.userId) {
       alert("You are not authorized to access this resource");
       this.props.history.push("/");
@@ -31,48 +22,46 @@ class AddUser extends Component {
 
   handleSubmit = (event) => {
     event.preventDefault();
-    console.log(this.state);
 
-    let string = this.state.emailsValue.replace(/\s+/g, ""); //remove spaces
-    let array = string.split(","); // separate by commas into array
+    //remove spaces & new lines
+    let emailArr = this.state.emailsValue.trim().replace(/\s+^./g, ",");
+    let emailList = emailArr.split(/,+/); // divide list by commas, ignore double commas
 
     try {
-      array.forEach((email) => this.validateEmail(email));
-      this.setState({ emailsAreValid: true }, () => {
-        console.log(this.state);
-      });
+      emailList.forEach((email) => this.validateEmail(email));
+      // After passing above test, string contains valid emails and can be sent to backend
+      this.postEmails(emailList);
     } catch (error) {
+      // Display alert informing of incorrect email format in list.
       alert(error);
     }
-
-    // After passing above test, string contains valid emails and can be sent to backend
-    this.postEmails(array);
   };
 
-  validateEmail(mail) {
-    console.log(mail);
-    if (/^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/.test(mail)) {
+  validateEmail(address) {
+    //   Validate correct email format
+    if (/^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/.test(address)) {
       return true;
     } else {
-      // this.setS: tate({ emailsAreValid: false });
-      throw new Error("invalid email detected");
+      // Informs which entry is the problem
+      throw new Error(`Invalid email: ${address}`);
     }
   }
 
-  postEmails = (array) => {
+  postEmails = async (array) => {
+    //   Set variables
     let userId = localStorage.userId;
     let hash = this.props.match.params.hash;
-    let route = `${process.env.REACT_APP_API_URL}/users/${userId}/units/${hash}/invite`;
-
+    let api_url = `${process.env.REACT_APP_API_URL}/users/${userId}/units/${hash}/invite`;
     let data = JSON.stringify({
       unit: {
         invite_list: array,
       },
     });
 
+    // Compose axios request
     let config = {
       method: "post",
-      url: route,
+      url: api_url,
       headers: {
         Authorization: "Bearer " + localStorage.token,
         "Content-Type": "application/json",
@@ -80,14 +69,21 @@ class AddUser extends Component {
       data: data,
     };
 
-    axios(config)
-      .then((response) => {
-        console.log(response);
-        console.log(JSON.stringify(response.data));
-      })
-      .catch((error) => {
-        console.log(error);
-      });
+    // Send emails, raise alert on network or api fail.
+    try {
+      const response = await axios(config);
+
+      if (response.status === 204) {
+        alert("Email invites successfully sent");
+        this.setState({ emailsValue: "" });
+      } else {
+        throw new Error(
+          `Messages not sent!\nError: ${response.status}\n${response.statusText}\n${response.data}`
+        );
+      }
+    } catch (error) {
+      alert(error);
+    }
   };
 
   onInputChange = (event) => inputEventState(this, event);
@@ -110,7 +106,6 @@ class AddUser extends Component {
           </ul>
         </div>
         <Form.Group>
-          {/* <Form.Label>EMAILS</Form.Label> */}
           <Form.Control
             as="textarea"
             rows="6"
@@ -120,7 +115,6 @@ class AddUser extends Component {
             onChange={this.onInputChange}
           />
         </Form.Group>
-
         <Button
           type="submit"
           value="SUBMIT"
@@ -132,21 +126,18 @@ class AddUser extends Component {
     );
   };
 
-  renderContent = () => {
-    // console.log(localStorage);
-    if (localStorage.userId === localStorage.projectOwnerId) {
-      return (
-        <div className="p-4 global-form-container">
-          <h2 className="text-center">ADD USER</h2>
-          {this.renderAddUserForm()}
-        </div>
-      );
-    }
-  };
-
   render() {
+    const render = localStorage.userId === localStorage.projectOwnerId;
+
     return (
-      <div className="side-content-container p-4">{this.renderContent()}</div>
+      <div className="side-content-container p-4">
+        {render && (
+          <div className="p-4 global-form-container">
+            <h2 className="text-center">ADD USER</h2>
+            {this.renderAddUserForm()}
+          </div>
+        )}
+      </div>
     );
   }
 }
