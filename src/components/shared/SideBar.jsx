@@ -81,7 +81,7 @@ class SideBar extends Component {
       return (
         <div className={"side-bar-container " + this.props.className}>
           <Nav defaultActiveKey="/home" className="flex-column sidebar">
-            <h3>{name}</h3>
+            <h3 className="word-wrap-anywhere">{name}</h3>
             {this.renderLink("bugs", "BUG LIST")}
             {this.renderLink("bug/new", "NEW BUG")}
 

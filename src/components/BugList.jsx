@@ -1,7 +1,8 @@
-import React, { Component } from "react";
+import React, { Component, Fragment } from "react";
 import axios from "axios";
 import { Link } from "react-router-dom";
 import { Table } from "react-bootstrap";
+import Media, { useMedia } from "react-media";
 import "./css/Global.css";
 
 class BugList extends Component {
@@ -42,45 +43,94 @@ class BugList extends Component {
     // console.log(this.state.bugs);
   }
 
-  tableHead = () => {
-    return (
-      <thead>
-        <tr>
-          <th>#</th>
-          <th>SUBJECT</th>
-          <th>STATUS</th>
-          <th>SEVERITY</th>
-          <th>DATE OPENED</th>
-          <th>DATE CLOSED</th>
-          <th>REPORTED BY</th>
-          <th>CLOSED BY</th>
-        </tr>
-      </thead>
-    );
+  tableHead = (conditional) => {
+    if (!conditional) {
+      return (
+        <thead>
+          <tr>
+            {/* <th>#</th> */}
+            <th>SUBJECT</th>
+            <th>STATUS</th>
+            <th>SEVERITY</th>
+            <th>OPENED</th>
+            <th>CLOSED</th>
+            <th>REPORTER</th>
+            <th>CLOSER</th>
+          </tr>
+        </thead>
+      );
+    } else {
+      return (
+        <thead>
+          <tr className="d-flex">
+            {/* <th>#</th> */}
+            <th className="col-4">SUBJECT</th>
+            <th className="col-3">STATUS</th>
+            <th className="col-3">SEVERITY</th>
+            <th className="col-2">OPENED</th>
+          </tr>
+        </thead>
+      );
+    }
   };
 
-  tableBody = () => {
-    return <tbody>{this.generateBugList()}</tbody>;
+  tableBody = (conditional) => {
+    return <tbody>{this.generateBugList(conditional)}</tbody>;
   };
 
-  generateBugList = () => {
+  returnClosedStatus = (ticket) => {
+    if (ticket.closed_by) {
+      return (
+        <>
+          {ticket.updated_at.split("T")[0].split("-")[1]}/
+          {ticket.updated_at.split("T")[0].split("-")[2]}
+        </>
+      );
+    } else {
+      return " ";
+    }
+  };
+
+  generateBugList = (conditional) => {
     let { bugs } = this.state;
     let collection;
 
-    if (bugs) {
+    if (bugs && !conditional) {
       collection = bugs.map((bug) => {
         return (
           <tr key={bug.id}>
-            <td>{bug.ticket_num}</td>
+            {/* <td>{bug.ticket_num}</td> */}
             <td>
               <Link to={"bugs/b/" + bug.ticket_num}>{bug.subject}</Link>
             </td>
             <td>{bug.status}</td>
             <td>{bug.severity}</td>
-            <td>{bug.created_at}</td>
-            <td>{bug.updated_at}</td>
+            <td>
+              {bug.created_at.split("T")[0].split("-")[1]}/
+              {bug.created_at.split("T")[0].split("-")[2]}
+            </td>
+            <td>{this.returnClosedStatus(bug)}</td>
             <td>{bug.opened_by}</td>
             <td>{bug.closed_by}</td>
+          </tr>
+        );
+      });
+    }
+
+    if (bugs && conditional) {
+      collection = bugs.map((bug) => {
+        return (
+          <tr key={bug.id} className="d-flex">
+            {/* <td>{bug.ticket_num}</td> */}
+            <td className="col-4 word-wrap-anywhere">
+              <Link to={"bugs/b/" + bug.ticket_num}>{bug.subject}</Link>
+            </td>
+            <td className="col-3">{bug.status}</td>
+            <td className="col-3">{bug.severity}</td>
+            <td className="col-2">
+              {bug.created_at.split("T")[0].split("-")[1]}/
+              {bug.created_at.split("T")[0].split("-")[2]}
+            </td>
           </tr>
         );
       });
@@ -117,12 +167,50 @@ class BugList extends Component {
   //   }
   // };
 
+  packageComponentsForMediaQuery = (conditional) => {
+    return (
+      <>
+        {this.tableHead(conditional)}
+        {this.tableBody(conditional)}
+      </>
+    );
+  };
+
+  renderThroughMediaQuery = () => {
+    return (
+      <div>
+        <Media
+          queries={{
+            desktop: "(min-width: 1025px)",
+            tablet: "(min-width: 481px) and (max-width: 1024px)",
+            mobile: "(min-width: 320px) and (max-width: 480px)",
+          }}
+        >
+          {(matches) => (
+            <Fragment>
+              {matches.desktop && this.packageComponentsForMediaQuery(false)}
+              {matches.tablet && this.packageComponentsForMediaQuery(true)}
+              {matches.mobile && this.packageComponentsForMediaQuery(true)}
+            </Fragment>
+          )}
+        </Media>
+      </div>
+    );
+  };
+
   render() {
     return (
       <div className={"side-content-container p-4 " + this.props.className}>
-        <Table striped bordered hover>
-          {this.tableHead()}
-          {this.tableBody()}
+        <Table
+          striped
+          bordered
+          hover
+          className="bug-list-table"
+          // responsive="sm"
+        >
+          {this.renderThroughMediaQuery()}
+          {/* {this.tableHead()}
+          {this.tableBody(false)} */}
         </Table>
       </div>
     );

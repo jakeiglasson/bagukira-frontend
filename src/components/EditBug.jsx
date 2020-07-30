@@ -1,13 +1,22 @@
-import React, { Component } from "react";
+import React, { Component, Fragment } from "react";
 import { Link } from "react-router-dom";
 import { Dropdown, Button, ButtonGroup, Table, Form } from "react-bootstrap";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faBug } from "@fortawesome/free-solid-svg-icons";
-
+import Media, { useMedia } from "react-media";
 import "./css/BugList.css";
 import "./css/EditBug.css";
 
 import axios from "axios";
+
+// const GLOBAL_MEDIA_QUERIES = {
+//   small: "(max-width: 599px)",
+//   medium: "(min-width: 600px) and (max-width: 1199px)",
+//   large: "(min-width: 1200px)",
+// };
+// const matches = Media({ queries: GLOBAL_MEDIA_QUERIES });
+
+// const marginBottom = matches.large ? 0 : 10;
 
 class EditBug extends Component {
   state = {
@@ -63,6 +72,17 @@ class EditBug extends Component {
       event.preventDefault();
     } catch (error) {
       console.log(error);
+    }
+
+    // if (!this.state.ticket.closed_by) {
+    //   let ticket = this.state.ticket;
+    //   ticket["closed_by"] = " ";
+    //   this.setState({ ticket: ticket });
+    // }
+
+    if (this.state.ticket.closed_by.length > 30) {
+      alert("Name is too long (30 character limit)");
+      return;
     }
 
     console.log("UPDATING BUG");
@@ -244,41 +264,43 @@ class EditBug extends Component {
       <>
         {renderEditDescription && (
           <div className="popup-container p-4">
-            <div className="popup-content p-4">
-              <h1 className="text-center">EDIT BUG DESCRIPTION</h1>
-              <Form
-                id="descriptionForm"
-                onSubmit={this.updateBug}
-                className="eb-description-width"
-              >
-                <Form.Group controlId="editDescriptionForm.ControlTextarea1">
-                  <Form.Control
-                    id="description"
-                    as="textarea"
-                    rows="6"
-                    value={this.state.ticket.description}
-                    onChange={this.onInputChange}
-                    className="px-4 eb-edit-description-text"
-                  />
-                  <Button
-                    id="save"
-                    type="submit"
-                    variant="primary"
-                    className="btn btn-primary mt-2 display-inline"
-                  >
-                    SAVE
-                  </Button>
-                  <div className="x-spacer display-inline" />
-                  <Button
-                    id="editDescriptionClose"
-                    variant="danger"
-                    className="btn mt-2 display-inline"
-                    onClick={this.handleCloseModal}
-                  >
-                    CANCEL
-                  </Button>
-                </Form.Group>
-              </Form>
+            <div className="popup-content p-4 popup-mobile-grid-container">
+              <div>
+                <h1 className="text-center">EDIT BUG DESCRIPTION</h1>
+                <Form
+                  id="descriptionForm"
+                  onSubmit={this.updateBug}
+                  className="eb-description-width"
+                >
+                  <Form.Group controlId="editDescriptionForm.ControlTextarea1">
+                    <Form.Control
+                      id="description"
+                      as="textarea"
+                      rows="6"
+                      value={this.state.ticket.description}
+                      onChange={this.onInputChange}
+                      className="px-4 eb-edit-description-text"
+                    />
+                    <Button
+                      id="save"
+                      type="submit"
+                      variant="primary"
+                      className="btn btn-primary mt-2 display-inline"
+                    >
+                      SAVE
+                    </Button>
+                    <div className="x-spacer display-inline" />
+                    <Button
+                      id="editDescriptionClose"
+                      variant="danger"
+                      className="btn mt-2 display-inline"
+                      onClick={this.handleCloseModal}
+                    >
+                      CANCEL
+                    </Button>
+                  </Form.Group>
+                </Form>
+              </div>
             </div>
           </div>
         )}
@@ -308,14 +330,49 @@ class EditBug extends Component {
     );
   };
 
-  renderBug = (ticket) => {
+  renderBugMediaQuery = (ticket) => {
+    return (
+      <div>
+        <Media
+          queries={{
+            desktop: "(min-width: 1025px)",
+            tablet: "(min-width: 481px) and (max-width: 1024px)",
+            mobile: "(min-width: 320px) and (max-width: 480px)",
+          }}
+        >
+          {(matches) => (
+            <Fragment>
+              {matches.desktop && this.renderBugDesktop(ticket)}
+              {matches.tablet && this.renderBugDesktop(ticket)}
+              {matches.mobile && this.renderBugMobile(ticket)}
+            </Fragment>
+          )}
+        </Media>
+      </div>
+    );
+  };
+
+  returnClosedStatus = (ticket) => {
+    if (ticket.closed_by) {
+      return (
+        <>
+          {ticket.updated_at.split("T")[0].split("-")[1]}/
+          {ticket.updated_at.split("T")[0].split("-")[2]}
+        </>
+      );
+    } else {
+      return " ";
+    }
+  };
+
+  renderBugDesktop = (ticket) => {
     return (
       <div className="eb-grid-container">
         <h6>
           <Link to={this.state.root}>BUG LIST</Link>{" "}
           {"> BUG #" + ticket.ticket_num}
         </h6>
-        <h3>SUBJECT: {ticket.subject}</h3>
+        <h3 className="word-wrap-anywhere">{ticket.subject}</h3>
         <div className="eb-grid-bug-container">
           <div className="eb-info eb-bug-section">
             <Table striped bordered className="eb-table-container">
@@ -332,11 +389,64 @@ class EditBug extends Component {
                 </tr>
                 <tr>
                   <td>DATE OPENED</td>
-                  <td>{ticket.created_at}</td>
+                  <td>
+                    {ticket.created_at.split("T")[0].split("-")[1]}/
+                    {ticket.created_at.split("T")[0].split("-")[2]}
+                  </td>
                 </tr>
                 <tr>
                   <td>DATE CLOSED</td>
-                  <td>{ticket.closed_at}</td>
+                  <td>{this.returnClosedStatus(ticket)}</td>
+                </tr>
+                <tr>
+                  <td>REPORTED BY</td>
+                  <td>{ticket.opened_by}</td>
+                </tr>
+                <tr>
+                  <td>CLOSED BY</td>
+                  <td>{this.state.closedBy}</td>
+                </tr>
+              </tbody>
+            </Table>
+          </div>
+          {this.renderDescription()}
+        </div>
+      </div>
+    );
+  };
+
+  renderBugMobile = (ticket) => {
+    return (
+      <div className="eb-grid-container">
+        <h6>
+          <Link to={this.state.root}>BUG LIST</Link>{" "}
+          {"> BUG #" + ticket.ticket_num}
+        </h6>
+        <h3 className="word-wrap-anywhere">{ticket.subject}</h3>
+        <div className="eb-grid-bug-container">
+          <div className="eb-info eb-bug-section">
+            <Table striped bordered className="eb-table-container">
+              <thead>
+                <tr>
+                  <th>BUG #{ticket.ticket_num}</th>
+                  <th>{this.dropDown()}</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>SEVERITY LEVEL</td>
+                  <td>{ticket.severity}</td>
+                </tr>
+                <tr>
+                  <td>DATE OPENED</td>
+                  <td>
+                    {ticket.created_at.split("T")[0].split("-")[1]}/
+                    {ticket.created_at.split("T")[0].split("-")[2]}
+                  </td>
+                </tr>
+                <tr>
+                  <td>DATE CLOSED</td>
+                  <td>{this.returnClosedStatus(ticket)}</td>
                 </tr>
                 <tr>
                   <td>REPORTED BY</td>
@@ -362,7 +472,7 @@ class EditBug extends Component {
       console.log("TICKET:", ticket);
       return (
         <div className="side-content-container p-4">
-          {this.renderBug(ticket)}
+          {this.renderBugMediaQuery(ticket)}
           {this.renderClosePopup()}
           {this.renderEditDescription()}
         </div>

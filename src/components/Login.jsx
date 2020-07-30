@@ -42,6 +42,7 @@ class Login extends Component {
 
         const userId = this.parseJwt(localStorage.getItem("token")).sub;
         localStorage.setItem("userId", userId);
+        localStorage.setItem("userEmail", email);
 
         this.props.history.push("/projects");
         window.location.reload(true);

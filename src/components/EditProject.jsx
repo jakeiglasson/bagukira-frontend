@@ -5,6 +5,7 @@ import axios from "axios";
 import { inputEventState } from "./shared/Helpers.jsx";
 
 import "./css/NewBug.css";
+import "./css/EditProject.css";
 import "./css/Global.css";
 
 class EditProject extends Component {
@@ -74,9 +75,14 @@ class EditProject extends Component {
     let hash = this.props.match.params.hash;
     let route = `${process.env.REACT_APP_API_URL}/units/${hash}`;
 
+    if (projectName.length > 40) {
+      alert("Project name is too long, 40 character limit");
+      return;
+    }
+
     let data = JSON.stringify({
       unit: {
-        name: projectName,
+        name: projectName.toUpperCase(),
       },
     });
 
@@ -113,7 +119,7 @@ class EditProject extends Component {
             id="projectName"
             type="text"
             placeholder="PROJECT NAME"
-            value={this.state.projectName}
+            value={this.state.projectName.toUpperCase()}
             onChange={this.onInputChange}
           />
         </Form.Group>

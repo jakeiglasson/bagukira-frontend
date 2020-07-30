@@ -5,6 +5,8 @@ import { Link } from "react-router-dom";
 
 import { inputEventState } from "./shared/Helpers.jsx";
 
+import "./css/NewProject.css";
+
 class NewProject extends Component {
   state = { projectName: "" };
 
@@ -21,13 +23,21 @@ class NewProject extends Component {
   handleSubmit = async (event) => {
     event.preventDefault();
 
+    if (this.state.projectName.length > 40) {
+      alert("Project name is too long, 40 character limit");
+      return;
+    }
+
     const userId = localStorage.getItem("userId");
     const url = process.env.REACT_APP_API_URL + "/users/" + userId + "/units";
     await axios
       .post(
         url,
         {
-          unit: { name: this.state.projectName, unit_type: "project" },
+          unit: {
+            name: this.state.projectName.toUpperCase(),
+            unit_type: "project",
+          },
         },
         {
           headers: {
@@ -62,7 +72,7 @@ class NewProject extends Component {
                 id="projectName"
                 type="text"
                 placeholder="PROJECT NAME"
-                value={projectName}
+                value={projectName.toUpperCase()}
                 onChange={this.onInputChange}
               />
             </Form.Group>

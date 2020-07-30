@@ -9,7 +9,6 @@ import "./css/NewBug.css";
 import "./css/Global.css";
 
 class NewBug extends Component {
-
   state = {
     reporterNameValue: "",
     subjectValue: "",
@@ -17,7 +16,7 @@ class NewBug extends Component {
     severityValue: "",
     hash: this.props.match.params.hash,
   };
-        
+
   componentWillMount = () => {
     if (this.props.authorized == false) {
       alert("You are not authorized to access this resource");
@@ -25,7 +24,6 @@ class NewBug extends Component {
       window.location.reload(true);
     }
   };
-
 
   handleSubmit = async (event) => {
     // alert("A new bug was submitted: " + this.state.subjectValue);
@@ -38,6 +36,16 @@ class NewBug extends Component {
     let description = this.state.descriptionValue;
     let severity = this.state.severityValue;
     let subject = this.state.subjectValue;
+
+    if (reported_by.length > 30) {
+      alert("Reporter name is too long (30 character limit)");
+      return;
+    }
+
+    if (subject.length > 30) {
+      alert("Bug subject is too long (30 character limit)");
+      return;
+    }
 
     if (!reported_by || !description || !severity || !subject) {
       alert(
@@ -76,11 +84,11 @@ class NewBug extends Component {
   handleChange = (event, inputField) => {
     switch (inputField) {
       case "REPORTER NAME":
-        this.setState({ reporterNameValue: event.target.value });
+        this.setState({ reporterNameValue: event.target.value.toUpperCase() });
         break;
 
       case "BUG SUBJECT":
-        this.setState({ subjectValue: event.target.value });
+        this.setState({ subjectValue: event.target.value.toUpperCase() });
         break;
 
       case "BUG DESCRIPTION":
