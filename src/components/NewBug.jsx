@@ -26,16 +26,13 @@ class NewBug extends Component {
   };
 
   handleSubmit = async (event) => {
-    // alert("A new bug was submitted: " + this.state.subjectValue);
-    console.log("New Bug > handleSubmit");
-    console.log("|-> state:", this.state);
     event.preventDefault();
 
     // check:
-    let reported_by = this.state.reporterNameValue;
-    let description = this.state.descriptionValue;
-    let severity = this.state.severityValue;
-    let subject = this.state.subjectValue;
+    const reported_by = this.state.reporterNameValue;
+    const description = this.state.descriptionValue;
+    const severity = this.state.severityValue;
+    const subject = this.state.subjectValue;
 
     if (reported_by.length > 30) {
       alert("Reporter name is too long (30 character limit)");
@@ -54,9 +51,8 @@ class NewBug extends Component {
       return;
     }
 
-    console.log(this.state);
-    await axios
-      .post(
+    try {
+      const response = await axios.post(
         process.env.REACT_APP_API_URL +
           "/units/" +
           this.state.hash +
@@ -70,15 +66,14 @@ class NewBug extends Component {
             opened_by: this.state.reporterNameValue,
           },
         }
-      )
-      .then(function (response) {
-        console.log(response);
-        alert("Bug was successfully submitted!");
+      );
+      if (response.status === 201) {
+        alert("Bug successfully submitted!");
         window.location.reload(true);
-      })
-      .catch(function (error) {
-        console.log(error);
-      });
+      }
+    } catch (error) {
+      alert(`There was a problem with submitting your bug: ${error}`);
+    }
   };
 
   handleChange = (event, inputField) => {
@@ -100,11 +95,7 @@ class NewBug extends Component {
   };
 
   handleSelect = (severity) => {
-    console.log(severity);
-
-    this.setState({ severityValue: severity }, () => {
-      console.log(this.state);
-    });
+    this.setState({ severityValue: severity });
   };
 
   setSeverityStatusStyle = (status) => {
@@ -129,21 +120,10 @@ class NewBug extends Component {
   };
 
   setSeverityStatusText = (severityValue) => {
-    // let style = this.setSeverityStatusStyle(severityValue);
     if (this.state.severityValue) {
-      return (
-        // <Button variant={style} disabled>
-        //   {this.state.severityValue}
-        // </Button>
-        this.state.severityValue
-      );
+      return this.state.severityValue;
     } else {
-      return (
-        // <Button variant={style} disabled>
-        //   NOT SET
-        // </Button>
-        "NOT SET"
-      );
+      return "NOT SET";
     }
   };
 
@@ -175,30 +155,14 @@ class NewBug extends Component {
 
         <Form.Label>BUG SEVERITY</Form.Label>
         <Form.Group controlId="exampleForm.ControlTextarea1">
-          {/* {this.renderSeverityStatus(this.state.severityValue.toUpperCase())}{" "} */}
           <Dropdown
             as={ButtonGroup}
             onSelect={(severity) => {
               this.handleSelect(severity);
             }}
           >
-            {/* <Button variant="primary dropDownTextContainer">
-              <div className="dropDownText">
-                {this.setSeverityStatusText(
-                  this.state.severityValue.toUpperCase()
-                )}
-              </div>
-            </Button>
-
-            <Dropdown.Toggle
-              split
-              variant="primary"
-              id="dropdown-split-basic"
-            /> */}
             <Dropdown.Toggle id="dropdown-basic" variant="primary">
-              {this.setSeverityStatusText(
-                this.state.severityValue.toUpperCase()
-              )}
+              {this.setSeverityStatusText(this.state.severityValue)}
             </Dropdown.Toggle>
 
             <Dropdown.Menu className="">
@@ -236,24 +200,6 @@ class NewBug extends Component {
         <div className="p-4 global-form-container">
           <h2 className="text-center">NEW BUG FORM</h2>
           {this.renderNewBugForm()}
-          {/* <Form>
-            <Form.Group controlId="exampleForm.ControlTextarea1">
-              <Form.Label>REPORTER NAME</Form.Label>
-
-              <Form.Control as="textarea" rows="1" />
-            </Form.Group>{" "}
-            <Form.Group controlId="exampleForm.ControlTextarea1">
-              <Form.Label>BUG SUBJECT</Form.Label>
-              <Form.Control as="textarea" rows="1" />
-            </Form.Group>
-            <Form.Group controlId="exampleForm.ControlTextarea1">
-              <Form.Label>BUG DESCRIPTION</Form.Label>
-              <Form.Control as="textarea" rows="3" />
-            </Form.Group>
-            <Button variant="primary" type="submit">
-              Submit
-            </Button>
-          </Form> */}
         </div>
       </div>
     );
