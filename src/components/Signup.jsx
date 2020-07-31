@@ -46,7 +46,7 @@ class Signup extends Component {
               },
             }
           );
-          const { status } = await response;
+          const { status } = response;
           if (status === 201) {
             login = true;
           } else if (status === 422) {
@@ -67,7 +67,7 @@ class Signup extends Component {
               }
             );
 
-            const { status, data } = await response;
+            const { status, data } = response;
             if (status === 201) {
               localStorage.setItem("token", data.jwt);
               const userId = this.parseJwt(localStorage.getItem("token")).sub;

@@ -33,13 +33,11 @@ class Login extends Component {
           },
         }
       );
-      const { status, data } = await response;
+      const { status, data } = response;
       if (status === 201) {
         localStorage.setItem("token", data.jwt);
-
         const userId = this.parseJwt(localStorage.getItem("token")).sub;
         localStorage.setItem("userId", userId);
-        localStorage.setItem("userEmail", email);
 
         this.props.history.push("/projects");
         window.location.reload(true);
