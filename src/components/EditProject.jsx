@@ -17,9 +17,9 @@ class EditProject extends Component {
   };
 
   componentDidMount = () => {
-    if (!localStorage.userId) {
-      this.props.history.push("/");
-    }
+    // if (!localStorage.userId) {
+    //   this.props.history.push("/");
+    // }
 
     this.setState({ projectName: localStorage.projectName });
   };
@@ -33,8 +33,8 @@ class EditProject extends Component {
   };
 
   validateProjectName = () => {
-    var letters = /^[0-9a-zA-Z]+$/;
-    let projectName = this.state.projectName.replace(/\s+/g, ""); // remove spaces for regex check
+    const letters = /^[0-9a-zA-Z]+$/;
+    const projectName = this.state.projectName.replace(/\s+/g, ""); // remove spaces for regex check
     if (projectName.match(letters)) {
       // alert("Project name has been updated");
       return true;
@@ -46,39 +46,41 @@ class EditProject extends Component {
 
   // logic to send project name to backend
   updateProjectName = async () => {
-    let projectName = this.state.projectName;
-    let hash = this.props.match.params.hash;
-    let route = `${process.env.REACT_APP_API_URL}/units/${hash}`;
+    const projectName = this.state.projectName;
+    const hash = this.state.hash;
+    const url = `${process.env.REACT_APP_API_URL}/units/${hash}`;
+    const token = localStorage.getItem("token");
 
     if (projectName.length > 40) {
       alert("Project name is too long, 40 character limit");
       return;
     }
 
-    let data = JSON.stringify({
+    const data = {
       unit: {
-        name: projectName,
+        name: projectName.toUpperCase(),
       },
-    });
+    };
 
-    let config = {
+    const config = {
       method: "patch",
-      url: route,
-      headers: {
-        Authorization: "Bearer " + localStorage.token,
-        "Content-Type": "application/json",
-      },
+      url: url,
       data: data,
+      headers: {
+        Authorization: "Bearer " + token,
+      },
     };
 
     try {
       const response = await axios(config);
-      if (response.status === 201) {
-        localStorage.setItem("projectName", projectName);
+
+      const { status } = await response;
+      if (status === 204) {
+        this.props.history.push(`/projects/p/${hash}/bugs`);
         window.location.reload(true);
       }
     } catch (error) {
-      alert(`Name change failed: ${error.response}`);
+      alert(error);
     }
   };
 

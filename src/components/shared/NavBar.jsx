@@ -8,36 +8,37 @@ import Media from "react-media";
 class NavBar extends Component {
   state = {
     loading: true,
+    hash: this.props.match.params.hash,
   };
 
   componentDidMount = () => {
-    this.setState({ hash: localStorage.hash });
-
-    let { hash } = this.props.match.params;
-    this.getProject(hash);
-  };
-
-  componentDidMount = () => {
-    this.setState({ loading: false });
+    if (typeof this.state.hash === undefined) {
+      this.setState({ loading: false });
+    } else {
+      //   this.getProject();
+    }
   };
 
   purgeLocalStorage = async () => {
-    await localStorage.clear();
+    localStorage.clear();
   };
 
-  getProject = async (hash) => {
-    const endPoint = "/units/";
+  getProject = async () => {
+    const endPoint = "/units/" + this.state.hash;
 
-    await axios
-      .get(process.env.REACT_APP_API_URL + endPoint + hash)
-      .then((response) => {
-        this.setState({ project: response.data.units });
-        localStorage.setItem("projectOwnerId", response.data.units.user_id);
-        localStorage.setItem("projectName", response.data.units.name);
-      })
-      .catch((error) => {
-        console.log(error);
-      });
+    try {
+      const response = await axios.get(
+        process.env.REACT_APP_API_URL + endPoint
+      );
+      const { status, data } = response;
+      if (status === 200) {
+        this.setState({ project: data.units, loading: false });
+        return true;
+      }
+    } catch (error) {
+      alert(error);
+      return false;
+    }
   };
 
   renderWelcomeMessage = () => {
@@ -90,11 +91,11 @@ class NavBar extends Component {
 
   conditionalNavButtons = (onProjectView) => {
     let admin = false;
-    const hash = this.props.match.params.hash;
+    const hash = this.state.hash;
     const userId = parseInt(localStorage.userId);
 
     if (
-      userId === localStorage.projectOwnerId &&
+      userId === this.state.project.user_id &&
       window.location.href.includes(`/projects/p/${hash}`)
     ) {
       admin = true;
@@ -107,14 +108,14 @@ class NavBar extends Component {
             <>
               {/* REMOVED Link because when clicked it doesn't render /projects initially, user has to force a reload */}
               <Nav.Link
-                href={`${process.env.REACT_APP_FE_URL}/projects/p/${hash}/bugs`}
+                href={`/projects/p/${hash}/bugs`}
                 variant="outline-warning"
                 className=""
               >
                 BUG LIST
               </Nav.Link>
               <Nav.Link
-                href={`${process.env.REACT_APP_FE_URL}/projects/p/${hash}/bug/new`}
+                href={`/projects/p/${hash}/bug/new`}
                 variant="outline-warning"
                 className=""
               >
@@ -123,14 +124,14 @@ class NavBar extends Component {
               {admin && (
                 <>
                   <Nav.Link
-                    href={`${process.env.REACT_APP_FE_URL}/projects/p/${hash}/user/add`}
+                    href={`/projects/p/${hash}/user/add`}
                     variant="outline-warning"
                     className=""
                   >
                     ADD USER
                   </Nav.Link>
                   <Nav.Link
-                    href={`${process.env.REACT_APP_FE_URL}/projects/p/${hash}/edit`}
+                    href={`/projects/p/${hash}/edit`}
                     variant="outline-warning"
                     className=""
                   >
@@ -154,14 +155,14 @@ class NavBar extends Component {
           {!localStorage.userId && (
             <>
               <Nav.Link
-                href={`${process.env.REACT_APP_FE_URL}/projects/p/${hash}/bugs`}
+                href={`/projects/p/${hash}/bugs`}
                 variant="outline-warning"
                 className=""
               >
                 BUG LIST
               </Nav.Link>
               <Nav.Link
-                href={`${process.env.REACT_APP_FE_URL}/projects/p/${hash}/bug/new`}
+                href={`/projects/p/${hash}/bug/new`}
                 variant="outline-warning"
                 className=""
               >
@@ -225,17 +226,13 @@ class NavBar extends Component {
 
   conditionalRenderNavBar = () => {
     let check;
-    if (localStorage.projectOwnerId && !this.state.loading) {
+    if (this.state.project.user_id && !this.state.loading) {
       check = true;
     } else {
       check = false;
     }
 
-    if (
-      !window.location.href.includes(
-        `/projects/p/${this.props.match.params.hash}`
-      )
-    ) {
+    if (!window.location.href.includes(`/projects/p/${this.state.hash}`)) {
       return (
         <Navbar collapseOnSelect expand="lg" bg="dark" variant="dark">
           <Navbar.Brand href="#home">
@@ -261,15 +258,14 @@ class NavBar extends Component {
           </Navbar>
         );
       } else {
-        console.log("LOADING OVERLAY");
         return <div className="loading-overlay"></div>;
       }
     }
   };
 
-  renderThroughMediaQuery = (ticket) => {
+  renderThroughMediaQuery = () => {
     return (
-      <div>
+      <>
         <Media
           queries={{
             desktop: "(min-width: 1025px)",
@@ -285,7 +281,7 @@ class NavBar extends Component {
             </Fragment>
           )}
         </Media>
-      </div>
+      </>
     );
   };
 

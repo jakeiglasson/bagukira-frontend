@@ -23,15 +23,19 @@ class Login extends Component {
 
     const { email, password } = this.state;
 
-    await axios
-      .post(process.env.REACT_APP_API_URL + "/login", {
-        auth: {
-          email: email,
-          password: password,
-        },
-      })
-      .then((response) => {
-        localStorage.setItem("token", response.data.jwt);
+    try {
+      const response = await axios.post(
+        process.env.REACT_APP_API_URL + "/login",
+        {
+          auth: {
+            email: email,
+            password: password,
+          },
+        }
+      );
+      const { status, data } = await response;
+      if (status === 201) {
+        localStorage.setItem("token", data.jwt);
 
         const userId = this.parseJwt(localStorage.getItem("token")).sub;
         localStorage.setItem("userId", userId);
@@ -39,10 +43,10 @@ class Login extends Component {
 
         this.props.history.push("/projects");
         window.location.reload(true);
-      })
-      .catch((error) => {
-        alert("There was a problem authenticating your credentials");
-      });
+      }
+    } catch (error) {
+      alert("There was a problem authenticating your credentials");
+    }
   };
 
   onInputChange = (event) => inputEventState(this, event);

@@ -5,54 +5,35 @@ import "./css/Global.css";
 import "./css/Projects.css";
 
 class Projects extends Component {
-  constructor(props) {
-    super(props);
-    console.log("Projects > constructor");
-    console.log("|-> props:", this.props);
-    this.state = {
-      projects: [],
-      userId: localStorage.getItem("userId"),
-      token: localStorage.getItem("token"),
-    };
-  }
+  state = {
+    projects: [],
+  };
 
-  async componentWillMount() {
-    console.log("componentDidMount");
-    console.log("localStorage:", localStorage);
-    console.log(this.props);
-
-    if (this.props.authorized == false) {
-      alert("You are not authorized to access this resource");
-      this.props.history.push("/");
-      window.location.reload(true);
-    }
-
-    await axios
-      .get(
-        process.env.REACT_APP_API_URL +
-          "/users/" +
-          this.state.userId +
-          "/units",
+  componentDidMount = async () => {
+    // if (this.props.authorized === false) {
+    //   this.props.history.push("/");
+    // }
+    const token = localStorage.getItem("token");
+    const userId = localStorage.getItem("userId");
+    try {
+      const response = await axios.get(
+        process.env.REACT_APP_API_URL + "/users/" + userId + "/units",
         {
           headers: {
-            Authorization: `Bearer ${this.state.token}`,
+            Authorization: `Bearer ${token}`,
           },
         }
-      )
-      .then((response) => {
-        const data = response.data;
-        console.log(data);
+      );
+      const { data, status } = response;
+      if (status === 200) {
         this.setState({ projects: data.units });
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-  }
-
-  // randomColor = () => {
-  //   console.log(Math.floor(Math.random() * 16777215).toString(16));
-  //   return Math.floor(Math.random() * 16777215).toString(16);
-  // };
+      } else {
+        throw new Error(`Access error: ${response.statusText}`);
+      }
+    } catch (error) {
+      alert(error);
+    }
+  };
 
   newProject = () => {
     return (
@@ -68,12 +49,14 @@ class Projects extends Component {
     );
   };
 
-  storeHash(event, hash) {
+  storeHash(hash) {
     localStorage.setItem("hash", hash);
   }
 
   existingProjects = () => {
     const { projects } = this.state;
+
+    console.log(projects);
     return (
       <>
         {projects &&
@@ -86,9 +69,7 @@ class Projects extends Component {
                 variant="warning"
                 size="lg"
                 block
-                onClick={(event) => {
-                  this.storeHash(event, project.id);
-                }}
+                onClick={this.storeHash(project.id)}
               >
                 <div className="projects-item word-wrap-anywhere">
                   {project.name}

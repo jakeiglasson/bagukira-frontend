@@ -18,7 +18,7 @@ class NewBug extends Component {
   };
 
   componentWillMount = () => {
-    if (this.props.authorized == false) {
+    if (this.props.authorized === false) {
       alert("You are not authorized to access this resource");
       this.props.history.push("/");
       window.location.reload(true);
@@ -67,7 +67,8 @@ class NewBug extends Component {
           },
         }
       );
-      if (response.status === 201) {
+      const { status } = await response;
+      if (status === 201) {
         alert("Bug successfully submitted!");
         window.location.reload(true);
       }
@@ -119,7 +120,7 @@ class NewBug extends Component {
     return style;
   };
 
-  setSeverityStatusText = (severityValue) => {
+  setSeverityStatusText = () => {
     if (this.state.severityValue) {
       return this.state.severityValue;
     } else {

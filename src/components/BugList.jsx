@@ -34,28 +34,32 @@ class BugList extends Component {
   tableHead = (conditional) => {
     if (!conditional) {
       return (
-        <thead>
-          <tr>
-            <th>SUBJECT</th>
-            <th>STATUS</th>
-            <th>SEVERITY</th>
-            <th>OPENED</th>
-            <th>CLOSED</th>
-            <th>REPORTER</th>
-            <th>CLOSER</th>
-          </tr>
-        </thead>
+        <>
+          <thead>
+            <tr>
+              <th>SUBJECT</th>
+              <th>STATUS</th>
+              <th>SEVERITY</th>
+              <th>OPENED</th>
+              <th>CLOSED</th>
+              <th>REPORTER</th>
+              <th>CLOSER</th>
+            </tr>
+          </thead>
+        </>
       );
     } else {
       return (
-        <thead>
-          <tr className="d-flex">
-            <th className="col-4">SUBJECT</th>
-            <th className="col-3">STATUS</th>
-            <th className="col-3">SEVERITY</th>
-            <th className="col-2">OPENED</th>
-          </tr>
-        </thead>
+        <>
+          <thead>
+            <tr className="d-flex">
+              <th className="col-4">SUBJECT</th>
+              <th className="col-3">STATUS</th>
+              <th className="col-3">SEVERITY</th>
+              <th className="col-2">OPENED</th>
+            </tr>
+          </thead>
+        </>
       );
     }
   };
@@ -137,7 +141,7 @@ class BugList extends Component {
   //   Make mobile responsive
   renderThroughMediaQuery = () => {
     return (
-      <div>
+      <>
         <Media
           queries={{
             desktop: "(min-width: 1025px)",
@@ -153,7 +157,7 @@ class BugList extends Component {
             </Fragment>
           )}
         </Media>
-      </div>
+      </>
     );
   };
 

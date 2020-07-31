@@ -1,4 +1,4 @@
-import React, { Component, Fragment } from "react";
+import React, { Component } from "react";
 import { Link } from "react-router-dom";
 import { Dropdown, Button, ButtonGroup, Table, Form } from "react-bootstrap";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -41,13 +41,6 @@ class EditBug extends Component {
     }
   };
 
-  //   Future handling of leaving page before response received
-  //   componentWillUnmount = () => {
-  //     if (this.response) {
-  //       this.response.cancel();
-  //     }
-  //   };
-
   changePage = () => {
     this.props.history.push(`${this.state.root}`);
   };
@@ -66,7 +59,9 @@ class EditBug extends Component {
       const response = await axios.patch(this.state.url, {
         ticket: this.state.ticket,
       });
-      if (response.status === 201) {
+
+      const { status } = await response;
+      if (status === 201) {
         this.setState({
           renderClosePopup: false,
           renderEditDescription: false,
@@ -297,11 +292,11 @@ class EditBug extends Component {
           }}
         >
           {(matches) => (
-            <Fragment>
+            <>
               {matches.desktop && this.renderBug(ticket)}
               {matches.tablet && this.renderBug(ticket)}
               {matches.mobile && this.renderBug(ticket)}
-            </Fragment>
+            </>
           )}
         </Media>
       </div>

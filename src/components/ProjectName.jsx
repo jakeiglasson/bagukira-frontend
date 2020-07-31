@@ -7,33 +7,33 @@ class ProjectName extends Component {
     loading: true,
   };
 
-  componentWillMount = () => {
+  componentDidMount = () => {
     let { hash } = this.props.match.params;
-
     this.getProject(hash);
   };
 
   getProject = async (hash) => {
-    // console.log("SideBar > getProject");
     const endPoint = "/units/";
-    await axios
-      .get(process.env.REACT_APP_API_URL + endPoint + hash)
-      .then((response) => {
-        // console.log(response.data);
-        this.setState({ project: response.data.units });
-        localStorage.setItem("projectOwnerId", response.data.units.user_id);
-        localStorage.setItem("projectName", response.data.units.name);
-      })
-      .catch((error) => {
-        console.log(error);
-      });
+
+    try {
+      const response = await axios.get(
+        process.env.REACT_APP_API_URL + endPoint + hash
+      );
+      const { status, data } = await response;
+      if (status === 200) {
+        this.setState({ project: data.units });
+        localStorage.setItem("projectOwnerId", data.units.user_id);
+        localStorage.setItem("projectName", data.units.name);
+      } else {
+        throw new Error("Problem retrieving project");
+      }
+    } catch (error) {
+      alert(error);
+    }
   };
 
   render() {
-    console.log(this.props);
-    console.log(localStorage);
-
-    let { name } = this.state.project || { name: null };
+    const { name } = this.state.project || { name: null };
 
     if (name) {
       return (
@@ -44,7 +44,7 @@ class ProjectName extends Component {
         </div>
       );
     } else {
-      return null;
+      return <></>;
     }
   }
 }

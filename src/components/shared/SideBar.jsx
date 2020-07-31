@@ -9,43 +9,33 @@ import { Nav } from "react-bootstrap";
 class SideBar extends Component {
   state = {
     root: "",
-    hash: this.props.match.params.hash,
+    project: {},
     userId: "",
-    permission: false,
+    hash: this.props.match.params.hash,
   };
 
-  componentWillMount = () => {
-    // console.log("SideBar > componentWillMount");
+  componentDidMount = async () => {
+    this.setState({
+      root: "/projects/p/" + this.state.hash + "/",
+    });
+    this.getProject();
+  };
 
-    if (localStorage.userId) {
-      //   console.log("id detected");
-      this.setState({ permission: true });
+  getProject = async () => {
+    const hash = this.state.hash;
+    const endPoint = "/units/" + hash;
+
+    try {
+      const response = await axios.get(
+        process.env.REACT_APP_API_URL + endPoint
+      );
+      const { status, data } = response;
+      if (status === 200) {
+        this.setState({ project: data.units });
+      }
+    } catch (error) {
+      alert(error);
     }
-    // console.log(this.props.match.params);
-    let { hash } = this.props.match.params;
-    this.setState({ root: "/projects/p/" + hash + "/" });
-    this.getProject(hash);
-  };
-
-  componentWillUpdate = () => {
-    // console.log("componentWillUpdate");
-    // console.log(this.state);
-  };
-
-  getProject = async (hash) => {
-    // console.log("SideBar > getProject");
-    const endPoint = "/units/";
-    await axios
-      .get(process.env.REACT_APP_API_URL + endPoint + hash)
-      .then((response) => {
-        // console.log(response.data);
-        this.setState({ project: response.data.units });
-        localStorage.setItem("projectOwnerId", response.data.units.user_id);
-        localStorage.setItem("projectName", response.data.units.name);
-      })
-      .catch((error) => {
-        console.log(error);
-      });
   };
 
   renderLink = (endPoint, linkName) => {
@@ -75,8 +65,6 @@ class SideBar extends Component {
   };
 
   render() {
-    // console.log("SideBar > render");
-    // console.log("|-> state:", this.state);
     let { name } = this.state.project || { name: null };
 
     if (name) {
@@ -86,7 +74,6 @@ class SideBar extends Component {
             <h3 className="word-wrap-anywhere">{name}</h3>
             {this.renderLink("bugs", "BUG LIST")}
             {this.renderLink("bug/new", "NEW BUG")}
-
             {this.renderAdminLinks()}
           </Nav>
         </div>

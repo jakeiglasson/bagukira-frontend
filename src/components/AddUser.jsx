@@ -24,8 +24,8 @@ class AddUser extends Component {
     event.preventDefault();
 
     //remove spaces & new lines
-    let emailArr = this.state.emailsValue.trim().replace(/\s+^./g, ",");
-    let emailList = emailArr.split(/,+/); // divide list by commas, ignore double commas
+    const emailArr = this.state.emailsValue.trim().replace(/\s+^./g, ",");
+    const emailList = emailArr.split(/,+/); // divide list by commas, ignore double commas
 
     try {
       emailList.forEach((email) => this.validateEmail(email));
@@ -49,17 +49,17 @@ class AddUser extends Component {
 
   postEmails = async (array) => {
     //   Set variables
-    let userId = localStorage.userId;
-    let hash = this.props.match.params.hash;
-    let api_url = `${process.env.REACT_APP_API_URL}/users/${userId}/units/${hash}/invite`;
-    let data = JSON.stringify({
+    const userId = localStorage.userId;
+    const hash = this.props.match.params.hash;
+    const api_url = `${process.env.REACT_APP_API_URL}/users/${userId}/units/${hash}/invite`;
+    const data = JSON.stringify({
       unit: {
         invite_list: array,
       },
     });
 
     // Compose axios request
-    let config = {
+    const config = {
       method: "post",
       url: api_url,
       headers: {
@@ -72,13 +72,13 @@ class AddUser extends Component {
     // Send emails, raise alert on network or api fail.
     try {
       const response = await axios(config);
-
-      if (response.status === 204) {
+      const { status, statusText, data } = await response;
+      if (status === 204) {
         alert("Email invites successfully sent");
         this.setState({ emailsValue: "" });
       } else {
         throw new Error(
-          `Messages not sent!\nError: ${response.status}\n${response.statusText}\n${response.data}`
+          `Messages not sent!\nError: ${status}\n${statusText}\n${data}`
         );
       }
     } catch (error) {
