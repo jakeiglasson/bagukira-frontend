@@ -1,11 +1,10 @@
 import React, { Component } from "react";
-import { BrowserRouter, Route, Link, Redirect } from "react-router-dom";
+import { BrowserRouter, Route, Redirect } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faBug } from "@fortawesome/free-solid-svg-icons";
 
 import "./App.css";
 import ProtectedRoute from "./components/shared/ProtectedRoute.jsx";
-
 import Home from "./components/Home";
 import Login from "./components/Login";
 import Signup from "./components/Signup";
@@ -21,16 +20,16 @@ import EditProject from "./components/EditProject";
 import ProjectName from "./components/ProjectName";
 
 class App extends Component {
+  state = {
+    sideBarActiveLink: "",
+  };
   constructor(props) {
     super(props);
-    this.state = {
-      sideBarActiveLink: "",
-    };
     document.title = "Bagukira: Bug Killer";
   }
 
+  // key name: component, route, acceptable queries
   components = {
-    // key name: component, route, acceptable queries
     BugList: {
       component: BugList,
       route: "bugs",
@@ -58,30 +57,6 @@ class App extends Component {
     },
   };
 
-  componentWillMount = () => {
-    let d = new Date();
-    let currentTime = d.getTime();
-    // If a JWT is present, check if its expired, if so clear local storage
-    if (localStorage.token != undefined) {
-      let info = this.parseJwt(localStorage.token);
-      let exp = info.exp * 1000;
-      // convert milliseconds to hours
-      let timeSince = (currentTime - exp) / 3600000;
-      if (timeSince >= 4) {
-        localStorage.clear();
-      }
-    }
-  };
-
-  parseJwt(token) {
-    if (!token) {
-      return;
-    }
-    const base64Url = token.split(".")[1];
-    const base64 = base64Url.replace("-", "+").replace("_", "/");
-    return JSON.parse(window.atob(base64));
-  }
-
   setAppState = (stateName, value) => {
     this.setState({ [stateName]: value });
   };
@@ -99,35 +74,16 @@ class App extends Component {
     );
   };
 
-  exactPathRoutes = () => {
-    return (
-      <>
-        <ProtectedRoute exact path="/projects" component={Projects} />
-        <Route exact path="/" component={Home} />
-        <Route exact path="/login" component={Login} />
-        <Route exact path="/signup" component={Signup} />
-        <ProtectedRoute exact path="/projects/new" component={NewProject} />
-        <Route
-          exact
-          path="/projects/p/:hash"
-          render={(props) => (
-            <Redirect to={"/projects/p/" + props.match.params.hash + "/bugs"} />
-          )}
-        />
-      </>
-    );
-  };
+  constructComponent = (component) => {
+    const route = "/projects/p/:hash/";
 
-  constructComponent = (componentName) => {
-    let route = "/projects/p/:hash/";
+    const endPoint = component.route;
+    const queries = component.accepted_queries;
 
-    let endPoint = this.components[componentName].route;
-    let queries = this.components[componentName].accepted_queries;
+    const path = route + endPoint + queries;
+    const activeLink = endPoint;
 
-    let path = route + endPoint + queries;
-    let activeLink = endPoint;
-
-    const Component = this.components[componentName].component;
+    const Component = component.component;
 
     return this.packageComponentInRoute(path, activeLink, Component);
   };
@@ -154,42 +110,63 @@ class App extends Component {
 
   render() {
     return (
-      <BrowserRouter>
+      <>
         {this.bagukiraTitle()}
-        <ProtectedRoute exact path="/projects" component={NavBar} />
-        <ProtectedRoute exact path="/projects/new" component={NavBar} />
-        {this.exactPathRoutes()}
+        <BrowserRouter>
+          <Route exact path="/" component={Home} />
+          <Route exact path="/login" component={Login} />
+          <Route exact path="/signup" component={Signup} />
+          <Route exact path="/projects" component={NavBar} />
+          <Route exact path="/projects" component={Projects} />
+          <Route exact path="/projects/new" component={NewProject} />
+          <Route
+            exact
+            path="/projects/p/:hash"
+            render={(props) => (
+              <Redirect
+                to={"/projects/p/" + props.match.params.hash + "/bugs"}
+              />
+            )}
+          />
 
-        <Route
-          path="/projects/p/:hash"
-          render={(props) => (
-            <>
-              <NavBar {...props} />
-              <ProjectName {...props} />
-              <div className="content-container">
-                <div className="single-project-grid-container">
-                  <SideBar
-                    // activeLink="{activeLink}"
-                    serverRootUrl={this.serverRootUrl()}
-                    className="spgc-side-nav"
-                    setActiveLink={this.setActiveLink.bind(this)}
-                    {...props}
-                  />
-                  {this.constructComponent("BugList")}
+          <Route
+            path="/projects/p/:hash"
+            render={(props) => (
+              <>
+                <NavBar {...props} />
+                <ProjectName {...props} />
+                <div className="content-container">
+                  <div className="single-project-grid-container">
+                    <SideBar
+                      serverRootUrl={this.serverRootUrl()}
+                      className="spgc-side-nav"
+                      setActiveLink={this.setActiveLink}
+                      {...props}
+                    />
+                    {this.constructComponent(this.components.BugList)}
 
-                  {this.constructComponent("NewBug")}
+                    {this.constructComponent(this.components.NewBug)}
 
-                  {this.constructComponent("EditBug")}
+                    {this.constructComponent(this.components.EditBug)}
 
-                  {this.constructComponent("AddUser")}
+                    <ProtectedRoute
+                      path={"/projects/p/:hash/user/add"}
+                      component={AddUser}
+                    />
+                    <ProtectedRoute
+                      path={"/projects/p/:hash/edit"}
+                      component={EditProject}
+                    />
+                    {this.constructComponent(this.components.AddUser)}
 
-                  {this.constructComponent("EditProject")}
+                    {this.constructComponent(this.components.EditProject)}
+                  </div>
                 </div>
-              </div>
-            </>
-          )}
-        />
-      </BrowserRouter>
+              </>
+            )}
+          />
+        </BrowserRouter>
+      </>
     );
   }
 }

@@ -1,6 +1,5 @@
 import React from "react";
-import { Route, Redirect } from "react-router-dom";
-
+import { Redirect, Route } from "react-router-dom";
 import axios from "axios";
 
 class ProtectedRoute extends React.Component {
@@ -9,33 +8,37 @@ class ProtectedRoute extends React.Component {
     loading: true,
   };
 
-  componentWillMount = async () => {
-    this.setState({ Component: this.props.component });
+  componentDidMount = async () => {
+    const token = await localStorage.getItem("token");
+    this.authenticated(token);
+  };
 
-    if (window.location.href.includes(this.props.path)) {
+  authenticated = async (token) => {
+    if (token && window.location.href.includes(this.props.path)) {
       try {
         const response = await axios.get(
-          `${process.env.REACT_APP_API_URL}/status/user`,
+          `${process.env.REACT_APP_API_URL}/status`,
           {
             headers: {
-              Authorization: `Bearer ${localStorage.getItem("token")}`,
+              Authorization: `Bearer ${token}`,
             },
           }
         );
-        if (response.status >= 400) {
-          throw new Error("not authorized");
-        } else {
-          console.log(response);
+        const { status } = await response;
+
+        if (status === 100) {
           this.setState({
             auth: true,
             loading: false,
           });
+        } else if (status === 401) {
+          this.setState({
+            auth: false,
+            loading: false,
+          });
         }
       } catch (err) {
-        console.log(err.message);
-        this.setState({
-          loading: false,
-        });
+        alert(err);
       }
     }
   };
@@ -44,26 +47,20 @@ class ProtectedRoute extends React.Component {
     const { loading, auth } = this.state;
 
     if (!loading && !auth) {
-      const { Component } = this.state;
+      //   const { Component } = this.state;
       return (
         <>
-          <Route
-            exact={this.props.exact}
-            path={this.props.path}
-            render={(props) => <Component {...props} authorized={false} />}
-          />
+          <Redirect to="/login" />
         </>
       );
     } else {
       return (
         !loading && (
-          <>
-            <Route
-              exact={this.props.exact}
-              path={this.props.path}
-              component={this.props.component}
-            />
-          </>
+          <Route
+            exact={this.props.exact}
+            path={this.props.path}
+            component={this.props.component}
+          />
         )
       );
     }

@@ -7,10 +7,7 @@ import "./css/Global.css";
 import { inputEventState } from "./shared/Helpers.jsx";
 
 class Login extends Component {
-  constructor(props) {
-    super(props);
-    this.state = { email: "", password: "", errMessage: "" };
-  }
+  state = { email: "", password: "" };
 
   parseJwt(token) {
     if (!token) {
@@ -23,16 +20,22 @@ class Login extends Component {
 
   handleSubmit = async (event) => {
     event.preventDefault();
-    let { email, password } = this.state;
-    await axios
-      .post(process.env.REACT_APP_API_URL + "/login", {
-        auth: {
-          email: email,
-          password: password,
-        },
-      })
-      .then((response) => {
-        localStorage.setItem("token", response.data.jwt);
+
+    const { email, password } = this.state;
+
+    try {
+      const response = await axios.post(
+        process.env.REACT_APP_API_URL + "/login",
+        {
+          auth: {
+            email: email,
+            password: password,
+          },
+        }
+      );
+      const { status, data } = await response;
+      if (status === 201) {
+        localStorage.setItem("token", data.jwt);
 
         const userId = this.parseJwt(localStorage.getItem("token")).sub;
         localStorage.setItem("userId", userId);
@@ -40,16 +43,17 @@ class Login extends Component {
 
         this.props.history.push("/projects");
         window.location.reload(true);
-      })
-      .catch((error) => {
-        console.log(error);
-      });
+      }
+    } catch (error) {
+      alert("There was a problem authenticating your credentials");
+    }
   };
 
   onInputChange = (event) => inputEventState(this, event);
 
   render() {
-    let { email, password } = this.state;
+    const { email, password } = this.state;
+
     return (
       <div className="small-centered-card">
         <h3 className="text-center mb-3">LOGIN</h3>

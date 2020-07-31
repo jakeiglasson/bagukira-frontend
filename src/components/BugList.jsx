@@ -2,21 +2,20 @@ import React, { Component, Fragment } from "react";
 import axios from "axios";
 import { Link } from "react-router-dom";
 import { Table } from "react-bootstrap";
-import Media, { useMedia } from "react-media";
+import Media from "react-media";
 import "./css/Global.css";
 
 class BugList extends Component {
   state = {
     bugs: [],
-    hash: this.props.match.params.hash,
   };
 
-  componentWillMount = () => {
+  componentDidMount() {
     this.getTickets();
-  };
-
+  }
+        
   getTickets = () => {
-    const url = `${process.env.REACT_APP_API_URL}/units/${this.state.hash}/tickets`;
+    const url = `${process.env.REACT_APP_API_URL}/units/${this.props.match.params.hash}/tickets`;
 
     axios
       .get(url)
@@ -25,9 +24,7 @@ class BugList extends Component {
         this.setState({ bugs: data.tickets });
       })
       .catch((error) => {
-        console.log(error.response);
-        if (error.response.status >= 500) {
-          alert("This resource doesn't exist");
+        if (error.response.status >= 400) {
           this.props.history.push("/");
           window.location.reload(true);
         }
@@ -37,30 +34,32 @@ class BugList extends Component {
   tableHead = (conditional) => {
     if (!conditional) {
       return (
-        <thead>
-          <tr>
-            {/* <th>#</th> */}
-            <th>SUBJECT</th>
-            <th>STATUS</th>
-            <th>SEVERITY</th>
-            <th>OPENED</th>
-            <th>CLOSED</th>
-            <th>REPORTER</th>
-            <th>CLOSER</th>
-          </tr>
-        </thead>
+        <>
+          <thead>
+            <tr>
+              <th>SUBJECT</th>
+              <th>STATUS</th>
+              <th>SEVERITY</th>
+              <th>OPENED</th>
+              <th>CLOSED</th>
+              <th>REPORTER</th>
+              <th>CLOSER</th>
+            </tr>
+          </thead>
+        </>
       );
     } else {
       return (
-        <thead>
-          <tr className="d-flex">
-            {/* <th>#</th> */}
-            <th className="col-4">SUBJECT</th>
-            <th className="col-3">STATUS</th>
-            <th className="col-3">SEVERITY</th>
-            <th className="col-2">OPENED</th>
-          </tr>
-        </thead>
+        <>
+          <thead>
+            <tr className="d-flex">
+              <th className="col-4">SUBJECT</th>
+              <th className="col-3">STATUS</th>
+              <th className="col-3">SEVERITY</th>
+              <th className="col-2">OPENED</th>
+            </tr>
+          </thead>
+        </>
       );
     }
   };
@@ -82,6 +81,7 @@ class BugList extends Component {
     }
   };
 
+  //   Make mobile responsive
   generateBugList = (conditional) => {
     let { bugs } = this.state;
     let collection;
@@ -90,7 +90,6 @@ class BugList extends Component {
       collection = bugs.map((bug, index) => {
         return (
           <tr key={bug.id}>
-            {/* <td>{bug.ticket_num}</td> */}
             <td>
               <Link
                 data-testid={`bugId${index}`}
@@ -117,7 +116,6 @@ class BugList extends Component {
       collection = bugs.map((bug, index) => {
         return (
           <tr key={bug.id} className="d-flex">
-            {/* <td>{bug.ticket_num}</td> */}
             <td className="col-4 word-wrap-anywhere">
               <Link
                 data-testid={`bugId${index}`}
@@ -140,6 +138,7 @@ class BugList extends Component {
     return <>{collection}</>;
   };
 
+  //   Make mobile responsive
   packageComponentsForMediaQuery = (conditional) => {
     return (
       <>
@@ -149,9 +148,10 @@ class BugList extends Component {
     );
   };
 
+  //   Make mobile responsive
   renderThroughMediaQuery = () => {
     return (
-      <div>
+      <>
         <Media
           queries={{
             desktop: "(min-width: 1025px)",
@@ -167,23 +167,15 @@ class BugList extends Component {
             </Fragment>
           )}
         </Media>
-      </div>
+      </>
     );
   };
 
   render() {
     return (
       <div className={"side-content-container p-4 " + this.props.className}>
-        <Table
-          striped
-          bordered
-          hover
-          className="bug-list-table"
-          // responsive="sm"
-        >
+        <Table striped bordered hover className="bug-list-table">
           {this.renderThroughMediaQuery()}
-          {/* {this.tableHead()}
-          {this.tableBody(false)} */}
         </Table>
       </div>
     );

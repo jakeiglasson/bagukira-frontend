@@ -16,7 +16,7 @@ class NewBug extends Component {
   };
 
   componentWillMount = () => {
-    if (this.props.authorized == false) {
+    if (this.props.authorized === false) {
       alert("You are not authorized to access this resource");
       this.props.history.push("/");
       window.location.reload(true);
@@ -27,10 +27,10 @@ class NewBug extends Component {
     event.preventDefault();
 
     // check:
-    let reported_by = this.state.reporterNameValue;
-    let description = this.state.descriptionValue;
-    let severity = this.state.severityValue;
-    let subject = this.state.subjectValue;
+    const reported_by = this.state.reporterNameValue;
+    const description = this.state.descriptionValue;
+    const severity = this.state.severityValue;
+    const subject = this.state.subjectValue;
 
     if (reported_by.length > 30) {
       alert("Reporter name is too long (30 character limit)");
@@ -49,8 +49,8 @@ class NewBug extends Component {
       return;
     }
 
-    await axios
-      .post(
+    try {
+      const response = await axios.post(
         process.env.REACT_APP_API_URL +
           "/units/" +
           this.state.hash +
@@ -64,14 +64,15 @@ class NewBug extends Component {
             opened_by: this.state.reporterNameValue,
           },
         }
-      )
-      .then(function (response) {
-        alert("Bug was successfully submitted!");
+      );
+      const { status } = await response;
+      if (status === 201) {
+        alert("Bug successfully submitted!");
         window.location.reload(true);
-      })
-      .catch(function (error) {
-        console.log(error);
-      });
+      }
+    } catch (error) {
+      alert(`There was a problem with submitting your bug: ${error}`);
+    }
   };
 
   handleChange = (event, inputField) => {
@@ -93,9 +94,7 @@ class NewBug extends Component {
   };
 
   handleSelect = (severity) => {
-    this.setState({ severityValue: severity }, () => {
-      console.log(this.state);
-    });
+    this.setState({ severityValue: severity });
   };
 
   setSeverityStatusStyle = (status) => {
@@ -119,22 +118,11 @@ class NewBug extends Component {
     return style;
   };
 
-  setSeverityStatusText = (severityValue) => {
-    // let style = this.setSeverityStatusStyle(severityValue);
+  setSeverityStatusText = () => {
     if (this.state.severityValue) {
-      return (
-        // <Button variant={style} disabled>
-        //   {this.state.severityValue}
-        // </Button>
-        this.state.severityValue
-      );
+      return this.state.severityValue;
     } else {
-      return (
-        // <Button variant={style} disabled>
-        //   NOT SET
-        // </Button>
-        "NOT SET"
-      );
+      return "NOT SET";
     }
   };
 
@@ -166,7 +154,6 @@ class NewBug extends Component {
 
         <Form.Label>BUG SEVERITY</Form.Label>
         <Form.Group controlId="exampleForm.ControlTextarea1">
-          {/* {this.renderSeverityStatus(this.state.severityValue.toUpperCase())}{" "} */}
           <Dropdown
             as={ButtonGroup}
             onSelect={(severity) => {
@@ -174,9 +161,7 @@ class NewBug extends Component {
             }}
           >
             <Dropdown.Toggle id="dropdown-basic" variant="primary">
-              {this.setSeverityStatusText(
-                this.state.severityValue.toUpperCase()
-              )}
+              {this.setSeverityStatusText(this.state.severityValue)}
             </Dropdown.Toggle>
 
             <Dropdown.Menu className="">

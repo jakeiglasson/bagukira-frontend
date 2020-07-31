@@ -1,22 +1,18 @@
-import React, { Component, Fragment } from "react";
+import React, { Component } from "react";
 import { Link } from "react-router-dom";
 import { Dropdown, Button, ButtonGroup, Table, Form } from "react-bootstrap";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faBug } from "@fortawesome/free-solid-svg-icons";
-import Media, { useMedia } from "react-media";
+import Media from "react-media";
+import _ from "lodash";
 import "./css/BugList.css";
 import "./css/EditBug.css";
-
 import axios from "axios";
 
 class EditBug extends Component {
   state = {
-    description: "",
-    closedBy: "",
     renderClosePopup: false,
     renderEditDescription: false,
-    // ticket: { status: "open" },
-    previousStatus: "open",
     root: `/projects/p/${this.props.match.params.hash}/bugs`,
     statusList: {
       OPEN: ["danger uniform-status", "eb-open"],
@@ -31,65 +27,55 @@ class EditBug extends Component {
       const response = await axios.get(this.state.url);
       const { data = {}, error } = response;
 
-      if (typeof error !== undefined) {
+      if (typeof data !== undefined) {
         this.setState({
           ticket: data.tickets,
-          closedBy: data.tickets.closed_by,
-          description: data.tickets.description,
+          prevTicket: _.cloneDeep(data.tickets),
         });
         return;
       } else {
         throw error;
       }
     } catch (error) {
-      alert(error, "Sorry something went wrong :(");
-      return error;
+      alert(error, `Sorry something went wrong :(\n${error}`);
     }
-  };
-
-  componentWillUnmount = () => {
-    if (this.response) {
-      this.response.cancel();
-    }
-    // window.location.reload(true);
   };
 
   changePage = () => {
     this.props.history.push(`${this.state.root}`);
   };
 
-  updateBug = async (event) => {
-    try {
-      event.preventDefault();
-    } catch (error) {
-      console.log(error);
-    }
-
+  updateBug = async () => {
     if (this.state.ticket.closed_by.length > 30) {
       alert("Name is too long (30 character limit)");
       return;
     }
 
-    await axios
-      .patch(this.state.url, {
+    if (this.state.prevTicket === this.state.ticket) {
+      return;
+    }
+
+    try {
+      const response = await axios.patch(this.state.url, {
         ticket: this.state.ticket,
-      })
-      .then((response) => {
-        const descriptionChanged = this.state.renderEditDescription;
+      });
+
+      const { status } = await response;
+      if (status === 201) {
         this.setState({
           renderClosePopup: false,
           renderEditDescription: false,
-          description: this.state.ticket.description,
-          closedBy: this.state.ticket.closed_by,
+          prevTicket: _.cloneDeep(this.state.ticket),
         });
 
         if (this.state.ticket.status === "CLOSED") {
           this.changePage();
         }
-      })
-      .catch(function (error) {
-        console.log(error);
-      });
+        return;
+      }
+    } catch (error) {
+      alert(`Update failed: ${error}`);
+    }
   };
 
   //   Handle user interface inputs for bug ticket
@@ -98,34 +84,24 @@ class EditBug extends Component {
       // Handle changes of bug status
       case "OPEN":
       case "IN PROGRESS":
+        // this.setState({ prevTicket: _.cloneDeep(this.state.ticket) });
         this.setTicketState("status", event.target.id);
         this.setTicketState("closed_by", "");
         // Update and changes to the bug from ticket state
-        this.updateBug(event);
+        this.updateBug();
         break;
 
       case "CLOSED":
         this.setState({
-          previousStatus: this.state.ticket.status,
-          previousClosedBy: this.state.ticket.closed_by,
+          //   prevTicket: _.cloneDeep(this.state.ticket),
           renderClosePopup: true,
         });
         this.setTicketState("status", event.target.id);
-        this.setTicketState("closed_by", "");
         break;
 
       default:
         //  Handle all other field changes
-        if (event.target.id == "closed_by") {
-          this.setTicketState(
-            event.target.id,
-            event.target.value.toUpperCase()
-          );
-        } else {
-          this.setTicketState(event.target.id, event.target.value);
-        }
-
-        return;
+        this.setTicketState(event.target.id, event.target.value);
     }
   };
 
@@ -140,7 +116,8 @@ class EditBug extends Component {
   };
 
   //   Render the description edit modal
-  showEditDescription = () => {
+  showEditDescription = (event) => {
+    event.preventDefault();
     this.setState({
       renderEditDescription: true,
     });
@@ -148,14 +125,18 @@ class EditBug extends Component {
 
   //   Close the description or close function modals
   handleCloseModal = (event) => {
-    // unfortunate that this has to be used, but deadline is too close to refactor and work as intended
-    window.location.reload(true);
+    event.preventDefault();
+    // // Rollback changes & hide modals
+    this.setState({
+      ticket: _.cloneDeep(this.state.prevTicket),
+      renderClosePopup: false,
+      renderEditDescription: false,
+    });
   };
 
   dropDown = () => {
     let { status } = this.state.ticket;
     const { statusList } = this.state;
-    status = status.toUpperCase();
 
     return (
       <>
@@ -284,7 +265,7 @@ class EditBug extends Component {
         <FontAwesomeIcon icon={faBug} className="eb-image" />
         <div className="eb-description-text-container">
           <div className="eb-description-text px-4 pt-3 overflow-auto eb-description-width">
-            {this.state.description}
+            {this.state.ticket.description}
           </div>
         </div>
         <div className="eb-description-button-container">
@@ -311,11 +292,11 @@ class EditBug extends Component {
           }}
         >
           {(matches) => (
-            <Fragment>
-              {matches.desktop && this.renderBugDesktop(ticket)}
-              {matches.tablet && this.renderBugDesktop(ticket)}
-              {matches.mobile && this.renderBugMobile(ticket)}
-            </Fragment>
+            <>
+              {matches.desktop && this.renderBug(ticket)}
+              {matches.tablet && this.renderBug(ticket)}
+              {matches.mobile && this.renderBug(ticket)}
+            </>
           )}
         </Media>
       </div>
@@ -335,7 +316,7 @@ class EditBug extends Component {
     }
   };
 
-  renderBugDesktop = (ticket) => {
+  renderBug = (ticket) => {
     return (
       <div className="eb-grid-container">
         <h6>
@@ -374,7 +355,7 @@ class EditBug extends Component {
                 </tr>
                 <tr>
                   <td>CLOSED BY</td>
-                  <td>{this.state.closedBy}</td>
+                  <td>{ticket.closed_by}</td>
                 </tr>
               </tbody>
             </Table>
@@ -385,61 +366,60 @@ class EditBug extends Component {
     );
   };
 
-  renderBugMobile = (ticket) => {
-    return (
-      <div className="eb-grid-container">
-        <h6>
-          <Link to={this.state.root}>BUG LIST</Link>{" "}
-          {"> BUG #" + ticket.ticket_num}
-        </h6>
-        <h3 className="word-wrap-anywhere">{ticket.subject}</h3>
-        <div className="eb-grid-bug-container">
-          <div className="eb-info eb-bug-section">
-            <Table striped bordered className="eb-table-container">
-              <thead>
-                <tr>
-                  <th>BUG #{ticket.ticket_num}</th>
-                  <th>{this.dropDown()}</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td>SEVERITY LEVEL</td>
-                  <td>{ticket.severity}</td>
-                </tr>
-                <tr>
-                  <td>DATE OPENED</td>
-                  <td>
-                    {ticket.created_at.split("T")[0].split("-")[1]}/
-                    {ticket.created_at.split("T")[0].split("-")[2]}
-                  </td>
-                </tr>
-                <tr>
-                  <td>DATE CLOSED</td>
-                  <td>{this.returnClosedStatus(ticket)}</td>
-                </tr>
-                <tr>
-                  <td>REPORTED BY</td>
-                  <td>{ticket.opened_by}</td>
-                </tr>
-                <tr>
-                  <td>CLOSED BY</td>
-                  <td>{this.state.closedBy}</td>
-                </tr>
-              </tbody>
-            </Table>
-          </div>
-          {this.renderDescription()}
-        </div>
-      </div>
-    );
-  };
+  //   renderBugMobile = (ticket) => {
+  //     return (
+  //       <div className="eb-grid-container">
+  //         <h6>
+  //           <Link to={this.state.root}>BUG LIST</Link>{" "}
+  //           {"> BUG #" + ticket.ticket_num}
+  //         </h6>
+  //         <h3 className="word-wrap-anywhere">{ticket.subject}</h3>
+  //         <div className="eb-grid-bug-container">
+  //           <div className="eb-info eb-bug-section">
+  //             <Table striped bordered className="eb-table-container">
+  //               <thead>
+  //                 <tr>
+  //                   <th>BUG #{ticket.ticket_num}</th>
+  //                   <th>{this.dropDown()}</th>
+  //                 </tr>
+  //               </thead>
+  //               <tbody>
+  //                 <tr>
+  //                   <td>SEVERITY LEVEL</td>
+  //                   <td>{ticket.severity}</td>
+  //                 </tr>
+  //                 <tr>
+  //                   <td>DATE OPENED</td>
+  //                   <td>
+  //                     {ticket.created_at.split("T")[0].split("-")[1]}/
+  //                     {ticket.created_at.split("T")[0].split("-")[2]}
+  //                   </td>
+  //                 </tr>
+  //                 <tr>
+  //                   <td>DATE CLOSED</td>
+  //                   <td>{this.returnClosedStatus(ticket)}</td>
+  //                 </tr>
+  //                 <tr>
+  //                   <td>REPORTED BY</td>
+  //                   <td>{ticket.opened_by}</td>
+  //                 </tr>
+  //                 <tr>
+  //                   <td>CLOSED BY</td>
+  //                   <td>{ticket.closed_by}</td>
+  //                 </tr>
+  //               </tbody>
+  //             </Table>
+  //           </div>
+  //           {this.renderDescription()}
+  //         </div>
+  //       </div>
+  //     );
+  //   };
 
   render() {
     const { ticket } = this.state;
 
     if (ticket) {
-      console.log("TICKET:", ticket);
       return (
         <div className="side-content-container p-4">
           {this.renderBugMediaQuery(ticket)}

@@ -9,32 +9,33 @@ import { Nav } from "react-bootstrap";
 class SideBar extends Component {
   state = {
     root: "",
-    hash: this.props.match.params.hash,
+    project: {},
     userId: "",
-    permission: false,
+    hash: this.props.match.params.hash,
   };
 
-  componentWillMount = () => {
-    if (localStorage.userId) {
-      this.setState({ permission: true });
+  componentDidMount = async () => {
+    this.setState({
+      root: "/projects/p/" + this.state.hash + "/",
+    });
+    this.getProject();
+  };
+
+  getProject = async () => {
+    const hash = this.state.hash;
+    const endPoint = "/units/" + hash;
+
+    try {
+      const response = await axios.get(
+        process.env.REACT_APP_API_URL + endPoint
+      );
+      const { status, data } = response;
+      if (status === 200) {
+        this.setState({ project: data.units });
+      }
+    } catch (error) {
+      alert(error);
     }
-    let { hash } = this.props.match.params;
-    this.setState({ root: "/projects/p/" + hash + "/" });
-    this.getProject(hash);
-  };
-
-  getProject = async (hash) => {
-    const endPoint = "/units/";
-    await axios
-      .get(process.env.REACT_APP_API_URL + endPoint + hash)
-      .then((response) => {
-        this.setState({ project: response.data.units });
-        localStorage.setItem("projectOwnerId", response.data.units.user_id);
-        localStorage.setItem("projectName", response.data.units.name);
-      })
-      .catch((error) => {
-        console.log(error);
-      });
   };
 
   renderLink = (endPoint, linkName) => {
@@ -52,7 +53,9 @@ class SideBar extends Component {
   };
 
   renderAdminLinks = () => {
-    if (localStorage.userId == this.state.project.user_id) {
+    const userId = parseInt(localStorage.userId);
+
+    if (userId === this.state.project.user_id) {
       return (
         <>
           {this.renderLink("user/add", "ADD USER")}
@@ -72,7 +75,6 @@ class SideBar extends Component {
             <h3 className="word-wrap-anywhere">{name}</h3>
             {this.renderLink("bugs", "BUG LIST")}
             {this.renderLink("bug/new", "NEW BUG")}
-
             {this.renderAdminLinks()}
           </Nav>
         </div>
