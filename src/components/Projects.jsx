@@ -39,6 +39,7 @@ class Projects extends Component {
     return (
       <Button
         href="/projects/new"
+        data-testid={`NEW PROJECT`}
         className="projects-item-container"
         variant="success"
         size="lg"
@@ -64,6 +65,7 @@ class Projects extends Component {
             return (
               <Button
                 key={index}
+                data-testid={`EXISTING PROJECT${index}`}
                 href={"/projects/p/" + project.id + "/bugs"}
                 className="projects-item-container"
                 variant="warning"

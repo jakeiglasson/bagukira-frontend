@@ -13,7 +13,7 @@ class BugList extends Component {
   componentDidMount() {
     this.getTickets();
   }
-
+        
   getTickets = () => {
     const url = `${process.env.REACT_APP_API_URL}/units/${this.props.match.params.hash}/tickets`;
 
@@ -87,11 +87,16 @@ class BugList extends Component {
     let collection;
 
     if (bugs && !conditional) {
-      collection = bugs.map((bug) => {
+      collection = bugs.map((bug, index) => {
         return (
           <tr key={bug.id}>
             <td>
-              <Link to={"bugs/b/" + bug.ticket_num}>{bug.subject}</Link>
+              <Link
+                data-testid={`bugId${index}`}
+                to={"bugs/b/" + bug.ticket_num}
+              >
+                {bug.subject}
+              </Link>
             </td>
             <td>{bug.status}</td>
             <td>{bug.severity}</td>
@@ -108,11 +113,16 @@ class BugList extends Component {
     }
 
     if (bugs && conditional) {
-      collection = bugs.map((bug) => {
+      collection = bugs.map((bug, index) => {
         return (
           <tr key={bug.id} className="d-flex">
             <td className="col-4 word-wrap-anywhere">
-              <Link to={"bugs/b/" + bug.ticket_num}>{bug.subject}</Link>
+              <Link
+                data-testid={`bugId${index}`}
+                to={"bugs/b/" + bug.ticket_num}
+              >
+                {bug.subject}
+              </Link>
             </td>
             <td className="col-3">{bug.status}</td>
             <td className="col-3">{bug.severity}</td>

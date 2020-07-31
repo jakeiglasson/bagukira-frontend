@@ -3,8 +3,6 @@ import { Form, Button, Dropdown, ButtonGroup } from "react-bootstrap";
 
 import axios from "axios";
 
-// import { inputEventState } from "./shared/Helpers.jsx";
-
 import "./css/NewBug.css";
 import "./css/Global.css";
 

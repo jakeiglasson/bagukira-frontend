@@ -43,6 +43,7 @@ class SideBar extends Component {
     return (
       <NavLink
         to={root + endPoint}
+        data-testid={`linkTest${linkName}`}
         className={"sideBarLink"}
         activeClassName="selected"
       >

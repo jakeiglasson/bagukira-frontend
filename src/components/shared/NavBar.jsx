@@ -238,7 +238,10 @@ class NavBar extends Component {
           <Navbar.Brand href="#home">
             {this.renderWelcomeMessage()}
           </Navbar.Brand>
-          <Navbar.Toggle aria-controls="responsive-navbar-nav" />
+          <Navbar.Toggle
+            aria-controls="responsive-navbar-nav"
+            data-testid="mToggle"
+          />
           <Navbar.Collapse id="responsive-navbar-nav">
             <Nav className="mr-auto">{this.conditionalNavButtons(false)}</Nav>
           </Navbar.Collapse>

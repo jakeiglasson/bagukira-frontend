@@ -70,7 +70,6 @@ class Signup extends Component {
             const { status, data } = await response;
             if (status === 201) {
               localStorage.setItem("token", data.jwt);
-
               const userId = this.parseJwt(localStorage.getItem("token")).sub;
               localStorage.setItem("userId", userId);
 
@@ -129,6 +128,7 @@ class Signup extends Component {
               onChange={this.onInputChange}
             />
           </Form.Group>
+
           <Button
             className="btn btn-warning btn-block"
             data-testid="login"
